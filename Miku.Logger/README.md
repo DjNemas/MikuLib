@@ -210,12 +210,12 @@ FileOptions = new FileLoggerOptions
 Example folder structure with date folders:
 ```
 logs/
-??? 2025-11-29/
-?   ??? app.log
-?   ??? app_20251129_143022.log
-?   ??? app_20251129_150133.log
-??? 2025-11-30/
-    ??? app.log
+├── 2025-11-29/
+│   ├── app.log
+│   ├── app_20251129_143022.log
+│   └── app_20251129_150133.log
+└── 2025-11-30/
+    └── app.log
 ```
 
 ### Console Colors
@@ -299,7 +299,7 @@ Contributions are welcome! Please open an issue or pull request on GitHub.
 ## Credits
 
 Created by **Hatsune Nemas** with inspiration from:
-- Hatsune Miku (????) - CV01, born August 31st, 2007
+- Hatsune Miku (初音ミク) - CV01, born August 31st, 2007
 - Crypton Future Media
 - The Vocaloid community worldwide
 
