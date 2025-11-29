@@ -61,7 +61,7 @@ logger.LogInformation("Application started");
 
 ### Core Utilities
 - Property mapping with type conversion
-- Nullable primitive support (int ? int?, etc.)
+- Nullable primitive support (e.g., int ↔ int?, bool ↔ bool?)
 - Command line argument parsing
 - Environment detection
 
@@ -80,7 +80,7 @@ logger.LogInformation("Application started");
 
 ## Why "Miku"?
 
-This library is named after and inspired by **Hatsune Miku** (????), the virtual singer:
+This library is named after and inspired by **Hatsune Miku** (初音ミク), the virtual singer:
 
 - **Born**: August 31st, 2007
 - **Created by**: Crypton Future Media
@@ -134,7 +134,7 @@ Contributions are welcome! Please open an issue or pull request on GitHub.
 **Created by**: Hatsune Nemas
 
 **Inspired by**:
-- Hatsune Miku (????) - The virtual diva
+- Hatsune Miku (初音ミク) - The virtual diva
 - Crypton Future Media
 - The global Vocaloid community
 
