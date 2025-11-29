@@ -10,7 +10,7 @@ A comprehensive utility library for .NET 10 containing essential tools for objec
 
 ### MikuMapper - Object Mapping
 - Property mapping between objects with automatic type conversion
-- Support for nullable primitives (e.g., `int ? int?`, `bool ? bool?`)
+- Support for nullable primitives (e.g., `int?`, `bool?`, and conversions between `int` ↔ `int?`, `bool` ↔ `bool?`)
 - Property exclusion during mapping
 - Collection mapping support
 - High-performance reflection-based mapping
@@ -103,8 +103,7 @@ var dto = MikuMapper.MapPropertys<UserDto>(user, true, "Password", "Salt");
 
 ### Nullable Primitives
 ```csharp
-// Automatically handles nullable conversions
-// int? -> int, bool -> bool?, etc.
+// Automatically handles conversions between non-nullable and nullable primitives (e.g., int ↔ int?, bool ↔ bool?)
 var mapped = MikuMapper.MapPropertys<TargetType>(source);
 ```
 
@@ -128,7 +127,6 @@ var connectionString = CommandLineHelper.IsReleaseConfiguration()
 ```csharp
 // Single value
 var output = CommandLineHelper.GetParameterValue("--output");
-
 ```
 
 ### Advanced Parsing
@@ -225,7 +223,7 @@ MIT License - See LICENSE file for details.
 ## Credits
 
 Created by **Hatsune Nemas** with inspiration from:
-- Hatsune Miku (????) - CV01, born August 31st, 2007
+- Hatsune Miku (初音ミク) - CV01, born August 31st, 2007
 - Crypton Future Media
 - The global Vocaloid community
 
