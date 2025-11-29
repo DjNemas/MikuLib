@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
+    <PackageId>Miku</PackageId>
+    <Version>10.0.39</Version>
+    <Authors>Hatsune Nemas</Authors>
+    <Company>Crypton Future Media (Inspired)</Company>
+    <Description>Main Miku library aggregating all Miku sub-libraries. The future of voice, the future of code. 🎤</Description>
+    <PackageTags>miku;library;utilities;vocaloid;cv01;39</PackageTags>
+    <RepositoryUrl>https://github.com/DjNemas/MikuLib</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/DjNemas/MikuLib</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>© 2025 Hatsune Nemas. The world is mine... to code! 🌸</Copyright>
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Miku.Utils\Miku.Utils.csproj" />
+    <ProjectReference Include="..\Miku.Logger\Miku.Logger.csproj" />
+  </ItemGroup>
+
+</Project>

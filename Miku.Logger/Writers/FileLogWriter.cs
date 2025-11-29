@@ -1,0 +1,196 @@
+using Miku.Logger.Configuration;
+using System.Collections.Concurrent;
+
+namespace Miku.Logger.Writers
+{
+    /// <summary>
+    /// Thread-safe file writer with log rotation support.
+    /// </summary>
+    internal class FileLogWriter : IDisposable
+    {
+        private readonly FileLoggerOptions _options;
+        private readonly SemaphoreSlim _writeSemaphore = new(1, 1);
+        private readonly ConcurrentQueue<string> _writeQueue = new();
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
+        private readonly Task _writerTask;
+        private bool _disposed;
+
+        public FileLogWriter(FileLoggerOptions options)
+        {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _writerTask = Task.Run(ProcessQueueAsync);
+        }
+
+        /// <summary>
+        /// Writes a log message asynchronously.
+        /// </summary>
+        public async Task WriteAsync(string message, CancellationToken cancellationToken = default)
+        {
+            if (_disposed) return;
+
+            _writeQueue.Enqueue(message);
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Writes a log message synchronously.
+        /// </summary>
+        public void Write(string message)
+        {
+            if (_disposed) return;
+            _writeQueue.Enqueue(message);
+        }
+
+        private async Task ProcessQueueAsync()
+        {
+            while (!_cancellationTokenSource.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    if (_writeQueue.TryDequeue(out var message))
+                    {
+                        await WriteToFileAsync(message);
+                    }
+                    else
+                    {
+                        await Task.Delay(10, _cancellationTokenSource.Token);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in log writer: {ex.Message}");
+                }
+            }
+        }
+
+        private async Task WriteToFileAsync(string message)
+        {
+            await _writeSemaphore.WaitAsync();
+            try
+            {
+                var filePath = GetCurrentLogFilePath();
+                EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
+
+                if (ShouldRotate(filePath))
+                {
+                    RotateLogFile(filePath);
+                }
+
+                await File.AppendAllTextAsync(filePath, message + Environment.NewLine);
+            }
+            finally
+            {
+                _writeSemaphore.Release();
+            }
+        }
+
+        private string GetCurrentLogFilePath()
+        {
+            var baseDir = _options.LogDirectory;
+
+            if (_options.UseDateFolders)
+            {
+                var dateFolder = DateTime.Now.ToString(_options.DateFolderFormat);
+                baseDir = Path.Combine(baseDir, dateFolder);
+            }
+
+            return Path.Combine(baseDir, _options.FileNamePattern);
+        }
+
+        private bool ShouldRotate(string filePath)
+        {
+            if (_options.MaxFileSizeBytes <= 0) return false;
+            if (!File.Exists(filePath)) return false;
+
+            var fileInfo = new FileInfo(filePath);
+            return fileInfo.Length >= _options.MaxFileSizeBytes;
+        }
+
+        private void RotateLogFile(string filePath)
+        {
+            if (!File.Exists(filePath)) return;
+
+            var directory = Path.GetDirectoryName(filePath)!;
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            var extension = Path.GetExtension(filePath);
+            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            var rotatedFileName = $"{fileName}_{timestamp}{extension}";
+            var rotatedFilePath = Path.Combine(directory, rotatedFileName);
+
+            File.Move(filePath, rotatedFilePath);
+
+            CleanupOldLogFiles(directory, fileName, extension);
+        }
+
+        private void CleanupOldLogFiles(string directory, string fileName, string extension)
+        {
+            if (_options.MaxFileCount <= 0) return;
+
+            var pattern = $"{fileName}_*{extension}";
+            var files = Directory.GetFiles(directory, pattern)
+                                .Select(f => new FileInfo(f))
+                                .OrderByDescending(f => f.CreationTime)
+                                .Skip(_options.MaxFileCount)
+                                .ToList();
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    file.Delete();
+                }
+                catch
+                {
+                    // Ignore deletion errors
+                }
+            }
+        }
+
+        private static void EnsureDirectoryExists(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+
+            _disposed = true;
+            _cancellationTokenSource.Cancel();
+
+            try
+            {
+                _writerTask.Wait(TimeSpan.FromSeconds(5));
+            }
+            catch
+            {
+                // Ignore timeout
+            }
+
+            // Write remaining messages
+            while (_writeQueue.TryDequeue(out var message))
+            {
+                try
+                {
+                    var filePath = GetCurrentLogFilePath();
+                    EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
+                    File.AppendAllText(filePath, message + Environment.NewLine);
+                }
+                catch
+                {
+                    // Ignore errors during disposal
+                }
+            }
+
+            _writeSemaphore.Dispose();
+            _cancellationTokenSource.Dispose();
+        }
+    }
+}
