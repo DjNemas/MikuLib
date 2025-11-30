@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     
-    <PackageId>Miku.Logger</PackageId>
+    <PackageId>MikuLib.Logger</PackageId>
 	<Title>Miku Logger</Title>
     <Version>10.0.39</Version>
     <Authors>Hatsune Nemas</Authors>

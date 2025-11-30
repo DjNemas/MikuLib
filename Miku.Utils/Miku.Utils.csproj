@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     
-    <PackageId>Miku.Utils</PackageId>
+    <PackageId>MikuLib.Utils</PackageId>
 	<Title>Miku Utils</Title>
     <Version>10.0.39</Version>
     <Authors>Hatsune Nemas</Authors>

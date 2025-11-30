@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     
-    <PackageId>Miku</PackageId>
-	<Title>Miku Lib</Title>
+    <PackageId>MikuLib</PackageId>
+	<Title>Miku</Title>
     <Version>10.0.39</Version>
     <Authors>Hatsune Nemas</Authors>
     <Company>Crypton Future Media (Inspired)</Company>
