@@ -81,7 +81,7 @@ logger.LogInformation("Application started");
 
 ### Core Utilities (MikuLib.Utils)
 - Property mapping with automatic type conversion
-- Nullable primitive support (int ? int?, bool ? bool?, etc.)
+- Nullable primitive support (int <-> int?, bool <-> bool?, etc.)
 - Command line argument parsing (--param, --param:value, --param=value)
 - Multi-value parameter support
 - Environment detection
@@ -109,9 +109,9 @@ MikuLib follows this versioning pattern:
 
 ```
 MAJOR.MINOR.39
-  |     |    ???? Always 39 (Mi-Ku Easter Egg)
-  |     ????????? Increments for new features/updates
-  ??????????????? Matches .NET version (10, 11, 12, etc.)
+  |     |    +--- Always 39 (Mi-Ku Easter Egg)
+  |     +-------- Increments for new features/updates
+  +-------------- Matches .NET version (10, 11, 12, etc.)
 ```
 
 **Current Version**: 10.0.39
@@ -129,7 +129,7 @@ MAJOR.MINOR.39
 
 ## Why "Miku"?
 
-This library is named after and inspired by **Hatsune Miku** (????), the virtual singer:
+This library is named after and inspired by **Hatsune Miku**, the virtual singer:
 
 - **Born**: August 31st, 2007
 - **Created by**: Crypton Future Media
@@ -192,7 +192,7 @@ Contributions are welcome! Please:
 **Created by**: Hatsune Nemas
 
 **Inspired by**:
-- Hatsune Miku (????) - The virtual diva who started it all
+- Hatsune Miku - The virtual diva who started it all
 - Crypton Future Media - For creating VOCALOID technology
 - The global Vocaloid community - For endless creativity and passion
 
@@ -216,11 +216,11 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ```
 MikuLib/
-??? Miku/                   # Meta package
-??? Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
-??? Miku.Logger/            # Logging library
-??? MikuLib.sln             # Solution file
-??? README.md               # This file
++-- Miku/                   # Meta package
++-- Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
++-- Miku.Logger/            # Logging library
++-- MikuLib.sln             # Solution file
++-- README.md               # This file
 ```
 
 ---
