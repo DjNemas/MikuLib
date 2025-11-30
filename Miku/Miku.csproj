@@ -16,13 +16,17 @@
     <RepositoryUrl>https://github.com/DjNemas/MikuLib</RepositoryUrl>
     <PackageProjectUrl>https://github.com/DjNemas/MikuLib</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>© 2025 Hatsune Nemas. The world is mine... to code! 🌸</Copyright>
     <PackageIcon>icon.png</PackageIcon>
+    <Copyright>© 2025 Hatsune Nemas. The world is mine... to code! 🌸</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Miku.Utils\Miku.Utils.csproj" />
     <ProjectReference Include="..\Miku.Logger\Miku.Logger.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
