@@ -1,4 +1,4 @@
-# Miku.Logger
+# MikuLib.Logger
 
 A powerful, thread-safe logging library for .NET 10 with console and file output support, featuring async operations, log rotation, and Microsoft.Extensions.Logging compatibility.
 
@@ -24,12 +24,12 @@ A powerful, thread-safe logging library for .NET 10 with console and file output
 ## Installation
 
 ```bash
-dotnet add package Miku.Logger
+dotnet add package MikuLib.Logger
 ```
 
 Or add to your `.csproj`:
 ```xml
-<PackageReference Include="Miku.Logger" Version="10.0.39" />
+<PackageReference Include="MikuLib.Logger" Version="10.0.39" />
 ```
 
 ## Quick Start
@@ -305,7 +305,7 @@ Created by **Hatsune Nemas** with inspiration from:
 
 ## Repository
 
-https://github.com/DjNemas/MikuMikuMiiiWebsite
+https://github.com/DjNemas/MikuLib
 
 ---
 

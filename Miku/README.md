@@ -1,39 +1,52 @@
-# Miku
+# MikuLib
 
-The main Miku library - Your one-stop package for all Miku sub-libraries.
+A collection of powerful .NET 10 libraries inspired by Hatsune Miku.
 
 > "The world is mine... and so are these utilities!" - Hatsune Nemas
 
 *Aggregating the power of CV01 since 2007*
 
-## What is Miku?
+## What is MikuLib?
 
-Miku is a comprehensive .NET 10 library collection that brings together powerful utilities for modern application development. Named after and inspired by Hatsune Miku, the virtual singer who revolutionized music and technology.
+MikuLib is a comprehensive .NET 10 library collection that brings together powerful utilities for modern application development. Named after and inspired by Hatsune Miku, the virtual singer who revolutionized music and technology.
 
 ## Included Libraries
 
-### MikuUtils
+### MikuLib.Utils
 - **MikuMapper**: Object-to-object mapping with nullable primitive support
 - **CommandLineHelper**: Modern command line argument parsing
-- Full documentation: [Miku.Utils README](../Miku.Utils/README.md)
+- Full documentation: [MikuLib.Utils README](../Miku.Utils/README.md)
 
-### Miku.Logger
+### MikuLib.Logger
 - Thread-safe logging with console and file output
 - ILogger compatibility for ASP.NET Core
 - Colored console output and log rotation
-- Full documentation: [Miku.Logger README](../Miku.Logger/README.md)
+- Full documentation: [MikuLib.Logger README](../Miku.Logger/README.md)
 
 ## Installation
 
 Install the main package to get all sub-libraries:
 
 ```bash
-dotnet add package Miku
+dotnet add package MikuLib
 ```
 
 Or add to your `.csproj`:
 ```xml
-<PackageReference Include="Miku" Version="10.0.39" />
+<PackageReference Include="MikuLib" Version="10.0.39" />
+```
+
+You can also install individual packages:
+
+```bash
+dotnet add package MikuLib.Utils
+dotnet add package MikuLib.Logger
+```
+
+Or in your `.csproj`:
+```xml
+<PackageReference Include="MikuLib.Utils" Version="10.0.39" />
+<PackageReference Include="MikuLib.Logger" Version="10.0.39" />
 ```
 
 ## Quick Start
@@ -59,24 +72,53 @@ logger.LogInformation("Application started");
 
 ## Features at a Glance
 
-### Core Utilities
-- Property mapping with type conversion
-- Nullable primitive support (e.g., int ↔ int?, bool ↔ bool?)
-- Command line argument parsing
+### Core Utilities (MikuLib.Utils)
+- Property mapping with automatic type conversion
+- Nullable primitive support (int ↔ int?, bool ↔ bool?, etc.)
+- Command line argument parsing (--param, --param:value, --param=value)
+- Multi-value parameter support
 - Environment detection
+- Auto-detection via Environment.GetCommandLineArgs()
 
-### Logging
+### Logging (MikuLib.Logger)
 - Multiple output targets (Console, File, Both)
 - Thread-safe async operations
-- Colored console output (Cyan by default)
-- Automatic log rotation
-- ILogger compatibility
+- Colored console output (Cyan by default - #00CED1)
+- Automatic log rotation based on file size
+- Date-based folder organization
+- Configurable log levels and formats
+- ILogger compatibility for ASP.NET Core
 
 ### Performance
-- High-performance reflection
-- LINQ-optimized parsing
+- High-performance reflection-based mapping
+- LINQ-optimized command line parsing
 - Async queue-based file I/O
-- Thread-safe operations
+- Thread-safe operations throughout
+- Minimal allocation overhead
+
+## Version Numbering
+
+MikuLib follows this versioning pattern:
+
+```
+MAJOR.MINOR.39
+  |     |    └─── Always 39 (Mi-Ku Easter Egg)
+  |     └──────── Increments for new features/updates
+  └────────────── Matches .NET version (10, 11, 12, etc.)
+```
+
+**Current Version**: 10.0.39
+
+**Examples:**
+- `10.0.39` - Initial .NET 10 release
+- `10.1.39` - Feature update for .NET 10
+- `10.2.39` - Another feature update
+- `11.0.39` - .NET 11 release
+
+## Requirements
+
+- .NET 10.0 or higher
+- C# 14.0
 
 ## Why "Miku"?
 
@@ -85,7 +127,7 @@ This library is named after and inspired by **Hatsune Miku** (初音ミク), the
 - **Born**: August 31st, 2007
 - **Created by**: Crypton Future Media
 - **Series**: Character Vocal Series 01 (CV01)
-- **Number**: 39 (Mi-Ku in Japanese)
+- **Number**: 39 (Mi-Ku in Japanese goroawase)
 - **Age**: 16 years old
 - **Signature Color**: Cyan (#00CED1)
 
@@ -107,49 +149,72 @@ For those who know, you know.
 
 > "The future of voice, the future of code!"
 
-These libraries aim to:
+MikuLib aims to:
 - Be accessible to developers worldwide
 - Work in harmony with existing .NET ecosystems
 - Stay modern and future-proof
-- Bring efficiency to coding
+- Bring efficiency and joy to coding
 
 ## Documentation
 
-- [Miku.Utils Documentation](../Miku.Utils/README.md)
-- [Miku.Utils Examples](../Miku.Utils/EXAMPLES.md)
-- [Miku.Logger Documentation](../Miku.Logger/README.md)
-- [Miku.Logger Examples](../Miku.Logger/EXAMPLES.md)
+### MikuLib.Utils
+- [README](../Miku.Utils/README.md) - Full documentation
+- [EXAMPLES](../Miku.Utils/EXAMPLES.md) - Practical usage examples
+- [CHANGELOG](../Miku.Utils/CHANGELOG.md) - Version history
 
-## Requirements
+### MikuLib.Logger
+- [README](../Miku.Logger/README.md) - Full documentation
+- [EXAMPLES](../Miku.Logger/EXAMPLES.md) - Practical usage examples
+- [CHANGELOG](../Miku.Logger/CHANGELOG.md) - Version history
 
-- .NET 10.0 or higher
-- C# 14.0
+### MikuLib (Meta Package)
+- [README](./README.md) - This file
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or pull request on GitHub.
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## Credits
 
 **Created by**: Hatsune Nemas
 
 **Inspired by**:
-- Hatsune Miku (初音ミク) - The virtual diva
-- Crypton Future Media
-- The global Vocaloid community
+- Hatsune Miku (初音ミク) - The virtual diva who started it all
+- Crypton Future Media - For creating VOCALOID technology
+- The global Vocaloid community - For endless creativity and passion
 
 **Songs that inspired development**:
-- "World is Mine"
-- "Tell Your World"
-- "Senbonzakura"
+- "World is Mine" - For confidence to build
+- "Tell Your World" - For sharing our code
+- "Senbonzakura" - For epic scale
 
 ## License
 
-MIT License - See LICENSE file for details.
+MIT License - See [LICENSE](LICENSE) file for details.
 
-## Repository
+## Links
 
-https://github.com/DjNemas/MikuLib
+- [GitHub Repository](https://github.com/DjNemas/MikuLib)
+- [Issue Tracker](https://github.com/DjNemas/MikuLib/issues)
+- [Discussions](https://github.com/DjNemas/MikuLib/discussions)
+- [NuGet Gallery](https://www.nuget.org/profiles/HatsuneNemas)
+
+## Repository Structure
+
+```
+MikuLib/
+├── Miku/                   # Meta package
+├── Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
+├── Miku.Logger/            # Logging library
+├── MikuLib.sln             # Solution file
+└── README.md               # This file
+```
 
 ---
 

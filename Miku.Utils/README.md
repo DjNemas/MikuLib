@@ -1,4 +1,4 @@
-# Miku.Utils
+# MikuLib.Utils
 
 A comprehensive utility library for .NET 10 containing essential tools for object mapping, command line argument parsing, and more.
 
@@ -10,7 +10,7 @@ A comprehensive utility library for .NET 10 containing essential tools for objec
 
 ### MikuMapper - Object Mapping
 - Property mapping between objects with automatic type conversion
-- Support for nullable primitives (e.g., `int?`, `bool?`, and conversions between `int` ↔ `int?`, `bool` ↔ `bool?`)
+- Support for nullable primitives (e.g., `int ↔ int?`, `bool ↔ bool?`)
 - Property exclusion during mapping
 - Collection mapping support
 - High-performance reflection-based mapping
@@ -26,12 +26,12 @@ A comprehensive utility library for .NET 10 containing essential tools for objec
 ## Installation
 
 ```bash
-dotnet add package Miku.Utils
+dotnet add package MikuLib.Utils
 ```
 
 Or add to your `.csproj`:
 ```xml
-<PackageReference Include="Miku.Utils" Version="10.0.39" />
+<PackageReference Include="MikuLib.Utils" Version="10.0.39" />
 ```
 
 ## Quick Start
@@ -103,7 +103,8 @@ var dto = MikuMapper.MapPropertys<UserDto>(user, true, "Password", "Salt");
 
 ### Nullable Primitives
 ```csharp
-// Automatically handles conversions between non-nullable and nullable primitives (e.g., int ↔ int?, bool ↔ bool?)
+// Automatically handles nullable conversions
+// int? -> int, bool -> bool?, etc.
 var mapped = MikuMapper.MapPropertys<TargetType>(source);
 ```
 
@@ -127,6 +128,12 @@ var connectionString = CommandLineHelper.IsReleaseConfiguration()
 ```csharp
 // Single value
 var output = CommandLineHelper.GetParameterValue("--output");
+
+// Multiple values
+var includes = CommandLineHelper.GetParameterValues("--include");
+
+// With default
+var port = CommandLineHelper.GetParameterValue("--port") ?? "8080";
 ```
 
 ### Advanced Parsing
@@ -229,7 +236,7 @@ Created by **Hatsune Nemas** with inspiration from:
 
 ## Repository
 
-https://github.com/DjNemas/MikuMikuMiiiWebsite
+https://github.com/DjNemas/MikuLib
 
 ---
 

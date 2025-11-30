@@ -12,14 +12,14 @@ MikuLib is a comprehensive .NET 10 library collection that brings together power
 
 ## Libraries
 
-### Miku.Utils
+### MikuLib.Utils
 **Comprehensive utility library** featuring:
 - **MikuMapper**: Object-to-object mapping with nullable primitive support
 - **CommandLineHelper**: Modern command line argument parsing with auto-detection
 
 [Documentation](./Miku.Utils/README.md) | [Examples](./Miku.Utils/EXAMPLES.md) | [Changelog](./Miku.Utils/CHANGELOG.md)
 
-### Miku.Logger
+### MikuLib.Logger
 **Thread-safe logging library** featuring:
 - Console and file output with customizable colors
 - ILogger compatibility for ASP.NET Core
@@ -28,7 +28,7 @@ MikuLib is a comprehensive .NET 10 library collection that brings together power
 
 [Documentation](./Miku.Logger/README.md) | [Examples](./Miku.Logger/EXAMPLES.md) | [Changelog](./Miku.Logger/CHANGELOG.md)
 
-### Miku (Meta Package)
+### MikuLib (Meta Package)
 **Convenience package** that includes all Miku libraries for easy installation.
 
 [Documentation](./Miku/README.md)
@@ -38,22 +38,22 @@ MikuLib is a comprehensive .NET 10 library collection that brings together power
 Install individual libraries:
 
 ```bash
-dotnet add package Miku.Utils
-dotnet add package Miku.Logger
+dotnet add package MikuLib.Utils
+dotnet add package MikuLib.Logger
 ```
 
 Or install the meta package to get everything:
 
 ```bash
-dotnet add package Miku
+dotnet add package MikuLib
 ```
 
 Add to your `.csproj`:
 ```xml
-<PackageReference Include="Miku" Version="10.0.39" />
+<PackageReference Include="MikuLib" Version="10.0.39" />
 <!-- Or individual packages -->
-<PackageReference Include="Miku.Utils" Version="10.0.39" />
-<PackageReference Include="Miku.Logger" Version="10.0.39" />
+<PackageReference Include="MikuLib.Utils" Version="10.0.39" />
+<PackageReference Include="MikuLib.Logger" Version="10.0.39" />
 ```
 
 ## Quick Start
@@ -79,7 +79,7 @@ logger.LogInformation("Application started");
 
 ## Features at a Glance
 
-### Core Utilities (Miku.Utils)
+### Core Utilities (MikuLib.Utils)
 - Property mapping with automatic type conversion
 - Nullable primitive support (int ? int?, bool ? bool?, etc.)
 - Command line argument parsing (--param, --param:value, --param=value)
@@ -87,7 +87,7 @@ logger.LogInformation("Application started");
 - Environment detection
 - Auto-detection via Environment.GetCommandLineArgs()
 
-### Logging (Miku.Logger)
+### Logging (MikuLib.Logger)
 - Multiple output targets (Console, File, Both)
 - Thread-safe async operations
 - Colored console output (Cyan by default - #00CED1)
@@ -164,17 +164,17 @@ MikuLib aims to:
 
 ## Documentation
 
-### Miku.Utils
+### MikuLib.Utils
 - [README](./Miku.Utils/README.md) - Full documentation
 - [EXAMPLES](./Miku.Utils/EXAMPLES.md) - Practical usage examples
 - [CHANGELOG](./Miku.Utils/CHANGELOG.md) - Version history
 
-### Miku.Logger
+### MikuLib.Logger
 - [README](./Miku.Logger/README.md) - Full documentation
 - [EXAMPLES](./Miku.Logger/EXAMPLES.md) - Practical usage examples
 - [CHANGELOG](./Miku.Logger/CHANGELOG.md) - Version history
 
-### Miku (Meta Package)
+### MikuLib (Meta Package)
 - [README](./Miku/README.md) - Package information
 
 ## Credits
