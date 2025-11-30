@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miku.Utils", "Miku.Utils\Mi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miku.Logger", "Miku.Logger\Miku.Logger.csproj", "{D09A0767-74FF-4619-8D0B-08FD90474416}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miku.Utils.Tests", "Miku.Utils.Tests\Miku.Utils.Tests.csproj", "{79A699A4-FEF5-435C-98B6-26379FF7146D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miku.Logger.Tests", "Miku.Logger.Tests\Miku.Logger.Tests.csproj", "{DFC6674E-498C-4270-BDAD-D258319D0F6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miku.Tests", "Miku.Tests\Miku.Tests.csproj", "{1D270698-2698-42FF-AD7B-9FC4D1062705}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +61,42 @@ Global
 		{D09A0767-74FF-4619-8D0B-08FD90474416}.Release|x64.Build.0 = Release|Any CPU
 		{D09A0767-74FF-4619-8D0B-08FD90474416}.Release|x86.ActiveCfg = Release|Any CPU
 		{D09A0767-74FF-4619-8D0B-08FD90474416}.Release|x86.Build.0 = Release|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Debug|x64.Build.0 = Debug|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Debug|x86.Build.0 = Debug|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Release|x64.ActiveCfg = Release|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Release|x64.Build.0 = Release|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Release|x86.ActiveCfg = Release|Any CPU
+		{79A699A4-FEF5-435C-98B6-26379FF7146D}.Release|x86.Build.0 = Release|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Debug|x64.Build.0 = Debug|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Debug|x86.Build.0 = Debug|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Release|x64.ActiveCfg = Release|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Release|x64.Build.0 = Release|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Release|x86.ActiveCfg = Release|Any CPU
+		{DFC6674E-498C-4270-BDAD-D258319D0F6C}.Release|x86.Build.0 = Release|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Debug|x64.Build.0 = Debug|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Debug|x86.Build.0 = Debug|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Release|x64.ActiveCfg = Release|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Release|x64.Build.0 = Release|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Release|x86.ActiveCfg = Release|Any CPU
+		{1D270698-2698-42FF-AD7B-9FC4D1062705}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
