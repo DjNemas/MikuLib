@@ -279,29 +279,34 @@ public class MyService
 ## Performance
 
 - **Lock-Free Architecture**: Uses ConcurrentQueue for maximum throughput
+- **Singleton File Stream Management**: Only one FileStream per file for safe multi-instance access
 - **Batch Writing**: Collects up to 100 messages and writes them in one operation
+- **Thread-Safe**: SemaphoreSlim-based synchronization per file
 - **Async File Writing**: Background queue processing with 8KB buffer
-- **25x Faster**: Compared to synchronous implementations
-- **5000+ msg/s**: Throughput under high load
 - **Zero Data Loss**: Guaranteed message delivery even when disposing
+- **Multi-Instance Safe**: Multiple FileLogWriter instances can safely write to same file
 
 ## Thread Safety
 
 All logging operations are thread-safe:
 - Console writes are synchronized
-- File writes use lock-free queue with background processing
+- File writes use singleton SharedFileStreamManager with SemaphoreSlim per file
+- Only one FileStream per file across all FileLogWriter instances
 - Safe for concurrent access from multiple threads
-- Multi-instance safe with proper configuration
+- Multi-instance safe - multiple FileLogWriter instances can write to same file
 
 ### Multi-Instance Best Practices
 
 ```csharp
-// Recommended: Each process uses its own log file
-options.FileNamePattern = $"app-{Environment.ProcessId}.log";
+// Recommended: All services log to same file
+// Gateway, Homepage, RestAPI can all safely use:
+options.FileNamePattern = "log.txt";
+options.UseDateFolders = true; // logs/2025-12-02/log.txt
 
-// Even better: With date folders
-options.UseDateFolders = true;
-options.FileNamePattern = $"gateway-{Environment.ProcessId}.log";
+// The SharedFileStreamManager ensures safe multi-instance access automatically
+
+// Optional: Separate files per service for better isolation
+options.FileNamePattern = $"{serviceName}.log";
 ```
 
 ## License

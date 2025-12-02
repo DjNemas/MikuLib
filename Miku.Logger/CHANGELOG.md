@@ -11,22 +11,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Eliminated data loss in high-concurrency logging scenarios
 - Fixed file access conflicts when multiple FileLogWriter instances write to the same file
 
-### Changed
-- Implemented lock-free batch writing architecture for maximum performance
-- Changed from single-message writes to batch writes (up to 100 messages per batch)
-- Increased FileStream buffer size from 4KB to 8KB for better I/O performance
-- Improved Dispose() method to guarantee flush of all remaining messages
-
-### Performance
-- 25x faster in multi-writer scenarios (0.9s vs 20s in tests)
-- Throughput increased from ~200 msg/s to 5000+ msg/s
-- Reduced CPU usage through batch processing
-- Zero data loss guarantee even under high load
-
 ### Added
-- Comprehensive multi-instance tests (9 test scenarios)
+- Singleton SharedFileStreamManager for centralized file stream management
+- SharedFileStream wrapper with SemaphoreSlim for thread-safe write operations
+- Only one FileStream per file across all FileLogWriter instances (true singleton pattern)
+- Comprehensive multi-instance tests (11 test scenarios including 2 multi-process tests)
 - Performance optimization documentation
 - Production best practices guide for multi-process logging
+
+### Changed
+- Implemented singleton pattern for shared file stream management
+- Changed from individual FileStream per writer to centralized SharedFileStreamManager
+- Improved Dispose() method to guarantee flush of all remaining messages
+- FileLogWriter now uses SharedFileStreamManager.GetOrCreateStream() for file access
+
+### Performance
+- Zero data loss guarantee even under high load
+- Thread-safe write operations with SemaphoreSlim per file
+- Batch writing (up to 100 messages per batch)
+- Async I/O with 8KB buffer
+- Efficient resource management through singleton pattern
 
 ---
 
