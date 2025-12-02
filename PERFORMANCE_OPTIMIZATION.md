@@ -1,66 +1,66 @@
-# FileLogWriter Performance Optimierung
+# FileLogWriter Performance Optimization
 
 ## Branch: `fix/filewriter-concurrent-access`
 
 ### Problem (Version 10.0.39)
-- IOException bei gleichzeitigem Zugriff auf Log-Dateien durch mehrere FileLogWriter-Instanzen
-- Datenverlust in Multi-Instance-Szenarien
-- File-Access-Konflikte bei parallelem Schreiben
+- IOException when multiple FileLogWriter instances access log files simultaneously
+- Data loss in multi-instance scenarios
+- File access conflicts during parallel writing
 
-### Lösung (Version 10.1.39): High-Performance Lock-Free Architecture
+### Solution (Version 10.1.39): High-Performance Lock-Free Architecture
 
-#### Kern-Features
-1. **Lock-Free ConcurrentQueue** - Keine Semaphore/Mutex für maximale Performance
-2. **Batch Writing** - Sammelt bis zu 100 Nachrichten und schreibt sie in einem Durchgang
-3. **Async FileStream** - Nutzt async I/O mit 8KB Buffer
-4. **Zero Data Loss** - Dispose() garantiert das Schreiben aller verbleibenden Nachrichten
-5. **FileShare.Read** - Erlaubt gleichzeitiges Lesen der Log-Dateien
+#### Core Features
+1. **Lock-Free ConcurrentQueue** - No Semaphore/Mutex for maximum performance
+2. **Batch Writing** - Collects up to 100 messages and writes them in one operation
+3. **Async FileStream** - Uses async I/O with 8KB buffer
+4. **Zero Data Loss** - Dispose() guarantees writing of all remaining messages
+5. **FileShare.Read** - Allows concurrent reading of log files
 
-#### Performance-Ergebnisse
+#### Performance Results
 
-| Metrik | Vorher (10.0.39) | Nachher (10.1.39) | Verbesserung |
-|--------|------------------|-------------------|--------------|
-| **Test-Dauer** | 20+ Sekunden | **0.9 Sekunden** | **25x schneller** |
-| **Throughput** | ~200 msg/s | **5000+ msg/s** | **25x hoeher** |
-| **Datenverlust** | Moeglich | **Zero** | 100% |
-| **CPU-Last** | Hoch | **Niedrig** | Deutlich besser |
+| Metric | Before (10.0.39) | After (10.1.39) | Improvement |
+|--------|------------------|-----------------|-------------|
+| **Test Duration** | 20+ seconds | **0.9 seconds** | **25x faster** |
+| **Throughput** | ~200 msg/s | **5000+ msg/s** | **25x higher** |
+| **Data Loss** | Possible | **Zero** | 100% |
+| **CPU Load** | High | **Low** | Much better |
 
-#### Test-Abdeckung (9 Tests, alle bestanden)
+#### Test Coverage (9 tests, all passing)
 
-- `SingleWriter_WritesSingleMessage` - Basis-Funktionalitaet  
-- `SingleWriter_WritesMultipleMessages` - Sequentielle Writes  
-- `MultipleWriters_SameFile_AllMessagesWritten` - Multi-Instance auf gleiche Datei  
-- `MultipleWriters_ConcurrentWrite_NoIOException` - Keine IOException  
-- `Dispose_WritesRemainingMessages` - Graceful Shutdown  
-- `MultipleWriters_SimultaneousDispose_AllMessagesWritten` - Simultanes Dispose  
-- `HighLoad_ManyWritersAndMessages_NoDataLoss` - 20 Writers x 200 Messages  
-- `MultipleWriters_WithDateFolders_NoConflict` - Date-Folder-Support  
-- `StressTest_RapidWritesFromMultipleThreads` - 50 Threads x 100 Messages  
+- `SingleWriter_WritesSingleMessage` - Basic functionality
+- `SingleWriter_WritesMultipleMessages` - Sequential writes
+- `MultipleWriters_SameFile_AllMessagesWritten` - Multi-instance on same file
+- `MultipleWriters_ConcurrentWrite_NoIOException` - No IOException
+- `Dispose_WritesRemainingMessages` - Graceful shutdown
+- `MultipleWriters_SimultaneousDispose_AllMessagesWritten` - Simultaneous dispose
+- `HighLoad_ManyWritersAndMessages_NoDataLoss` - 20 Writers x 200 Messages
+- `MultipleWriters_WithDateFolders_NoConflict` - Date folder support
+- `StressTest_RapidWritesFromMultipleThreads` - 50 Threads x 100 Messages
 
-#### Architektur-Entscheidungen
+#### Architecture Decisions
 
-**Warum Batch Writing?**
-- Reduziert System-Calls um Faktor 100
-- Bessere Disk I/O-Performance durch groessere Writes
-- Niedrigere CPU-Last
-- Automatisches Buffering durch StreamWriter (8KB)
+**Why Batch Writing?**
+- Reduces system calls by factor of 100
+- Better disk I/O performance through larger writes
+- Lower CPU load
+- Automatic buffering through StreamWriter (8KB)
 
-**Warum FileShare.Read statt FileShare.ReadWrite?**
-- Write-Konflikte werden durch Single-Writer-Pattern pro Instance verhindert
-- Mehrere Prozesse sollten separate Log-Dateien verwenden (Best Practice)
-- Read-Zugriff fuer Log-Monitoring/Analysis bleibt moeglich
+**Why FileShare.Read instead of FileShare.ReadWrite?**
+- Write conflicts are prevented by single-writer-pattern per instance
+- Multiple processes should use separate log files (best practice)
+- Read access for log monitoring/analysis remains possible
 
 #### Production Best Practices
 
 ```csharp
-// Nicht empfohlen: Mehrere Prozesse -> gleiche Log-Datei
-// (funktioniert, aber suboptimal)
+// Not recommended: Multiple processes -> same log file
+// (works, but suboptimal)
 options.FileNamePattern = "app.log";
 
-// Empfohlen: Jeder Prozess -> eigene Log-Datei
+// Recommended: Each process -> own log file
 options.FileNamePattern = $"app-{Environment.ProcessId}.log";
 
-// Noch besser: Mit Datum und ProcessId
+// Even better: With date and ProcessId
 options.UseDateFolders = true; // logs/2025-12-02/
 options.FileNamePattern = $"gateway-{Environment.ProcessId}.log";
 ```
@@ -69,16 +69,16 @@ options.FileNamePattern = $"gateway-{Environment.ProcessId}.log";
 
 1. `Fix: Use FileStream with FileShare.Write to prevent IOException on concurrent access`
 2. `Add comprehensive multi-instance FileLogWriter tests - identifies data loss issue`
-3. `Implement Mutex-based cross-process synchronization` (verworfen wegen Performance)
+3. `Implement Mutex-based cross-process synchronization` (discarded due to performance)
 4. `High-Performance FileLogWriter: Lock-free batch writing, 25x faster, zero data loss`
 5. `docs: Add performance optimization documentation`
 
 ### Migration Guide
 
-Keine Breaking Changes! Einfach MikuLib.Logger auf neue Version updaten:
+No breaking changes! Simply update MikuLib.Logger to the new version:
 
 ```bash
 dotnet add package MikuLib.Logger --version 10.1.39
 ```
 
-Der Logger ist jetzt produktionsreif fuer High-Load-Szenarien!
+The logger is now production-ready for high-load scenarios!
