@@ -92,13 +92,12 @@ namespace Miku.Logger.Writers
                 RotateLogFile(filePath);
             }
 
-            // Use FileStream with FileShare.Read for high performance
-            // Multiple FileLogWriter instances can write to same file safely
+            // Use FileStream with FileShare.ReadWrite to allow multiple writers
             using var fileStream = new FileStream(
                 filePath,
                 FileMode.Append,
                 FileAccess.Write,
-                FileShare.Read,
+                FileShare.ReadWrite,
                 bufferSize: 8192,
                 useAsync: true);
 
@@ -235,7 +234,7 @@ namespace Miku.Logger.Writers
                         filePath,
                         FileMode.Append,
                         FileAccess.Write,
-                        FileShare.Read,
+                        FileShare.ReadWrite,
                         bufferSize: 8192,
                         useAsync: false);
 

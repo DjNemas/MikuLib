@@ -8,7 +8,7 @@
     
     <PackageId>MikuLib.Logger</PackageId>
 	<Title>Miku Logger</Title>
-    <Version>10.1.39</Version>
+    <Version>10.2.39</Version>
     <Authors>Hatsune Nemas</Authors>
     <Company>Crypton Future Media (Inspired)</Company>
     <Description>Miku logging library with console and file output support, ILogger compatibility, async operations, and advanced features like log rotation and color support. Logging with the voice of the future! 🎤💚</Description>
