@@ -25,8 +25,8 @@ MikuLib is a comprehensive .NET 10 library collection that brings together power
 - ILogger compatibility for ASP.NET Core
 - Async operations and automatic log rotation
 - Date-based folder organization
-- **Singleton file stream management for multi-instance safety**
-- **Zero data loss guarantee**
+- Singleton file stream management for multi-instance safety
+- Zero data loss guarantee
 
 [Documentation](./Miku.Logger/README.md) | [Examples](./Miku.Logger/EXAMPLES.md) | [Changelog](./Miku.Logger/CHANGELOG.md)
 
@@ -97,8 +97,8 @@ logger.LogInformation("Application started");
 - Date-based folder organization
 - Configurable log levels and formats
 - ILogger compatibility for ASP.NET Core
-- **Singleton file stream management**
-- **Zero data loss guarantee**
+- Singleton file stream management
+- Zero data loss guarantee
 
 ### Performance
 - High-performance reflection-based mapping
@@ -122,7 +122,7 @@ MAJOR.MINOR.39
 
 **Examples:**
 - `10.0.39` - Initial .NET 10 release
-- `10.1.39` - Feature update for .NET 10 (High-performance Logger)
+- `10.1.39` - Feature update for .NET 10
 - `10.2.39` - Future feature update
 - `11.0.39` - .NET 11 release
 
