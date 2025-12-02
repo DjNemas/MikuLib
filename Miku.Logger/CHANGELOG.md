@@ -110,4 +110,4 @@ MAJOR.MINOR.39
 - **MINOR**: Increments for new features and updates
 - **39**: Always 39 in honor of Hatsune Miku (Mi-Ku)
 
-**Examples**: 10.0.39 ? 10.1.39 ? 10.2.39 ? 11.0.39
+**Examples**: 10.0.39 -> 10.1.39 -> 10.2.39 -> 11.0.39
