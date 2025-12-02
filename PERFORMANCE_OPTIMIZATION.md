@@ -137,12 +137,13 @@ The logger now safely handles multi-instance scenarios out of the box!
 
 ### Commits
 
-1. `Fix: Use FileStream with FileShare.Write to prevent IOException on concurrent access`
-2. `Add comprehensive multi-instance FileLogWriter tests - identifies data loss issue`
-3. `Implement Mutex-based cross-process synchronization` (discarded due to performance)
-4. `High-Performance FileLogWriter: Lock-free batch writing, 25x faster, zero data loss` (FileShare.ReadWrite attempt)
-5. **`feat: Implement thread-safe Singleton SharedFileStreamManager for zero data loss in multi-instance scenarios (v10.1.39)`** (Final solution)
-
----
-
-The logger is now production-ready for multi-instance, high-load scenarios with guaranteed zero data loss!
+1. `f890340` - `Fix: Use FileStream with FileShare.Write to prevent IOException on concurrent access`
+2. `6227520` - `Add comprehensive multi-instance FileLogWriter tests - identifies data loss issue`
+3. `c4ccd40` - `Implement Mutex-based cross-process synchronization for FileLogWriter to prevent data loss` (discarded due to performance)
+4. `db0a394` - `High-Performance FileLogWriter: Lock-free batch writing, 25x faster (0.9s vs 20s), zero data loss`
+5. `f10ef7c` - `docs: Add performance optimization documentation`
+6. `14938cd` - `fix: Change FileShare.Read to FileShare.ReadWrite for true multi-writer support (v10.2.39)` (reverted - wrong approach)
+7. **`a2529e4` - `feat: Implement thread-safe Singleton SharedFileStreamManager for zero data loss in multi-instance scenarios (v10.1.39)`** (Final solution)
+8. `e8f262f` - `docs: Update CHANGELOG, README and PERFORMANCE_OPTIMIZATION to reflect Singleton SharedFileStreamManager solution`
+9. `bd59a77` - `docs: Remove application-specific references from documentation`
+10. `70bd232` - `docs: Update README with minimal changes for v10.1.39`
