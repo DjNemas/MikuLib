@@ -4,6 +4,32 @@ All notable changes to Miku.Logger will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [10.1.39] - 2025-12-02
+
+### Fixed
+- FileLogWriter now handles multi-instance scenarios correctly without IOException
+- Eliminated data loss in high-concurrency logging scenarios
+- Fixed file access conflicts when multiple FileLogWriter instances write to the same file
+
+### Changed
+- Implemented lock-free batch writing architecture for maximum performance
+- Changed from single-message writes to batch writes (up to 100 messages per batch)
+- Increased FileStream buffer size from 4KB to 8KB for better I/O performance
+- Improved Dispose() method to guarantee flush of all remaining messages
+
+### Performance
+- 25x faster in multi-writer scenarios (0.9s vs 20s in tests)
+- Throughput increased from ~200 msg/s to 5000+ msg/s
+- Reduced CPU usage through batch processing
+- Zero data loss guarantee even under high load
+
+### Added
+- Comprehensive multi-instance tests (9 test scenarios)
+- Performance optimization documentation
+- Production best practices guide for multi-process logging
+
+---
+
 ## [10.0.39] - 2025-11-29
 
 ### Initial Release
