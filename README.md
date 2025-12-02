@@ -1,181 +1,137 @@
 # MikuLib
 
-A collection of powerful .NET 10 libraries inspired by Hatsune Miku.
+> "The world is mine... and so are these utilities!" - Hatsune Nemas
 
-> "The world is mine... to code!" - Hatsune Nemas
+*Singing since August 31st, 2007 - Coding since 2025*
 
-*Powered by CV01 energy since 2007*
+A collection of powerful .NET 10 libraries inspired by Hatsune Miku, the virtual singer who revolutionized music and technology.
+
+[![.NET Version](https://img.shields.io/badge/.NET-10.0-512BD4)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![NuGet](https://img.shields.io/badge/nuget-10.1.39-blue)](https://www.nuget.org/profiles/HatsuneNemas)
 
 ## What is MikuLib?
 
-MikuLib is a comprehensive .NET 10 library collection that brings together powerful utilities for modern application development. Named after and inspired by Hatsune Miku, the virtual singer who revolutionized music and technology.
+MikuLib is a comprehensive .NET 10 library collection that brings together powerful utilities for modern application development. Just as Hatsune Miku revolutionized music through technology, these libraries aim to make development more efficient and harmonious.
 
 ## Libraries
 
-### MikuLib.Utils
-**Comprehensive utility library** featuring:
-- **MikuMapper**: Object-to-object mapping with nullable primitive support
-- **CommandLineHelper**: Modern command line argument parsing with auto-detection
+### MikuLib.Logger [![NuGet](https://img.shields.io/badge/nuget-10.1.39-blue)](https://www.nuget.org/packages/MikuLib.Logger)
 
-[Documentation](./Miku.Utils/README.md) | [Examples](./Miku.Utils/EXAMPLES.md) | [Changelog](./Miku.Utils/CHANGELOG.md)
+High-performance, thread-safe logging library with zero data loss guarantee.
 
-### MikuLib.Logger
-**Thread-safe logging library** featuring:
-- Console and file output with customizable colors
-- ILogger compatibility for ASP.NET Core
-- Async operations and automatic log rotation
-- Date-based folder organization
+**Key Features:**
+- **Singleton File Stream Management** - Safe multi-instance logging
+- **Zero Data Loss** - Guaranteed message delivery
+- **High Performance** - 5000+ msg/s throughput
+- **Lock-Free Architecture** - ConcurrentQueue with batch writing
+- **ILogger Compatible** - Seamless ASP.NET Core integration
+- **Colored Console Output** - Customizable per log level
+- **Automatic Log Rotation** - Size-based with file retention
 
-[Documentation](./Miku.Logger/README.md) | [Examples](./Miku.Logger/EXAMPLES.md) | [Changelog](./Miku.Logger/CHANGELOG.md)
-
-### MikuLib (Meta Package)
-**Convenience package** that includes all Miku libraries for easy installation.
-
-[Documentation](./Miku/README.md)
-
-## Installation
-
-Install individual libraries:
-
-```bash
-dotnet add package MikuLib.Utils
-dotnet add package MikuLib.Logger
-```
-
-Or install the meta package to get everything:
-
-```bash
-dotnet add package MikuLib
-```
-
-Add to your `.csproj`:
-```xml
-<PackageReference Include="MikuLib" Version="10.0.39" />
-<!-- Or individual packages -->
-<PackageReference Include="MikuLib.Utils" Version="10.0.39" />
-<PackageReference Include="MikuLib.Logger" Version="10.0.39" />
-```
-
-## Quick Start
-
+**Quick Start:**
 ```csharp
-using Miku.Utils;
 using Miku.Logger;
-using Miku.Logger.Configuration;
 
-// Object Mapping
-var userDto = MikuMapper.MapPropertys<UserDto>(user);
-
-// Command Line Parsing
-if (CommandLineHelper.IsReleaseConfiguration())
-{
-    // Use release settings
-}
-
-// Logging
 var logger = new MikuLogger("MyApp");
 logger.LogInformation("Application started");
 ```
 
-## Features at a Glance
+[Full Documentation](Miku.Logger/README.md) | [Examples](Miku.Logger/EXAMPLES.md) | [Changelog](Miku.Logger/CHANGELOG.md)
 
-### Core Utilities (MikuLib.Utils)
-- Property mapping with automatic type conversion
-- Nullable primitive support (int <-> int?, bool <-> bool?, etc.)
-- Command line argument parsing (--param, --param:value, --param=value)
-- Multi-value parameter support
-- Environment detection
-- Auto-detection via Environment.GetCommandLineArgs()
+---
 
-### Logging (MikuLib.Logger)
-- Multiple output targets (Console, File, Both)
-- Thread-safe async operations
-- Colored console output (Cyan by default - #00CED1)
-- Automatic log rotation based on file size
-- Date-based folder organization
-- Configurable log levels and formats
-- ILogger compatibility for ASP.NET Core
+### MikuLib.Utils [![NuGet](https://img.shields.io/badge/nuget-10.0.39-blue)](https://www.nuget.org/packages/MikuLib.Utils)
 
-### Performance
-- High-performance reflection-based mapping
-- LINQ-optimized command line parsing
-- Async queue-based file I/O
-- Thread-safe operations throughout
-- Minimal allocation overhead
+Essential utilities for .NET applications.
+
+**Key Features:**
+- **MikuMapper** - High-performance object-to-object mapping
+- **CommandLineHelper** - Modern command line argument parsing
+- **Nullable Support** - Seamless int ? int?, bool ? bool? conversion
+
+**Quick Start:**
+```csharp
+using Miku.Utils;
+
+// Object mapping
+var userDto = MikuMapper.MapPropertys<UserDto>(user);
+
+// Command line parsing
+if (CommandLineHelper.IsReleaseConfiguration())
+{
+    // Use release settings
+}
+```
+
+[Full Documentation](Miku.Utils/README.md) | [Examples](Miku.Utils/EXAMPLES.md) | [Changelog](Miku.Utils/CHANGELOG.md)
+
+---
+
+## Installation
+
+### Install all libraries (recommended)
+
+```bash
+dotnet add package MikuLib --version 10.1.39
+```
+
+### Install individual libraries
+
+```bash
+dotnet add package MikuLib.Logger --version 10.1.39
+dotnet add package MikuLib.Utils --version 10.0.39
+```
+
+## Performance Highlights
+
+- **25x faster** multi-writer scenarios
+- **Zero data loss** under high load
+- **Lock-free** architecture
+- **Batch writing** (100 messages per operation)
+- **Thread-safe** operations throughout
+
+See [Performance Optimization](PERFORMANCE_OPTIMIZATION.md) for detailed benchmarks.
 
 ## Version Numbering
 
-MikuLib follows this versioning pattern:
+MikuLib follows a unique versioning pattern:
 
 ```
 MAJOR.MINOR.39
-  |     |    +--- Always 39 (Mi-Ku Easter Egg)
-  |     +-------- Increments for new features/updates
-  +-------------- Matches .NET version (10, 11, 12, etc.)
+  |     |    ???? Always 39 (Mi-Ku in Japanese)
+  |     ????????? Feature updates
+  ??????????????? Matches .NET version
 ```
 
-**Current Version**: 10.0.39
+**Current Version:** 10.1.39
 
-**Examples:**
-- `10.0.39` - Initial .NET 10 release
-- `10.1.39` - Feature update for .NET 10
-- `10.2.39` - Another feature update
-- `11.0.39` - .NET 11 release
+## Why "39"?
+
+In Japanese wordplay (goroawase), 3 can be read as "mi" and 9 as "ku", forming "Miku" (??). The number 39 is deeply associated with Hatsune Miku and represents her identity in the Vocaloid community.
+
+## Why "Miku"?
+
+This library is inspired by **Hatsune Miku** (????):
+
+- **Born:** August 31st, 2007
+- **Created by:** Crypton Future Media
+- **Character Vocal Series:** CV01
+- **Signature Color:** Cyan (#00CED1)
+
+Just as Miku gave voice to creativity, MikuLib aims to give voice to your code.
 
 ## Requirements
 
 - .NET 10.0 or higher
 - C# 14.0
 
-## Why "Miku"?
-
-This library is named after and inspired by **Hatsune Miku**, the virtual singer:
-
-- **Born**: August 31st, 2007
-- **Created by**: Crypton Future Media
-- **Series**: Character Vocal Series 01 (CV01)
-- **Number**: 39 (Mi-Ku in Japanese goroawase)
-- **Age**: 16 years old
-- **Signature Color**: Cyan (#00CED1)
-
-Just as Miku revolutionized music through technology, these libraries aim to make development more efficient and harmonious.
-
-## Easter Eggs
-
-This library contains subtle Hatsune Miku references throughout:
-
-- Version 10.0.39 (10 for .NET 10, 39 for Mi-Ku)
-- Default colors inspired by Miku's aesthetic
-- CV01 references in code and documentation
-- Comments with song references
-- Constants using the number 39
-
-For those who know, you know.
-
-## Philosophy
-
-> "The future of voice, the future of code!"
-
-MikuLib aims to:
-- Be accessible to developers worldwide
-- Work in harmony with existing .NET ecosystems
-- Stay modern and future-proof
-- Bring efficiency and joy to coding
-
 ## Documentation
 
-### MikuLib.Utils
-- [README](./Miku.Utils/README.md) - Full documentation
-- [EXAMPLES](./Miku.Utils/EXAMPLES.md) - Practical usage examples
-- [CHANGELOG](./Miku.Utils/CHANGELOG.md) - Version history
-
-### MikuLib.Logger
-- [README](./Miku.Logger/README.md) - Full documentation
-- [EXAMPLES](./Miku.Logger/EXAMPLES.md) - Practical usage examples
-- [CHANGELOG](./Miku.Logger/CHANGELOG.md) - Version history
-
-### MikuLib (Meta Package)
-- [README](./Miku/README.md) - Package information
+- [MikuLib.Logger Documentation](Miku.Logger/README.md)
+- [MikuLib.Utils Documentation](Miku.Utils/README.md)
+- [Performance Optimization](PERFORMANCE_OPTIMIZATION.md)
+- [Test Suite](TEST_SUITE_README.md)
 
 ## Contributing
 
@@ -187,46 +143,33 @@ Contributions are welcome! Please:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## Credits
-
-**Created by**: Hatsune Nemas
-
-**Inspired by**:
-- Hatsune Miku - The virtual diva who started it all
-- Crypton Future Media - For creating VOCALOID technology
-- The global Vocaloid community - For endless creativity and passion
-
-**Songs that inspired development**:
-- "World is Mine" - For confidence to build
-- "Tell Your World" - For sharing our code
-- "Senbonzakura" - For epic scale
-
 ## License
 
 MIT License - See [LICENSE](LICENSE) file for details.
+
+## Credits
+
+**Created by:** Hatsune Nemas
+
+**Inspired by:**
+- Hatsune Miku (????) - CV01
+- Crypton Future Media
+- The global Vocaloid community
+
+**Songs that inspired development:**
+- "World is Mine" - For confidence to build
+- "Tell Your World" - For sharing our code
+- "Senbonzakura" - For epic scale
 
 ## Links
 
 - [GitHub Repository](https://github.com/DjNemas/MikuLib)
 - [Issue Tracker](https://github.com/DjNemas/MikuLib/issues)
 - [Discussions](https://github.com/DjNemas/MikuLib/discussions)
-- [NuGet Gallery](https://www.nuget.org/profiles/HatsuneNemas)
-
-## Repository Structure
-
-```
-MikuLib/
-+-- Miku/                   # Meta package
-+-- Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
-+-- Miku.Logger/            # Logging library
-+-- MikuLib.sln             # Solution file
-+-- README.md               # This file
-```
+- [NuGet Profile](https://www.nuget.org/profiles/HatsuneNemas)
 
 ---
 
-*"Singing the code since 2007!"*
+*"The future of voice, the future of code!"*
 
-**Version**: 10.0.39 (The Mi-Ku Edition)  
-**Series**: CV01 Developer Tools  
-**Default Color**: Cyan (#00CED1)
+**Version:** 10.1.39 (CV01 Edition) | **Default Color:** Cyan (#00CED1)

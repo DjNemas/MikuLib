@@ -1,4 +1,4 @@
-# MikuLib.Logger
+﻿# MikuLib.Logger
 
 A powerful, thread-safe logging library for .NET 10 with console and file output support, featuring async operations, log rotation, and Microsoft.Extensions.Logging compatibility.
 
@@ -211,12 +211,12 @@ FileOptions = new FileLoggerOptions
 Example folder structure with date folders:
 ```
 logs/
-├── 2025-11-29/
-│   ├── app.log
-│   ├── app_20251129_143022.log
-│   └── app_20251129_150133.log
-└── 2025-11-30/
-    └── app.log
+â”œâ”€â”€ 2025-11-29/
+â”‚   â”œâ”€â”€ app.log
+â”‚   â”œâ”€â”€ app_20251129_143022.log
+â”‚   â””â”€â”€ app_20251129_150133.log
+â””â”€â”€ 2025-11-30/
+    â””â”€â”€ app.log
 ```
 
 ### Console Colors
@@ -319,7 +319,7 @@ Contributions are welcome! Please open an issue or pull request on GitHub.
 ## Credits
 
 Created by **Hatsune Nemas** with inspiration from:
-- Hatsune Miku (初音ミク) - CV01, born August 31st, 2007
+- Hatsune Miku (åˆéŸ³ãƒŸã‚¯) - CV01, born August 31st, 2007
 - Crypton Future Media
 - The Vocaloid community worldwide
 
@@ -332,4 +332,4 @@ https://github.com/DjNemas/MikuLib
 *"The future of voice, the future of logging!"*
 
 **Version**: 10.1.39 (CV01 Edition)  
-**Default Color**: Cyan (#00CED1)**Default Color**: Cyan (#00CED1)
+**Default Color**: Cyan (#00CED1)

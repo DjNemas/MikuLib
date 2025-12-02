@@ -1,6 +1,5 @@
 using Miku.Logger.Configuration;
 using Miku.Logger.Writers;
-using System.Diagnostics;
 
 namespace Miku.Logger.Tests;
 
@@ -61,7 +60,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
                 for (int m = 0; m < messagesPerProcess; m++)
                 {
                     await writer.WriteAsync($"Process{processId}_Message{m}");
-                    
+
                     // Add small random delay to increase chance of collision
                     if (m % 10 == 0)
                     {
@@ -95,7 +94,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         if (File.Exists(logFile))
         {
             var lines = await File.ReadAllLinesAsync(logFile);
-            
+
             // All messages should be present - zero data loss
             Assert.Equal(processCount * messagesPerProcess, lines.Length);
         }
@@ -110,7 +109,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         var exceptions = new List<Exception>();
 
         var serviceNames = new[] { "Gateway", "Homepage", "RestAPI" };
-        
+
         var tasks = serviceNames.Select(serviceName => Task.Run(async () =>
         {
             try
@@ -128,7 +127,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
                 for (int i = 0; i < messagesPerService; i++)
                 {
                     await writer.WriteAsync($"[{serviceName}] Log message {i}");
-                    
+
                     // Simulate realistic workload
                     if (i % 20 == 0)
                     {
@@ -161,7 +160,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         if (File.Exists(logFile))
         {
             var lines = await File.ReadAllLinesAsync(logFile);
-            
+
             // All 600 messages should be present - zero data loss
             Assert.Equal(serviceNames.Length * messagesPerService, lines.Length);
 
