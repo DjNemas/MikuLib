@@ -178,14 +178,21 @@ namespace Miku.Logger.Writers
 
             try
             {
-                _writerTask.Wait(TimeSpan.FromSeconds(5));
+                // Wait longer for background task to finish processing
+                _writerTask.Wait(TimeSpan.FromSeconds(30));
             }
             catch
             {
-                // Ignore timeout
+                // Timeout or cancellation - continue to flush remaining messages
             }
 
-            // Write remaining messages
+            // Write ALL remaining messages synchronously - no data loss allowed!
+            int remainingMessages = _writeQueue.Count;
+            if (remainingMessages > 0)
+            {
+                Console.WriteLine($"[MikuLogger] Flushing {remainingMessages} remaining messages...");
+            }
+
             while (_writeQueue.TryDequeue(out var message))
             {
                 try
@@ -206,9 +213,10 @@ namespace Miku.Logger.Writers
                     writer.WriteLine(message);
                     writer.Flush();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Ignore errors during disposal
+                    // Log to console but don't lose the message
+                    Console.WriteLine($"[MikuLogger] Error writing remaining message during dispose: {ex.Message}");
                 }
             }
 
