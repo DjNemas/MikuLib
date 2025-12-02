@@ -5,7 +5,7 @@ namespace Miku.Logger.Writers
 {
     /// <summary>
     /// Thread-safe file writer with log rotation support.
-    /// High-performance implementation with single-writer-multiple-reader pattern.
+    /// High-performance implementation using singleton shared file streams.
     /// </summary>
     internal class FileLogWriter : IDisposable
     {
@@ -14,6 +14,7 @@ namespace Miku.Logger.Writers
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly Task _writerTask;
         private bool _disposed;
+        private SharedFileStream? _currentStream;
 
         public FileLogWriter(FileLoggerOptions options)
         {
@@ -92,23 +93,15 @@ namespace Miku.Logger.Writers
                 RotateLogFile(filePath);
             }
 
-            // Use FileStream with FileShare.ReadWrite to allow multiple writers
-            using var fileStream = new FileStream(
-                filePath,
-                FileMode.Append,
-                FileAccess.Write,
-                FileShare.ReadWrite,
-                bufferSize: 8192,
-                useAsync: true);
+            // Get or create shared stream for this file
+            var stream = SharedFileStreamManager.Instance.GetOrCreateStream(filePath);
+            _currentStream = stream;
 
-            using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8, bufferSize: 8192);
-            
+            // Write all messages in batch
             foreach (var message in messages)
             {
-                await writer.WriteLineAsync(message);
+                await stream.WriteAsync(message);
             }
-            
-            await writer.FlushAsync();
         }
 
         private string GetCurrentLogFilePath()
@@ -139,6 +132,9 @@ namespace Miku.Logger.Writers
 
             try
             {
+                // Remove old stream before rotation
+                SharedFileStreamManager.Instance.RemoveStream(filePath);
+
                 var directory = Path.GetDirectoryName(filePath)!;
                 var fileName = Path.GetFileNameWithoutExtension(filePath);
                 var extension = Path.GetExtension(filePath);
@@ -215,42 +211,21 @@ namespace Miku.Logger.Writers
                 // Ignore wait errors
             }
 
-            // Flush all remaining messages in batches for performance
-            var remainingMessages = new List<string>();
+            // Flush all remaining messages
             while (_writeQueue.TryDequeue(out var message))
-            {
-                remainingMessages.Add(message);
-            }
-
-            if (remainingMessages.Count > 0)
             {
                 try
                 {
                     var filePath = GetCurrentLogFilePath();
                     EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
 
-                    // Synchronous batch write for remaining messages
-                    using var fileStream = new FileStream(
-                        filePath,
-                        FileMode.Append,
-                        FileAccess.Write,
-                        FileShare.ReadWrite,
-                        bufferSize: 8192,
-                        useAsync: false);
-
-                    using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8, bufferSize: 8192);
-                    
-                    foreach (var msg in remainingMessages)
-                    {
-                        writer.WriteLine(msg);
-                    }
-                    
-                    writer.Flush();
+                    var stream = SharedFileStreamManager.Instance.GetOrCreateStream(filePath);
+                    stream.Write(message);
                 }
                 catch
                 {
                     // Log to console as last resort
-                    Console.WriteLine($"[MikuLogger] Failed to write {remainingMessages.Count} remaining messages");
+                    Console.WriteLine($"[MikuLogger] Failed to write message: {message}");
                 }
             }
 

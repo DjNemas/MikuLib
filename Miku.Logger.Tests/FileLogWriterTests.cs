@@ -22,6 +22,9 @@ public class FileLogWriterTests : IDisposable
         }
         _writers.Clear();
 
+        // Cleanup shared file streams
+        SharedFileStreamManager.Instance.DisposeAll();
+
         if (Directory.Exists(_testDirectory))
         {
             try
@@ -60,6 +63,8 @@ public class FileLogWriterTests : IDisposable
         // Act
         await writer.WriteAsync(message);
         await Task.Delay(100); // Wait for background processing
+        writer.Dispose();
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         var logFile = Path.Combine(_testDirectory, "test.log");
@@ -80,7 +85,8 @@ public class FileLogWriterTests : IDisposable
         {
             await writer.WriteAsync(message);
         }
-        writer.Dispose(); // Ensure all messages are flushed
+        writer.Dispose();
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         var logFile = Path.Combine(_testDirectory, "test.log");
@@ -128,6 +134,7 @@ public class FileLogWriterTests : IDisposable
         {
             writer.Dispose();
         }
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         var logFile = Path.Combine(_testDirectory, "shared.log");
@@ -198,6 +205,7 @@ public class FileLogWriterTests : IDisposable
         {
             writer.Dispose();
         }
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         Assert.Empty(exceptions); // No IOException should occur
@@ -221,7 +229,8 @@ public class FileLogWriterTests : IDisposable
         {
             writer.Write(message);
         }
-        writer.Dispose(); // Should flush all remaining messages
+        writer.Dispose();
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         var logFile = Path.Combine(_testDirectory, "dispose-test.log");
@@ -272,6 +281,7 @@ public class FileLogWriterTests : IDisposable
         // Now dispose all writers simultaneously
         var disposeTasks = localWriters.Select(w => Task.Run(() => w.Dispose())).ToArray();
         await Task.WhenAll(disposeTasks);
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert - Check each writer's file
         int totalLines = 0;
@@ -321,6 +331,7 @@ public class FileLogWriterTests : IDisposable
         {
             writer.Dispose();
         }
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         var logFile = Path.Combine(_testDirectory, "high-load.log");
@@ -370,6 +381,7 @@ public class FileLogWriterTests : IDisposable
         {
             writer.Dispose();
         }
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         var dateFolder = DateTime.Now.ToString("yyyy-MM-dd");
@@ -399,6 +411,7 @@ public class FileLogWriterTests : IDisposable
 
         await Task.WhenAll(tasks);
         writer.Dispose();
+        SharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         var logFile = Path.Combine(_testDirectory, "stress-test.log");
