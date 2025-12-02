@@ -5,15 +5,16 @@ namespace Miku.Logger.Writers
 {
     /// <summary>
     /// Thread-safe file writer with log rotation support.
+    /// High-performance implementation using singleton shared file streams.
     /// </summary>
     internal class FileLogWriter : IDisposable
     {
         private readonly FileLoggerOptions _options;
-        private readonly SemaphoreSlim _writeSemaphore = new(1, 1);
         private readonly ConcurrentQueue<string> _writeQueue = new();
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly Task _writerTask;
         private bool _disposed;
+        private SharedFileStream? _currentStream;
 
         public FileLogWriter(FileLoggerOptions options)
         {
@@ -43,16 +44,30 @@ namespace Miku.Logger.Writers
 
         private async Task ProcessQueueAsync()
         {
+            // Batch size for better performance
+            const int batchSize = 100;
+            var batch = new List<string>(batchSize);
+
             while (!_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 try
                 {
-                    if (_writeQueue.TryDequeue(out var message))
+                    // Collect messages in batch
+                    int collected = 0;
+                    while (collected < batchSize && _writeQueue.TryDequeue(out var message))
                     {
-                        await WriteToFileAsync(message);
+                        batch.Add(message);
+                        collected++;
+                    }
+
+                    if (batch.Count > 0)
+                    {
+                        await WriteBatchToFileAsync(batch);
+                        batch.Clear();
                     }
                     else
                     {
+                        // No messages - short sleep
                         await Task.Delay(10, _cancellationTokenSource.Token);
                     }
                 }
@@ -63,28 +78,29 @@ namespace Miku.Logger.Writers
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error in log writer: {ex.Message}");
+                    await Task.Delay(100); // Back off on error
                 }
             }
         }
 
-        private async Task WriteToFileAsync(string message)
+        private async Task WriteBatchToFileAsync(List<string> messages)
         {
-            await _writeSemaphore.WaitAsync();
-            try
+            var filePath = GetCurrentLogFilePath();
+            EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
+
+            if (ShouldRotate(filePath))
             {
-                var filePath = GetCurrentLogFilePath();
-                EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
-
-                if (ShouldRotate(filePath))
-                {
-                    RotateLogFile(filePath);
-                }
-
-                await File.AppendAllTextAsync(filePath, message + Environment.NewLine);
+                RotateLogFile(filePath);
             }
-            finally
+
+            // Get or create shared stream for this file
+            var stream = SharedFileStreamManager.Instance.GetOrCreateStream(filePath);
+            _currentStream = stream;
+
+            // Write all messages in batch
+            foreach (var message in messages)
             {
-                _writeSemaphore.Release();
+                await stream.WriteAsync(message);
             }
         }
 
@@ -114,39 +130,56 @@ namespace Miku.Logger.Writers
         {
             if (!File.Exists(filePath)) return;
 
-            var directory = Path.GetDirectoryName(filePath)!;
-            var fileName = Path.GetFileNameWithoutExtension(filePath);
-            var extension = Path.GetExtension(filePath);
-            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            var rotatedFileName = $"{fileName}_{timestamp}{extension}";
-            var rotatedFilePath = Path.Combine(directory, rotatedFileName);
+            try
+            {
+                // Remove old stream before rotation
+                SharedFileStreamManager.Instance.RemoveStream(filePath);
 
-            File.Move(filePath, rotatedFilePath);
+                var directory = Path.GetDirectoryName(filePath)!;
+                var fileName = Path.GetFileNameWithoutExtension(filePath);
+                var extension = Path.GetExtension(filePath);
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                var rotatedFileName = $"{fileName}_{timestamp}{extension}";
+                var rotatedFilePath = Path.Combine(directory, rotatedFileName);
 
-            CleanupOldLogFiles(directory, fileName, extension);
+                File.Move(filePath, rotatedFilePath);
+
+                CleanupOldLogFiles(directory, fileName, extension);
+            }
+            catch
+            {
+                // If rotation fails, continue logging to current file
+            }
         }
 
         private void CleanupOldLogFiles(string directory, string fileName, string extension)
         {
             if (_options.MaxFileCount <= 0) return;
 
-            var pattern = $"{fileName}_*{extension}";
-            var files = Directory.GetFiles(directory, pattern)
-                                .Select(f => new FileInfo(f))
-                                .OrderByDescending(f => f.CreationTime)
-                                .Skip(_options.MaxFileCount)
-                                .ToList();
-
-            foreach (var file in files)
+            try
             {
-                try
+                var pattern = $"{fileName}_*{extension}";
+                var files = Directory.GetFiles(directory, pattern)
+                                    .Select(f => new FileInfo(f))
+                                    .OrderByDescending(f => f.CreationTime)
+                                    .Skip(_options.MaxFileCount)
+                                    .ToList();
+
+                foreach (var file in files)
                 {
-                    file.Delete();
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch
+                    {
+                        // Ignore deletion errors
+                    }
                 }
-                catch
-                {
-                    // Ignore deletion errors
-                }
+            }
+            catch
+            {
+                // Ignore cleanup errors
             }
         }
 
@@ -167,29 +200,35 @@ namespace Miku.Logger.Writers
 
             try
             {
-                _writerTask.Wait(TimeSpan.FromSeconds(5));
+                // Give background task time to finish current batch
+                if (!_writerTask.Wait(TimeSpan.FromSeconds(5)))
+                {
+                    // Timeout - force flush remaining messages
+                }
             }
             catch
             {
-                // Ignore timeout
+                // Ignore wait errors
             }
 
-            // Write remaining messages
+            // Flush all remaining messages
             while (_writeQueue.TryDequeue(out var message))
             {
                 try
                 {
                     var filePath = GetCurrentLogFilePath();
                     EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
-                    File.AppendAllText(filePath, message + Environment.NewLine);
+
+                    var stream = SharedFileStreamManager.Instance.GetOrCreateStream(filePath);
+                    stream.Write(message);
                 }
                 catch
                 {
-                    // Ignore errors during disposal
+                    // Log to console as last resort
+                    Console.WriteLine($"[MikuLogger] Failed to write message: {message}");
                 }
             }
 
-            _writeSemaphore.Dispose();
             _cancellationTokenSource.Dispose();
         }
     }

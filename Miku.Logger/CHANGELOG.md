@@ -4,6 +4,36 @@ All notable changes to Miku.Logger will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [10.1.39] - 2025-12-02
+
+### Fixed
+- FileLogWriter now handles multi-instance scenarios correctly without IOException
+- Eliminated data loss in high-concurrency logging scenarios
+- Fixed file access conflicts when multiple FileLogWriter instances write to the same file
+
+### Added
+- Singleton SharedFileStreamManager for centralized file stream management
+- SharedFileStream wrapper with SemaphoreSlim for thread-safe write operations
+- Only one FileStream per file across all FileLogWriter instances (true singleton pattern)
+- Comprehensive multi-instance tests (11 test scenarios including 2 multi-process tests)
+- Performance optimization documentation
+- Production best practices guide for multi-process logging
+
+### Changed
+- Implemented singleton pattern for shared file stream management
+- Changed from individual FileStream per writer to centralized SharedFileStreamManager
+- Improved Dispose() method to guarantee flush of all remaining messages
+- FileLogWriter now uses SharedFileStreamManager.GetOrCreateStream() for file access
+
+### Performance
+- Zero data loss guarantee even under high load
+- Thread-safe write operations with SemaphoreSlim per file
+- Batch writing (up to 100 messages per batch)
+- Async I/O with 8KB buffer
+- Efficient resource management through singleton pattern
+
+---
+
 ## [10.0.39] - 2025-11-29
 
 ### Initial Release
@@ -84,4 +114,4 @@ MAJOR.MINOR.39
 - **MINOR**: Increments for new features and updates
 - **39**: Always 39 in honor of Hatsune Miku (Mi-Ku)
 
-**Examples**: 10.0.39 ? 10.1.39 ? 10.2.39 ? 11.0.39
+**Examples**: 10.0.39 -> 10.1.39 -> 10.2.39 -> 11.0.39

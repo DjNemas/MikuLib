@@ -25,6 +25,8 @@ MikuLib is a comprehensive .NET 10 library collection that brings together power
 - ILogger compatibility for ASP.NET Core
 - Async operations and automatic log rotation
 - Date-based folder organization
+- Singleton file stream management for multi-instance safety
+- Zero data loss guarantee
 
 [Documentation](./Miku.Logger/README.md) | [Examples](./Miku.Logger/EXAMPLES.md) | [Changelog](./Miku.Logger/CHANGELOG.md)
 
@@ -50,10 +52,10 @@ dotnet add package MikuLib
 
 Add to your `.csproj`:
 ```xml
-<PackageReference Include="MikuLib" Version="10.0.39" />
+<PackageReference Include="MikuLib" Version="10.1.39" />
 <!-- Or individual packages -->
 <PackageReference Include="MikuLib.Utils" Version="10.0.39" />
-<PackageReference Include="MikuLib.Logger" Version="10.0.39" />
+<PackageReference Include="MikuLib.Logger" Version="10.1.39" />
 ```
 
 ## Quick Start
@@ -95,6 +97,8 @@ logger.LogInformation("Application started");
 - Date-based folder organization
 - Configurable log levels and formats
 - ILogger compatibility for ASP.NET Core
+- Singleton file stream management
+- Zero data loss guarantee
 
 ### Performance
 - High-performance reflection-based mapping
@@ -114,12 +118,12 @@ MAJOR.MINOR.39
   +-------------- Matches .NET version (10, 11, 12, etc.)
 ```
 
-**Current Version**: 10.0.39
+**Current Version**: 10.1.39
 
 **Examples:**
 - `10.0.39` - Initial .NET 10 release
 - `10.1.39` - Feature update for .NET 10
-- `10.2.39` - Another feature update
+- `10.2.39` - Future feature update
 - `11.0.39` - .NET 11 release
 
 ## Requirements
@@ -144,7 +148,7 @@ Just as Miku revolutionized music through technology, these libraries aim to mak
 
 This library contains subtle Hatsune Miku references throughout:
 
-- Version 10.0.39 (10 for .NET 10, 39 for Mi-Ku)
+- Version 10.1.39 (10 for .NET 10, 39 for Mi-Ku)
 - Default colors inspired by Miku's aesthetic
 - CV01 references in code and documentation
 - Comments with song references
@@ -227,6 +231,6 @@ MikuLib/
 
 *"Singing the code since 2007!"*
 
-**Version**: 10.0.39 (The Mi-Ku Edition)  
+**Version**: 10.1.39 (The Mi-Ku Edition)  
 **Series**: CV01 Developer Tools  
 **Default Color**: Cyan (#00CED1)

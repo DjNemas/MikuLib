@@ -1,4 +1,4 @@
-# MikuLib.Logger
+﻿# MikuLib.Logger
 
 A powerful, thread-safe logging library for .NET 10 with console and file output support, featuring async operations, log rotation, and Microsoft.Extensions.Logging compatibility.
 
@@ -9,15 +9,16 @@ A powerful, thread-safe logging library for .NET 10 with console and file output
 ## Features
 
 - **ILogger Compatible** - Implements `Microsoft.Extensions.Logging.ILogger` interface
-- **Thread-Safe** - All operations are thread-safe using semaphores
+- **Thread-Safe** - Lock-free architecture with ConcurrentQueue
 - **Async Support** - Asynchronous logging methods for better performance
+- **High Performance** - Batch writing up to 100 messages per operation
 - **Multiple Output Targets** - Console, File, or both
 - **Log Levels** - Trace, Debug, Information, Warning, Error, Critical
 - **Colored Console Output** - Customizable colors for each log level
 - **Log Rotation** - Automatic file rotation based on file size
 - **Date-Based Folders** - Organize logs by date
 - **Configurable** - Extensive configuration options
-- **High Performance** - Asynchronous queue-based file writing
+- **Zero Data Loss** - Guaranteed message delivery even under high load
 
 > The default cyan color for Information logs is #00CED1
 
@@ -29,7 +30,7 @@ dotnet add package MikuLib.Logger
 
 Or add to your `.csproj`:
 ```xml
-<PackageReference Include="MikuLib.Logger" Version="10.0.39" />
+<PackageReference Include="MikuLib.Logger" Version="10.1.39" />
 ```
 
 ## Quick Start
@@ -210,12 +211,12 @@ FileOptions = new FileLoggerOptions
 Example folder structure with date folders:
 ```
 logs/
-├── 2025-11-29/
-│   ├── app.log
-│   ├── app_20251129_143022.log
-│   └── app_20251129_150133.log
-└── 2025-11-30/
-    └── app.log
+â”œâ”€â”€ 2025-11-29/
+â”‚   â”œâ”€â”€ app.log
+â”‚   â”œâ”€â”€ app_20251129_143022.log
+â”‚   â””â”€â”€ app_20251129_150133.log
+â””â”€â”€ 2025-11-30/
+    â””â”€â”€ app.log
 ```
 
 ### Console Colors
@@ -277,16 +278,35 @@ public class MyService
 
 ## Performance
 
-- **Async File Writing**: Uses background queue for non-blocking file operations
-- **Thread-Safe**: Semaphore-based synchronization
-- **Minimal Overhead**: Efficient message formatting and output
+- **Lock-Free Architecture**: Uses ConcurrentQueue for maximum throughput
+- **Singleton File Stream Management**: Only one FileStream per file for safe multi-instance access
+- **Batch Writing**: Collects up to 100 messages and writes them in one operation
+- **Thread-Safe**: SemaphoreSlim-based synchronization per file
+- **Async File Writing**: Background queue processing with 8KB buffer
+- **Zero Data Loss**: Guaranteed message delivery even when disposing
+- **Multi-Instance Safe**: Multiple FileLogWriter instances can safely write to same file
 
 ## Thread Safety
 
 All logging operations are thread-safe:
 - Console writes are synchronized
-- File writes use async queues with semaphore protection
+- File writes use singleton SharedFileStreamManager with SemaphoreSlim per file
+- Only one FileStream per file across all FileLogWriter instances
 - Safe for concurrent access from multiple threads
+- Multi-instance safe - multiple FileLogWriter instances can write to same file
+
+### Multi-Instance Best Practices
+
+```csharp
+// Recommended: All applications log to same file
+options.FileNamePattern = "log.txt";
+options.UseDateFolders = true; // logs/2025-12-02/log.txt
+
+// The SharedFileStreamManager ensures safe multi-instance access automatically
+
+// Optional: Separate files per application for better isolation
+options.FileNamePattern = $"{applicationName}.log";
+```
 
 ## License
 
@@ -299,7 +319,7 @@ Contributions are welcome! Please open an issue or pull request on GitHub.
 ## Credits
 
 Created by **Hatsune Nemas** with inspiration from:
-- Hatsune Miku (初音ミク) - CV01, born August 31st, 2007
+- Hatsune Miku (åˆéŸ³ãƒŸã‚¯) - CV01, born August 31st, 2007
 - Crypton Future Media
 - The Vocaloid community worldwide
 
@@ -311,5 +331,5 @@ https://github.com/DjNemas/MikuLib
 
 *"The future of voice, the future of logging!"*
 
-**Version**: 10.0.39 (CV01 Edition)  
+**Version**: 10.1.39 (CV01 Edition)  
 **Default Color**: Cyan (#00CED1)

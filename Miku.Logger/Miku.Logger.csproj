@@ -8,7 +8,7 @@
     
     <PackageId>MikuLib.Logger</PackageId>
 	<Title>Miku Logger</Title>
-    <Version>10.0.39</Version>
+    <Version>10.1.39</Version>
     <Authors>Hatsune Nemas</Authors>
     <Company>Crypton Future Media (Inspired)</Company>
     <Description>Miku logging library with console and file output support, ILogger compatibility, async operations, and advanced features like log rotation and color support. Logging with the voice of the future! 🎤💚</Description>
@@ -20,6 +20,10 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Copyright>© 2025 Hatsune Nemas. Tell your logs to the world! 🌍</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Miku.Logger.Tests" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
