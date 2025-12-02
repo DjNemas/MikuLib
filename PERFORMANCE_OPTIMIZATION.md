@@ -4,7 +4,7 @@
 
 ### Problem (Version 10.0.39)
 - IOException when multiple FileLogWriter instances access log files simultaneously
-- Data loss in multi-instance scenarios (up to 44% data loss observed)
+- Data loss in multi-instance scenarios
 - File access conflicts during parallel writing
 
 ### Solution (Version 10.1.39): Singleton SharedFileStreamManager
@@ -41,9 +41,8 @@
 
 | Metric | Before (10.0.39) | After (10.1.39) | Improvement |
 |--------|------------------|-----------------|-------------|
-| **Test Duration** | 20+ seconds (Mutex) / Data Loss (No Sync) | **1.9 seconds** | **10x faster** |
-| **Data Loss** | Up to 44% | **0%** | **100% reliable** |
-| **Multi-Writer Test** | 336/600 messages | **600/600 messages** | **Zero loss** |
+| **Test Duration** | Mutex approach: 20+ seconds | **1.9 seconds** | **10x faster** |
+| **Data Loss** | Possible with FileShare.ReadWrite | **0%** | **100% reliable** |
 | **IOException** | Frequent | **None** | **100% resolved** |
 
 #### Test Coverage (11 tests, all passing)
@@ -61,7 +60,7 @@
 
 **Multi-Process Tests (2 tests):**
 - `MultipleProcesses_SameFile_NoIOException` - Simulates 5 independent processes
-- `SimulateGatewayScenario_ThreeServices_SameLogFile` - Gateway/Homepage/RestAPI scenario
+- `SimulateMultiServiceScenario_ThreeServices_SameLogFile` - Three services scenario (600 messages)
 
 #### Architecture Decisions
 
@@ -86,16 +85,15 @@
 #### Production Best Practices
 
 ```csharp
-// Recommended: Same log file for related services
-// Gateway, Homepage, RestAPI can all log to:
+// Recommended: Same log file for related services/applications
 options.FileNamePattern = "log.txt";
 options.UseDateFolders = true; // logs/2025-12-02/log.txt
 
 // The SharedFileStreamManager ensures safe multi-instance access
 // No configuration changes needed - it just works!
 
-// Optional: Separate files per service for better isolation
-options.FileNamePattern = $"{serviceName}.log";
+// Optional: Separate files per application for better isolation
+options.FileNamePattern = $"{applicationName}.log";
 ```
 
 #### Code Example

@@ -298,15 +298,14 @@ All logging operations are thread-safe:
 ### Multi-Instance Best Practices
 
 ```csharp
-// Recommended: All services log to same file
-// Gateway, Homepage, RestAPI can all safely use:
+// Recommended: All applications log to same file
 options.FileNamePattern = "log.txt";
 options.UseDateFolders = true; // logs/2025-12-02/log.txt
 
 // The SharedFileStreamManager ensures safe multi-instance access automatically
 
-// Optional: Separate files per service for better isolation
-options.FileNamePattern = $"{serviceName}.log";
+// Optional: Separate files per application for better isolation
+options.FileNamePattern = $"{applicationName}.log";
 ```
 
 ## License
@@ -333,4 +332,4 @@ https://github.com/DjNemas/MikuLib
 *"The future of voice, the future of logging!"*
 
 **Version**: 10.1.39 (CV01 Edition)  
-**Default Color**: Cyan (#00CED1)
+**Default Color**: Cyan (#00CED1)**Default Color**: Cyan (#00CED1)
