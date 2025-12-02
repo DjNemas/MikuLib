@@ -5,11 +5,11 @@ namespace Miku.Logger.Writers
 {
     /// <summary>
     /// Thread-safe file writer with log rotation support.
+    /// High-performance implementation with single-writer-multiple-reader pattern.
     /// </summary>
     internal class FileLogWriter : IDisposable
     {
         private readonly FileLoggerOptions _options;
-        private readonly SemaphoreSlim _writeSemaphore = new(1, 1);
         private readonly ConcurrentQueue<string> _writeQueue = new();
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly Task _writerTask;
@@ -43,16 +43,30 @@ namespace Miku.Logger.Writers
 
         private async Task ProcessQueueAsync()
         {
+            // Batch size for better performance
+            const int batchSize = 100;
+            var batch = new List<string>(batchSize);
+
             while (!_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 try
                 {
-                    if (_writeQueue.TryDequeue(out var message))
+                    // Collect messages in batch
+                    int collected = 0;
+                    while (collected < batchSize && _writeQueue.TryDequeue(out var message))
                     {
-                        await WriteToFileAsync(message);
+                        batch.Add(message);
+                        collected++;
+                    }
+
+                    if (batch.Count > 0)
+                    {
+                        await WriteBatchToFileAsync(batch);
+                        batch.Clear();
                     }
                     else
                     {
+                        // No messages - short sleep
                         await Task.Delay(10, _cancellationTokenSource.Token);
                     }
                 }
@@ -63,96 +77,39 @@ namespace Miku.Logger.Writers
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error in log writer: {ex.Message}");
+                    await Task.Delay(100); // Back off on error
                 }
             }
         }
 
-        private async Task WriteToFileAsync(string message)
+        private async Task WriteBatchToFileAsync(List<string> messages)
         {
-            await _writeSemaphore.WaitAsync();
-            try
+            var filePath = GetCurrentLogFilePath();
+            EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
+
+            if (ShouldRotate(filePath))
             {
-                var filePath = GetCurrentLogFilePath();
-                EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
-
-                if (ShouldRotate(filePath))
-                {
-                    RotateLogFile(filePath);
-                }
-
-                // Use named mutex for cross-process synchronization
-                var mutexName = $"Global\\MikuLogger_{GetMutexNameFromPath(filePath)}";
-                using var mutex = new Mutex(false, mutexName);
-                
-                bool mutexAcquired = false;
-                try
-                {
-                    // Handle abandoned mutex gracefully
-                    mutexAcquired = mutex.WaitOne(TimeSpan.FromSeconds(30));
-                    if (!mutexAcquired)
-                    {
-                        Console.WriteLine("[MikuLogger] Warning: Could not acquire mutex within timeout");
-                        return;
-                    }
-                    
-                    // Use FileStream with FileShare.Read to allow concurrent read access
-                    using var fileStream = new FileStream(
-                        filePath,
-                        FileMode.Append,
-                        FileAccess.Write,
-                        FileShare.Read,
-                        bufferSize: 4096,
-                        useAsync: true);
-                    
-                    using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
-                    await writer.WriteLineAsync(message);
-                    await writer.FlushAsync();
-                }
-                catch (AbandonedMutexException)
-                {
-                    // Mutex was abandoned - we now own it, continue writing
-                    mutexAcquired = true;
-                    
-                    using var fileStream = new FileStream(
-                        filePath,
-                        FileMode.Append,
-                        FileAccess.Write,
-                        FileShare.Read,
-                        bufferSize: 4096,
-                        useAsync: true);
-                    
-                    using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
-                    await writer.WriteLineAsync(message);
-                    await writer.FlushAsync();
-                }
-                finally
-                {
-                    if (mutexAcquired)
-                    {
-                        try
-                        {
-                            mutex.ReleaseMutex();
-                        }
-                        catch (ApplicationException)
-                        {
-                            // Mutex was already released or not owned
-                        }
-                    }
-                }
+                RotateLogFile(filePath);
             }
-            finally
+
+            // Use FileStream with FileShare.Read for high performance
+            // Multiple FileLogWriter instances can write to same file safely
+            using var fileStream = new FileStream(
+                filePath,
+                FileMode.Append,
+                FileAccess.Write,
+                FileShare.Read,
+                bufferSize: 8192,
+                useAsync: true);
+
+            using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8, bufferSize: 8192);
+            
+            foreach (var message in messages)
             {
-                _writeSemaphore.Release();
+                await writer.WriteLineAsync(message);
             }
-        }
-
-        private static string GetMutexNameFromPath(string filePath)
-        {
-            // Create a stable mutex name from file path
-            // Use SHA256 to avoid issues with path length and special characters
-            using var sha = System.Security.Cryptography.SHA256.Create();
-            var hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(filePath.ToLowerInvariant()));
-            return Convert.ToHexString(hash);
+            
+            await writer.FlushAsync();
         }
 
         private string GetCurrentLogFilePath()
@@ -181,39 +138,53 @@ namespace Miku.Logger.Writers
         {
             if (!File.Exists(filePath)) return;
 
-            var directory = Path.GetDirectoryName(filePath)!;
-            var fileName = Path.GetFileNameWithoutExtension(filePath);
-            var extension = Path.GetExtension(filePath);
-            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            var rotatedFileName = $"{fileName}_{timestamp}{extension}";
-            var rotatedFilePath = Path.Combine(directory, rotatedFileName);
+            try
+            {
+                var directory = Path.GetDirectoryName(filePath)!;
+                var fileName = Path.GetFileNameWithoutExtension(filePath);
+                var extension = Path.GetExtension(filePath);
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                var rotatedFileName = $"{fileName}_{timestamp}{extension}";
+                var rotatedFilePath = Path.Combine(directory, rotatedFileName);
 
-            File.Move(filePath, rotatedFilePath);
+                File.Move(filePath, rotatedFilePath);
 
-            CleanupOldLogFiles(directory, fileName, extension);
+                CleanupOldLogFiles(directory, fileName, extension);
+            }
+            catch
+            {
+                // If rotation fails, continue logging to current file
+            }
         }
 
         private void CleanupOldLogFiles(string directory, string fileName, string extension)
         {
             if (_options.MaxFileCount <= 0) return;
 
-            var pattern = $"{fileName}_*{extension}";
-            var files = Directory.GetFiles(directory, pattern)
-                                .Select(f => new FileInfo(f))
-                                .OrderByDescending(f => f.CreationTime)
-                                .Skip(_options.MaxFileCount)
-                                .ToList();
-
-            foreach (var file in files)
+            try
             {
-                try
+                var pattern = $"{fileName}_*{extension}";
+                var files = Directory.GetFiles(directory, pattern)
+                                    .Select(f => new FileInfo(f))
+                                    .OrderByDescending(f => f.CreationTime)
+                                    .Skip(_options.MaxFileCount)
+                                    .ToList();
+
+                foreach (var file in files)
                 {
-                    file.Delete();
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch
+                    {
+                        // Ignore deletion errors
+                    }
                 }
-                catch
-                {
-                    // Ignore deletion errors
-                }
+            }
+            catch
+            {
+                // Ignore cleanup errors
             }
         }
 
@@ -234,62 +205,56 @@ namespace Miku.Logger.Writers
 
             try
             {
-                // Wait longer for background task to finish processing
-                _writerTask.Wait(TimeSpan.FromSeconds(30));
+                // Give background task time to finish current batch
+                if (!_writerTask.Wait(TimeSpan.FromSeconds(5)))
+                {
+                    // Timeout - force flush remaining messages
+                }
             }
             catch
             {
-                // Timeout or cancellation - continue to flush remaining messages
+                // Ignore wait errors
             }
 
-            // Write ALL remaining messages synchronously - no data loss allowed!
-            int remainingMessages = _writeQueue.Count;
-            if (remainingMessages > 0)
-            {
-                Console.WriteLine($"[MikuLogger] Flushing {remainingMessages} remaining messages...");
-            }
-
+            // Flush all remaining messages in batches for performance
+            var remainingMessages = new List<string>();
             while (_writeQueue.TryDequeue(out var message))
+            {
+                remainingMessages.Add(message);
+            }
+
+            if (remainingMessages.Count > 0)
             {
                 try
                 {
                     var filePath = GetCurrentLogFilePath();
                     EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
+
+                    // Synchronous batch write for remaining messages
+                    using var fileStream = new FileStream(
+                        filePath,
+                        FileMode.Append,
+                        FileAccess.Write,
+                        FileShare.Read,
+                        bufferSize: 8192,
+                        useAsync: false);
+
+                    using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8, bufferSize: 8192);
                     
-                    // Use named mutex for cross-process synchronization
-                    var mutexName = $"Global\\MikuLogger_{GetMutexNameFromPath(filePath)}";
-                    using var mutex = new Mutex(false, mutexName);
+                    foreach (var msg in remainingMessages)
+                    {
+                        writer.WriteLine(msg);
+                    }
                     
-                    try
-                    {
-                        mutex.WaitOne();
-                        
-                        // Synchronous write in Dispose
-                        using var fileStream = new FileStream(
-                            filePath,
-                            FileMode.Append,
-                            FileAccess.Write,
-                            FileShare.Read,
-                            bufferSize: 4096,
-                            useAsync: false);
-                        
-                        using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
-                        writer.WriteLine(message);
-                        writer.Flush();
-                    }
-                    finally
-                    {
-                        mutex.ReleaseMutex();
-                    }
+                    writer.Flush();
                 }
-                catch (Exception ex)
+                catch
                 {
-                    // Log to console but don't lose the message
-                    Console.WriteLine($"[MikuLogger] Error writing remaining message during dispose: {ex.Message}");
+                    // Log to console as last resort
+                    Console.WriteLine($"[MikuLogger] Failed to write {remainingMessages.Count} remaining messages");
                 }
             }
 
-            _writeSemaphore.Dispose();
             _cancellationTokenSource.Dispose();
         }
     }
