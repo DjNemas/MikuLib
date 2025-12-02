@@ -80,23 +80,79 @@ namespace Miku.Logger.Writers
                     RotateLogFile(filePath);
                 }
 
-                // Use FileStream with FileShare.Write to allow concurrent access
-                using var fileStream = new FileStream(
-                    filePath,
-                    FileMode.Append,
-                    FileAccess.Write,
-                    FileShare.ReadWrite,
-                    bufferSize: 4096,
-                    useAsync: true);
+                // Use named mutex for cross-process synchronization
+                var mutexName = $"Global\\MikuLogger_{GetMutexNameFromPath(filePath)}";
+                using var mutex = new Mutex(false, mutexName);
                 
-                using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
-                await writer.WriteLineAsync(message);
-                await writer.FlushAsync();
+                bool mutexAcquired = false;
+                try
+                {
+                    // Handle abandoned mutex gracefully
+                    mutexAcquired = mutex.WaitOne(TimeSpan.FromSeconds(30));
+                    if (!mutexAcquired)
+                    {
+                        Console.WriteLine("[MikuLogger] Warning: Could not acquire mutex within timeout");
+                        return;
+                    }
+                    
+                    // Use FileStream with FileShare.Read to allow concurrent read access
+                    using var fileStream = new FileStream(
+                        filePath,
+                        FileMode.Append,
+                        FileAccess.Write,
+                        FileShare.Read,
+                        bufferSize: 4096,
+                        useAsync: true);
+                    
+                    using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
+                    await writer.WriteLineAsync(message);
+                    await writer.FlushAsync();
+                }
+                catch (AbandonedMutexException)
+                {
+                    // Mutex was abandoned - we now own it, continue writing
+                    mutexAcquired = true;
+                    
+                    using var fileStream = new FileStream(
+                        filePath,
+                        FileMode.Append,
+                        FileAccess.Write,
+                        FileShare.Read,
+                        bufferSize: 4096,
+                        useAsync: true);
+                    
+                    using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
+                    await writer.WriteLineAsync(message);
+                    await writer.FlushAsync();
+                }
+                finally
+                {
+                    if (mutexAcquired)
+                    {
+                        try
+                        {
+                            mutex.ReleaseMutex();
+                        }
+                        catch (ApplicationException)
+                        {
+                            // Mutex was already released or not owned
+                        }
+                    }
+                }
             }
             finally
             {
                 _writeSemaphore.Release();
             }
+        }
+
+        private static string GetMutexNameFromPath(string filePath)
+        {
+            // Create a stable mutex name from file path
+            // Use SHA256 to avoid issues with path length and special characters
+            using var sha = System.Security.Cryptography.SHA256.Create();
+            var hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(filePath.ToLowerInvariant()));
+            return Convert.ToHexString(hash);
         }
 
         private string GetCurrentLogFilePath()
@@ -200,18 +256,31 @@ namespace Miku.Logger.Writers
                     var filePath = GetCurrentLogFilePath();
                     EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
                     
-                    // Synchronous write in Dispose with FileShare.Write
-                    using var fileStream = new FileStream(
-                        filePath,
-                        FileMode.Append,
-                        FileAccess.Write,
-                        FileShare.ReadWrite,
-                        bufferSize: 4096,
-                        useAsync: false);
+                    // Use named mutex for cross-process synchronization
+                    var mutexName = $"Global\\MikuLogger_{GetMutexNameFromPath(filePath)}";
+                    using var mutex = new Mutex(false, mutexName);
                     
-                    using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
-                    writer.WriteLine(message);
-                    writer.Flush();
+                    try
+                    {
+                        mutex.WaitOne();
+                        
+                        // Synchronous write in Dispose
+                        using var fileStream = new FileStream(
+                            filePath,
+                            FileMode.Append,
+                            FileAccess.Write,
+                            FileShare.Read,
+                            bufferSize: 4096,
+                            useAsync: false);
+                        
+                        using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
+                        writer.WriteLine(message);
+                        writer.Flush();
+                    }
+                    finally
+                    {
+                        mutex.ReleaseMutex();
+                    }
                 }
                 catch (Exception ex)
                 {
