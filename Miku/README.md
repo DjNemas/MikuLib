@@ -116,7 +116,7 @@ MAJOR.MINOR.39
 
 **Examples:**
 - `10.0.39` - Initial .NET 10 release
-- `10.1.39` - Feature update for .NET 10 (High-performance Logger)
+- `10.1.39` - Feature update for .NET 10
 - `10.2.39` - Future feature update
 - `11.0.39` - .NET 11 release
 
