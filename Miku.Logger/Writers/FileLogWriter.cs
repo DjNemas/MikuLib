@@ -80,7 +80,18 @@ namespace Miku.Logger.Writers
                     RotateLogFile(filePath);
                 }
 
-                await File.AppendAllTextAsync(filePath, message + Environment.NewLine);
+                // Use FileStream with FileShare.Write to allow concurrent access
+                using var fileStream = new FileStream(
+                    filePath,
+                    FileMode.Append,
+                    FileAccess.Write,
+                    FileShare.ReadWrite,
+                    bufferSize: 4096,
+                    useAsync: true);
+                
+                using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
+                await writer.WriteLineAsync(message);
+                await writer.FlushAsync();
             }
             finally
             {
@@ -181,7 +192,19 @@ namespace Miku.Logger.Writers
                 {
                     var filePath = GetCurrentLogFilePath();
                     EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
-                    File.AppendAllText(filePath, message + Environment.NewLine);
+                    
+                    // Synchronous write in Dispose with FileShare.Write
+                    using var fileStream = new FileStream(
+                        filePath,
+                        FileMode.Append,
+                        FileAccess.Write,
+                        FileShare.ReadWrite,
+                        bufferSize: 4096,
+                        useAsync: false);
+                    
+                    using var writer = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
+                    writer.WriteLine(message);
+                    writer.Flush();
                 }
                 catch
                 {
