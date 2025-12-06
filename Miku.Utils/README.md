@@ -31,7 +31,7 @@ dotnet add package MikuLib.Utils
 
 Or add to your `.csproj`:
 ```xml
-<PackageReference Include="MikuLib.Utils" Version="10.0.39" />
+<PackageReference Include="MikuLib.Utils" Version="10.1.39" />
 ```
 
 ## Quick Start
@@ -59,14 +59,14 @@ public class UserDto
 var user = new User { Id = 1, Name = "Miku", IsActive = true };
 
 // Simple mapping
-var userDto = MikuMapper.MapPropertys<UserDto>(user);
+var userDto = MikuMapper.MapProperties<UserDto>(user);
 
 // Exclude properties
-var userDto = MikuMapper.MapPropertys<UserDto>(user, true, "Password");
+var userDto = MikuMapper.MapProperties<UserDto>(user, true, "Password");
 
 // Map collections
 var users = new List<User> { user1, user2 };
-var userDtos = MikuMapper.MapPropertys<UserDto>(users);
+var userDtos = MikuMapper.MapProperties<UserDto>(users);
 ```
 
 ### CommandLineHelper
@@ -93,25 +93,25 @@ var verbose = parsed.HasParameter("--verbose");
 ### Basic Mapping
 ```csharp
 var source = new SourceClass { Id = 1, Name = "Test" };
-var target = MikuMapper.MapPropertys<TargetClass>(source);
+var target = MikuMapper.MapProperties<TargetClass>(source);
 ```
 
 ### Exclude Properties
 ```csharp
-var dto = MikuMapper.MapPropertys<UserDto>(user, true, "Password", "Salt");
+var dto = MikuMapper.MapProperties<UserDto>(user, true, "Password", "Salt");
 ```
 
 ### Nullable Primitives
 ```csharp
 // Automatically handles nullable conversions
 // int? -> int, bool -> bool?, etc.
-var mapped = MikuMapper.MapPropertys<TargetType>(source);
+var mapped = MikuMapper.MapProperties<TargetType>(source);
 ```
 
 ### Update Existing Object
 ```csharp
 var existingUser = dbContext.Users.Find(1);
-MikuMapper.MapPropertys(updateDto, existingUser, true, "Id");
+MikuMapper.MapProperties(updateDto, existingUser, true, "Id");
 await dbContext.SaveChangesAsync();
 ```
 
@@ -171,17 +171,17 @@ var env = CommandLineHelper.GetEnvironment(); // Returns: Development, Productio
 
 **Map to new object:**
 ```csharp
-T MapPropertys<T>(object source, bool ignoreNull = true, params string[] excludeProperties)
+T MapProperties<T>(object source, bool ignoreNull = true, params string[] excludeProperties)
 ```
 
 **Map collections:**
 ```csharp
-IEnumerable<T> MapPropertys<T>(IEnumerable<object> source, bool ignoreNull = true, params string[] excludeProperties)
+IEnumerable<T> MapProperties<T>(IEnumerable<object> source, bool ignoreNull = true, params string[] excludeProperties)
 ```
 
 **Map to existing object:**
 ```csharp
-void MapPropertys<T>(object source, in T target, bool ignoreNull = true, params string[] excludeProperties)
+void MapProperties<T>(object source, in T target, bool ignoreNull = true, params string[] excludeProperties)
 ```
 
 ### CommandLineHelper
@@ -203,6 +203,22 @@ void MapPropertys<T>(object source, in T target, bool ignoreNull = true, params 
 **Environment:**
 - `IsEnvironment(environment, args?)` - Check environment
 - `GetEnvironment(args?, defaultEnvironment)` - Get environment name
+
+## Migration from 10.0.39
+
+> ♪ Even Miku makes typos sometimes! ♪
+
+The `MapPropertys` methods have been renamed to `MapProperties` (correct spelling). The old methods are still available but marked as `[Obsolete]` and will be removed in version 10.2.39.
+
+**Before:**
+```csharp
+var dto = MikuMapper.MapPropertys<UserDto>(user);  // Typo in name
+```
+
+**After:**
+```csharp
+var dto = MikuMapper.MapProperties<UserDto>(user);  // Correct spelling
+```
 
 ## Performance
 
@@ -242,5 +258,5 @@ https://github.com/DjNemas/MikuLib
 
 *"The future of voice, the future of code!"*
 
-**Version**: 10.0.39 (Mi-Ku Edition)  
+**Version**: 10.1.39 (Mi-Ku Edition)  
 **Series**: CV01 Developer Tools

@@ -1,8 +1,32 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to Miku.Utils will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [10.1.39] - 2025-12-06
+
+### Changed
+- **MikuMapper**: Renamed `MapPropertys` to `MapProperties` (fixed typo in method name)
+  - Even Miku makes typos sometimes! ♪
+
+### Deprecated
+- `MapPropertys<T>(object, bool, params string[])` - Use `MapProperties` instead
+- `MapPropertys<T>(IEnumerable<object>, bool, params string[])` - Use `MapProperties` instead  
+- `MapPropertys<T>(object, in T, bool, params string[])` - Use `MapProperties` instead
+- All deprecated methods will be removed in version 10.2.39
+
+### Migration Guide
+Simply replace `MapPropertys` with `MapProperties` in your code:
+```csharp
+// Before
+var dto = MikuMapper.MapPropertys<UserDto>(user);
+
+// After
+var dto = MikuMapper.MapProperties<UserDto>(user);
+```
+
+---
 
 ## [10.0.39] - 2025-11-29
 
@@ -13,7 +37,7 @@ A comprehensive utility library for .NET 10 with essential tools for modern appl
 #### MikuMapper Features
 - **Property Mapping**: Automatic property mapping between objects using reflection
 - **Nullable Primitive Support**: Seamless conversion between nullable and non-nullable primitives
-  - Supports: `int ? int?`, `bool ? bool?`, `decimal ? decimal?`, etc.
+  - Supports: `int ↔ int?`, `bool ↔ bool?`, `decimal ↔ decimal?`, etc.
 - **Property Exclusion**: Exclude specific properties from mapping
 - **Collection Mapping**: Map entire collections with a single call
 - **Update Existing Objects**: Map properties to existing instances
@@ -60,6 +84,6 @@ MAJOR.MINOR.39
 
 - **MAJOR**: Matches .NET version (10, 11, 12, etc.)
 - **MINOR**: Increments for new features and updates
-- **39**: Always 39 in honor of Hatsune Miku (Mi-Ku)
+- **39**: Always 39 in honor of Hatsune Miku (Mi-Ku ♪)
 
-**Examples**: 10.0.39 ? 10.1.39 ? 10.2.39 ? 11.0.39
+**Examples**: 10.0.39 → 10.1.39 → 10.2.39 → 11.0.39

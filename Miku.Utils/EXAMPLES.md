@@ -44,7 +44,7 @@ var user = new User
 };
 
 // Map without password
-var userDto = MikuMapper.MapPropertys<UserDto>(user, true, "Password");
+var userDto = MikuMapper.MapProperties<UserDto>(user, true, "Password");
 // Result: userDto has all properties except Password
 ```
 
@@ -58,7 +58,7 @@ var users = new List<User>
 };
 
 // Map entire collection
-var userDtos = MikuMapper.MapPropertys<UserDto>(users, true, "Password");
+var userDtos = MikuMapper.MapProperties<UserDto>(users, true, "Password");
 // Returns IEnumerable<UserDto> with all users mapped
 ```
 
@@ -75,7 +75,7 @@ var updateDto = new UserUpdateDto
 var existingUser = dbContext.Users.Find(userId);
 
 // Update properties, exclude Id to prevent overwriting
-MikuMapper.MapPropertys(updateDto, existingUser, true, "Id");
+MikuMapper.MapProperties(updateDto, existingUser, true, "Id");
 
 await dbContext.SaveChangesAsync();
 ```
@@ -97,7 +97,7 @@ public class Target
 }
 
 var source = new Source();
-var target = MikuMapper.MapPropertys<Target>(source);
+var target = MikuMapper.MapProperties<Target>(source);
 // Works seamlessly: int? ? int, bool ? bool?
 ```
 
@@ -254,7 +254,7 @@ var app = builder.Build();
 
 // Map configuration to settings DTO
 var configSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
-var settingsDto = MikuMapper.MapPropertys<AppSettingsDto>(configSettings);
+var settingsDto = MikuMapper.MapProperties<AppSettingsDto>(configSettings);
 ```
 
 ### Entity Framework Migration Tool
@@ -301,7 +301,7 @@ public class UsersController : ControllerBase
         if (user == null) return NotFound();
 
         // Map to DTO, exclude sensitive data
-        var userDto = MikuMapper.MapPropertys<UserDto>(user, true, "Password", "Salt");
+        var userDto = MikuMapper.MapProperties<UserDto>(user, true, "Password", "Salt");
         return Ok(userDto);
     }
 
@@ -312,7 +312,7 @@ public class UsersController : ControllerBase
         if (user == null) return NotFound();
 
         // Update entity from DTO, preserve Id
-        MikuMapper.MapPropertys(updateDto, user, true, "Id");
+        MikuMapper.MapProperties(updateDto, user, true, "Id");
         
         await _context.SaveChangesAsync();
         return NoContent();

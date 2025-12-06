@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Miku.Logger.Configuration;
 using Miku.Logger.Writers;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace Miku.Logger
 {
@@ -41,10 +40,10 @@ namespace Miku.Logger
     {
         // Mi-Ku in Japanese (3=Mi, 9=Ku)
         private const int MikuMagicNumber = 39;
-        
+
         // Character Vocal Series 01
         private const string VocaloidId = "CV01";
-        
+
         // Signature color in hex
         private const string MikuCyanColor = "#00CED1";
 
@@ -82,17 +81,17 @@ namespace Miku.Logger
         private static string GetCallingClassName()
         {
             var stackTrace = new StackTrace();
-            
+
             // Skip first frames (GetCallingClassName, constructor, etc.)
             for (int i = 2; i < stackTrace.FrameCount; i++)
             {
                 var frame = stackTrace.GetFrame(i);
                 var method = frame?.GetMethod();
-                
+
                 if (method?.DeclaringType != null)
                 {
                     var declaringType = method.DeclaringType;
-                    
+
                     // Skip compiler-generated and system types
                     if (!declaringType.FullName?.StartsWith("System.") == true &&
                         !declaringType.FullName?.StartsWith("Microsoft.") == true &&
@@ -102,7 +101,7 @@ namespace Miku.Logger
                     }
                 }
             }
-            
+
             return "Unknown";
         }
 
@@ -133,7 +132,7 @@ namespace Miku.Logger
 
             var message = formatter(state, exception);
             var mikuLogLevel = ConvertLogLevel(logLevel);
-            
+
             LogInternal(mikuLogLevel, message, exception);
         }
 
@@ -300,7 +299,7 @@ namespace Miku.Logger
             if (_options.FormatOptions.ShowDate || _options.FormatOptions.ShowTime)
             {
                 var timestamp = _options.UseUtcTime ? DateTime.UtcNow : DateTime.Now;
-                
+
                 if (_options.FormatOptions.ShowDate && _options.FormatOptions.ShowTime)
                 {
                     parts.Add(timestamp.ToString(_options.DateFormat));

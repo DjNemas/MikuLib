@@ -8,7 +8,7 @@
     
     <PackageId>MikuLib.Utils</PackageId>
 	<Title>Miku Utils</Title>
-    <Version>10.0.39</Version>
+    <Version>10.1.39</Version>
     <Authors>Hatsune Nemas</Authors>
     <Company>Crypton Future Media (Inspired)</Company>
     <Description>Comprehensive utility library for .NET 10 featuring MikuMapper for object mapping with nullable primitive support, and CommandLineHelper for modern argument parsing with multi-value support and environment integration. Powered by CV01 energy! ⚡</Description>
