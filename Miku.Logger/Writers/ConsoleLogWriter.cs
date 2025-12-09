@@ -15,11 +15,11 @@ namespace Miku.Logger.Writers
         private const string AnsiExtended256Prefix = "\x1b[38;5;";
         private const string AnsiTrueColorPrefix = "\x1b[38;2;";
 
-        private readonly ConsoleColorOptions _colorOptions;
+        private readonly MikuConsoleColorOptions _colorOptions;
         private readonly SemaphoreSlim _writeSemaphore = new(1, 1);
         private readonly bool _supportsAnsi;
 
-        public ConsoleLogWriter(ConsoleColorOptions colorOptions)
+        public ConsoleLogWriter(MikuConsoleColorOptions colorOptions)
         {
             _colorOptions = colorOptions ?? throw new ArgumentNullException(nameof(colorOptions));
             _supportsAnsi = CheckAnsiSupport();
@@ -71,7 +71,7 @@ namespace Miku.Logger.Writers
         /// <summary>
         /// Writes a log message to console asynchronously.
         /// </summary>
-        public async Task WriteAsync(string message, LogLevel logLevel, CancellationToken cancellationToken = default)
+        public async Task WriteAsync(string message, MikuLogLevel logLevel, CancellationToken cancellationToken = default)
         {
             await _writeSemaphore.WaitAsync(cancellationToken);
             try
@@ -87,7 +87,7 @@ namespace Miku.Logger.Writers
         /// <summary>
         /// Writes a log message to console synchronously.
         /// </summary>
-        public void Write(string message, LogLevel logLevel)
+        public void Write(string message, MikuLogLevel logLevel)
         {
             _writeSemaphore.Wait();
             try
@@ -100,7 +100,7 @@ namespace Miku.Logger.Writers
             }
         }
 
-        private void WriteToConsole(string message, LogLevel logLevel)
+        private void WriteToConsole(string message, MikuLogLevel logLevel)
         {
             if (!_colorOptions.Enabled)
             {
@@ -110,18 +110,18 @@ namespace Miku.Logger.Writers
 
             switch (_colorOptions.ColorSpace)
             {
-                case ColorSpace.Console:
+                case MikuColorSpace.Console:
                     WriteWithConsoleColor(message, logLevel);
                     break;
 
-                case ColorSpace.Extended256:
+                case MikuColorSpace.Extended256:
                     if (_supportsAnsi)
                         WriteWithExtended256Color(message, logLevel);
                     else
                         WriteWithConsoleColor(message, logLevel); // Fallback
                     break;
 
-                case ColorSpace.TrueColor:
+                case MikuColorSpace.TrueColor:
                     if (_supportsAnsi)
                         WriteWithTrueColor(message, logLevel);
                     else
@@ -137,7 +137,7 @@ namespace Miku.Logger.Writers
         /// <summary>
         /// Writes using standard 16 console colors.
         /// </summary>
-        private void WriteWithConsoleColor(string message, LogLevel logLevel)
+        private void WriteWithConsoleColor(string message, MikuLogLevel logLevel)
         {
             var color = GetConsoleColorForLogLevel(logLevel);
             Console.ForegroundColor = color;
@@ -148,7 +148,7 @@ namespace Miku.Logger.Writers
         /// <summary>
         /// Writes using 256-color palette with ANSI escape sequences.
         /// </summary>
-        private void WriteWithExtended256Color(string message, LogLevel logLevel)
+        private void WriteWithExtended256Color(string message, MikuLogLevel logLevel)
         {
             var colorCode = GetExtended256ColorForLogLevel(logLevel);
             Console.Write($"{AnsiExtended256Prefix}{colorCode}m{message}{AnsiReset}");
@@ -158,53 +158,53 @@ namespace Miku.Logger.Writers
         /// <summary>
         /// Writes using TrueColor (24-bit RGB) with ANSI escape sequences.
         /// </summary>
-        private void WriteWithTrueColor(string message, LogLevel logLevel)
+        private void WriteWithTrueColor(string message, MikuLogLevel logLevel)
         {
             var rgb = GetTrueColorForLogLevel(logLevel);
             Console.Write($"{AnsiTrueColorPrefix}{rgb.R};{rgb.G};{rgb.B}m{message}{AnsiReset}");
             Console.WriteLine();
         }
 
-        private ConsoleColor GetConsoleColorForLogLevel(LogLevel logLevel)
+        private ConsoleColor GetConsoleColorForLogLevel(MikuLogLevel logLevel)
         {
             return logLevel switch
             {
-                LogLevel.Trace => _colorOptions.TraceColor,
-                LogLevel.Debug => _colorOptions.DebugColor,
-                LogLevel.Information => _colorOptions.InformationColor,
-                LogLevel.Warning => _colorOptions.WarningColor,
-                LogLevel.Error => _colorOptions.ErrorColor,
-                LogLevel.Critical => _colorOptions.CriticalColor,
+                MikuLogLevel.Trace => _colorOptions.TraceColor,
+                MikuLogLevel.Debug => _colorOptions.DebugColor,
+                MikuLogLevel.Information => _colorOptions.InformationColor,
+                MikuLogLevel.Warning => _colorOptions.WarningColor,
+                MikuLogLevel.Error => _colorOptions.ErrorColor,
+                MikuLogLevel.Critical => _colorOptions.CriticalColor,
                 _ => Console.ForegroundColor
             };
         }
 
-        private byte GetExtended256ColorForLogLevel(LogLevel logLevel)
+        private byte GetExtended256ColorForLogLevel(MikuLogLevel logLevel)
         {
             var colors = _colorOptions.Extended256Colors;
             return logLevel switch
             {
-                LogLevel.Trace => colors.TraceColor,
-                LogLevel.Debug => colors.DebugColor,
-                LogLevel.Information => colors.InformationColor,
-                LogLevel.Warning => colors.WarningColor,
-                LogLevel.Error => colors.ErrorColor,
-                LogLevel.Critical => colors.CriticalColor,
+                MikuLogLevel.Trace => colors.TraceColor,
+                MikuLogLevel.Debug => colors.DebugColor,
+                MikuLogLevel.Information => colors.InformationColor,
+                MikuLogLevel.Warning => colors.WarningColor,
+                MikuLogLevel.Error => colors.ErrorColor,
+                MikuLogLevel.Critical => colors.CriticalColor,
                 _ => 7 // Default white
             };
         }
 
-        private RgbColor GetTrueColorForLogLevel(LogLevel logLevel)
+        private RgbColor GetTrueColorForLogLevel(MikuLogLevel logLevel)
         {
             var colors = _colorOptions.TrueColors;
             return logLevel switch
             {
-                LogLevel.Trace => colors.TraceColor,
-                LogLevel.Debug => colors.DebugColor,
-                LogLevel.Information => colors.InformationColor,
-                LogLevel.Warning => colors.WarningColor,
-                LogLevel.Error => colors.ErrorColor,
-                LogLevel.Critical => colors.CriticalColor,
+                MikuLogLevel.Trace => colors.TraceColor,
+                MikuLogLevel.Debug => colors.DebugColor,
+                MikuLogLevel.Information => colors.InformationColor,
+                MikuLogLevel.Warning => colors.WarningColor,
+                MikuLogLevel.Error => colors.ErrorColor,
+                MikuLogLevel.Critical => colors.CriticalColor,
                 _ => RgbColor.White
             };
         }

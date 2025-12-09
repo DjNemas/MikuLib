@@ -13,6 +13,7 @@ This document provides detailed examples for using Miku.Logger in various scenar
 8. [Log Rotation](#log-rotation)
 9. [Dependency Injection](#dependency-injection)
 10. [Advanced: Custom Log Format](#advanced-custom-log-format)
+11. [Server-Sent Events (SSE) Logging](#server-sent-events-sse-logging)
 
 ---
 
@@ -55,15 +56,17 @@ logger.Dispose();
 ```csharp
 using Miku.Logger;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.ConsoleAndFile,
-    MinimumLogLevel = LogLevel.Debug,
+    Output = MikuLogOutput.ConsoleAndFile,
+    MinimumLogLevel = MikuLogLevel.Debug,
     UseUtcTime = false,
     DateFormat = "yyyy-MM-dd HH:mm:ss.fff",
     
-    ConsoleColors = new ConsoleColorOptions
+    ConsoleColors = new MikuConsoleColorOptions
     {
         Enabled = true,
         DebugColor = ConsoleColor.Yellow,
@@ -71,7 +74,7 @@ var options = new MikuLoggerOptions
         ErrorColor = ConsoleColor.Red
     },
     
-    FileOptions = new FileLoggerOptions
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         FileNamePattern = "app.log",
@@ -146,6 +149,8 @@ logger.Dispose();
 ```csharp
 using Miku.Logger.Extensions;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -153,9 +158,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders(); // Optional: clear default providers
 builder.Logging.AddMikuLogger(options =>
 {
-    options.Output = LogOutput.ConsoleAndFile;
-    options.MinimumLogLevel = LogLevel.Information;
-    options.FileOptions = new FileLoggerOptions
+    options.Output = MikuLogOutput.ConsoleAndFile;
+    options.MinimumLogLevel = MikuLogLevel.Information;
+    options.FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         MaxFileSizeBytes = 5 * 1024 * 1024,
@@ -210,12 +215,14 @@ public class HomeController : Controller
 ```csharp
 using Miku.Logger;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.File, // Only to file, no console
-    MinimumLogLevel = LogLevel.Information,
-    FileOptions = new FileLoggerOptions
+    Output = MikuLogOutput.File, // Only to file, no console
+    MinimumLogLevel = MikuLogLevel.Information,
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         FileNamePattern = "silent.log",
@@ -236,12 +243,14 @@ logger.Dispose();
 ```csharp
 using Miku.Logger;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.Console, // Only to console, no file
-    MinimumLogLevel = LogLevel.Debug,
-    ConsoleColors = new ConsoleColorOptions
+    Output = MikuLogOutput.Console, // Only to console, no file
+    MinimumLogLevel = MikuLogLevel.Debug,
+    ConsoleColors = new MikuConsoleColorOptions
     {
         Enabled = true,
         DebugColor = ConsoleColor.Yellow,
@@ -262,11 +271,13 @@ logger.Dispose();
 ```csharp
 using Miku.Logger;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.File,
-    FileOptions = new FileLoggerOptions
+    Output = MikuLogOutput.File,
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         FileNamePattern = "app.log",
@@ -308,6 +319,7 @@ logger.Dispose();
 using Microsoft.Extensions.DependencyInjection;
 using Miku.Logger;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
 
 var services = new ServiceCollection();
 
@@ -317,8 +329,8 @@ services.AddSingleton<MikuLogger>();
 // Or with custom options
 var loggerOptions = new MikuLoggerOptions
 {
-    Output = LogOutput.ConsoleAndFile,
-    MinimumLogLevel = LogLevel.Information
+    Output = MikuLogOutput.ConsoleAndFile,
+    MinimumLogLevel = MikuLogLevel.Information
 };
 
 services.AddSingleton(loggerOptions);
@@ -383,15 +395,19 @@ public class PaymentService
 ### ASP.NET Core with Dependency Injection
 
 ```csharp
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
+
 // In Program.cs
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure MikuLogger options
 var loggerOptions = new MikuLoggerOptions
 {
-    Output = LogOutput.ConsoleAndFile,
-    MinimumLogLevel = LogLevel.Information,
-    FileOptions = new FileLoggerOptions
+    Output = MikuLogOutput.ConsoleAndFile,
+    MinimumLogLevel = MikuLogLevel.Information,
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         MaxFileSizeBytes = 10 * 1024 * 1024,
@@ -408,18 +424,22 @@ var app = builder.Build();
 ### Multiple Logger Instances with Different Configurations
 
 ```csharp
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
+
 // For scenarios where you need multiple loggers with different configurations
 services.AddSingleton(sp => new MikuLogger("Application", new MikuLoggerOptions
 {
-    Output = LogOutput.ConsoleAndFile,
-    MinimumLogLevel = LogLevel.Information
+    Output = MikuLogOutput.ConsoleAndFile,
+    MinimumLogLevel = MikuLogLevel.Information
 }));
 
 services.AddSingleton(sp => new MikuLogger("Security", new MikuLoggerOptions
 {
-    Output = LogOutput.File,
-    MinimumLogLevel = LogLevel.Warning,
-    FileOptions = new FileLoggerOptions
+    Output = MikuLogOutput.File,
+    MinimumLogLevel = MikuLogLevel.Warning,
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./security-logs"
     }
@@ -431,12 +451,14 @@ services.AddSingleton(sp => new MikuLogger("Security", new MikuLoggerOptions
 ```csharp
 using Miku.Logger;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 // Example 1: Only show time and message (no date, level, or logger name)
 var options1 = new MikuLoggerOptions
 {
-    Output = LogOutput.Console,
-    FormatOptions = new LogFormatOptions
+    Output = MikuLogOutput.Console,
+    FormatOptions = new MikuLogFormatOptions
     {
         ShowDate = false,
         ShowTime = true,
@@ -451,8 +473,8 @@ logger1.LogInformation("Simple message");
 // Example 2: Only show level and message (for minimal logging)
 var options2 = new MikuLoggerOptions
 {
-    Output = LogOutput.Console,
-    FormatOptions = new LogFormatOptions
+    Output = MikuLogOutput.Console,
+    FormatOptions = new MikuLogFormatOptions
     {
         ShowDate = false,
         ShowTime = false,
@@ -467,17 +489,17 @@ logger2.LogError("Error occurred");
 // Example 3: Custom date/time format with full information
 var options3 = new MikuLoggerOptions
 {
-    Output = LogOutput.ConsoleAndFile,
+    Output = MikuLogOutput.ConsoleAndFile,
     DateFormat = "yyyy-MM-dd HH:mm:ss.fff zzz", // Include timezone
     UseUtcTime = true, // Use UTC instead of local time
-    FormatOptions = new LogFormatOptions
+    FormatOptions = new MikuLogFormatOptions
     {
         ShowDate = true,
         ShowTime = true,
         ShowLogLevel = true,
         ShowLoggerName = true
     },
-    FileOptions = new FileLoggerOptions
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         FileNamePattern = "app.log"
@@ -490,8 +512,8 @@ logger3.LogInformation("Detailed log entry");
 // Example 4: Separate date and time formats
 var options4 = new MikuLoggerOptions
 {
-    Output = LogOutput.Console,
-    FormatOptions = new LogFormatOptions
+    Output = MikuLogOutput.Console,
+    FormatOptions = new MikuLogFormatOptions
     {
         ShowDate = true,
         ShowTime = false,  // Only date, no time
@@ -514,12 +536,14 @@ logger4.Dispose();
 ```csharp
 using Miku.Logger;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.File, // File only for performance
-    MinimumLogLevel = LogLevel.Information,
-    FileOptions = new FileLoggerOptions
+    Output = MikuLogOutput.File, // File only for performance
+    MinimumLogLevel = MikuLogLevel.Information,
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         MaxFileSizeBytes = 50 * 1024 * 1024, // 50 MB
@@ -535,6 +559,192 @@ var tasks = Enumerable.Range(0, 1000)
     .ToArray();
 
 await Task.WhenAll(tasks);
+```
+
+## Server-Sent Events (SSE) Logging
+
+MikuLogger supports real-time log streaming via Server-Sent Events (SSE), allowing you to monitor logs in real-time from web clients.
+
+### Basic SSE Setup
+
+```csharp
+using Miku.Logger.Extensions;
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add MikuLogger with SSE support
+builder.Logging.AddMikuLoggerWithSse(options =>
+{
+    options.Output = MikuLogOutput.All; // Console, File, and SSE
+    options.MinimumLogLevel = MikuLogLevel.Information;
+    options.SseOptions.EndpointPath = "/miku/logs/stream";
+});
+
+var app = builder.Build();
+
+// Map the SSE endpoint
+app.MapMikuLoggerSse();
+
+app.Run();
+
+// Clients can now connect to: https://yourapp.com/miku/logs/stream
+```
+
+### Custom SSE Configuration
+
+```csharp
+using Miku.Logger.Extensions;
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddMikuLoggerWithSse(options =>
+{
+    options.Output = MikuLogOutput.All;
+    options.MinimumLogLevel = MikuLogLevel.Debug;
+    
+    // SSE-specific options
+    options.SseOptions = new MikuSseLoggerOptions
+    {
+        EndpointPath = "/api/logs/live",
+        EventType = "log-event",
+        MaxClients = 50,                      // Limit concurrent connections
+        ReconnectionIntervalMs = 5000,        // 5 seconds reconnection hint
+        IncludeLogLevelInEventType = true,    // Events: "log-event-info", "log-event-error"
+        MinimumLogLevel = MikuLogLevel.Warning // Only stream warnings and above
+    };
+});
+
+var app = builder.Build();
+app.MapMikuLoggerSse();
+app.Run();
+```
+
+### SSE with Authorization
+
+```csharp
+using Miku.Logger.Extensions;
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add authentication/authorization services
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
+
+builder.Logging.AddMikuLoggerWithSse(options =>
+{
+    options.Output = MikuLogOutput.All;
+    options.SseOptions.RequireAuthorization = true;
+    options.SseOptions.AuthorizationPolicy = "AdminOnly";
+});
+
+var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapMikuLoggerSse();
+app.Run();
+```
+
+### Adding SSE to Existing Logger Configuration
+
+```csharp
+using Miku.Logger.Extensions;
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add SSE services separately
+builder.Services.AddMikuLoggerSse(options =>
+{
+    options.EndpointPath = "/logs/stream";
+    options.MaxClients = 100;
+    options.IncludeLogLevelInEventType = true;
+});
+
+// Add MikuLogger with SSE output
+builder.Logging.AddMikuLogger(options =>
+{
+    options.Output = MikuLogOutput.ConsoleAndFile | MikuLogOutput.ServerSentEvents;
+    options.MinimumLogLevel = MikuLogLevel.Information;
+});
+
+var app = builder.Build();
+
+// Map with custom path
+app.MapMikuLoggerSse("/logs/stream");
+
+app.Run();
+```
+
+### JavaScript Client Example
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MikuLogger Live Logs</title>
+    <style>
+        #logs { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 10px; height: 400px; overflow-y: auto; }
+        .log-info { color: #00CED1; }
+        .log-warning { color: #FFD700; }
+        .log-error { color: #FF6B6B; }
+        .log-critical { color: #FF0000; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>?? MikuLogger Live Stream</h1>
+    <div id="logs"></div>
+    
+    <script>
+        const logsDiv = document.getElementById('logs');
+        const eventSource = new EventSource('/miku/logs/stream');
+        
+        eventSource.addEventListener('miku-log', (event) => {
+            const entry = JSON.parse(event.data);
+            const logLine = document.createElement('div');
+            logLine.className = `log-${entry.level.toLowerCase()}`;
+            logLine.textContent = `${entry.timestamp} [${entry.level}] [${entry.category}] ${entry.message}`;
+            logsDiv.appendChild(logLine);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        });
+        
+        // With IncludeLogLevelInEventType = true
+        eventSource.addEventListener('miku-log-error', (event) => {
+            const entry = JSON.parse(event.data);
+            console.error('Error log received:', entry);
+        });
+        
+        eventSource.onerror = () => {
+            console.log('Connection lost, reconnecting...');
+        };
+    </script>
+</body>
+</html>
+```
+
+### SSE Log Entry Format
+
+When connecting to the SSE endpoint, log entries are sent as JSON with the following structure:
+
+```json
+{
+    "timestamp": "2025-11-29T21:45:23.123Z",
+    "level": "Information",
+    "category": "MyApp.Services.UserService",
+    "message": "User created successfully: johndoe",
+    "exception": null
+}
 ```
 
 ---
@@ -561,6 +771,6 @@ await Task.WhenAll(tasks);
 - Ensure directory path is valid
 
 ### Performance Issues
-- Use `LogOutput.File` instead of console for production
+- Use `MikuLogOutput.File` instead of console for production
 - Increase `MaxFileSizeBytes` to reduce rotation frequency
 - Use async methods for better throughput

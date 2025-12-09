@@ -12,6 +12,52 @@ MikuLib is a comprehensive .NET 10 library collection that brings together power
 
 ![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_Utmoe5RPDL.gif)
 
+## ?? Breaking Changes in Version 10.2.39
+
+**All enums and configuration models have been renamed with the `Miku` prefix.**
+
+This change was made for better consistency across the library. When updating from earlier versions, you'll need to update your type references:
+
+### Type Renames
+
+| Old Name | New Name |
+|----------|----------|
+| `LogLevel` | `MikuLogLevel` |
+| `LogOutput` | `MikuLogOutput` |
+| `ColorSpace` | `MikuColorSpace` |
+| `ConsoleColorOptions` | `MikuConsoleColorOptions` |
+| `FileLoggerOptions` | `MikuFileLoggerOptions` |
+| `LogFormatOptions` | `MikuLogFormatOptions` |
+| `SseLoggerOptions` | `MikuSseLoggerOptions` |
+| `Extended256ColorOptions` | `MikuExtended256ColorOptions` |
+| `TrueColorOptions` | `MikuTrueColorOptions` |
+
+### Migration Example
+
+```csharp
+// Before (10.1.39 and earlier)
+var options = new MikuLoggerOptions
+{
+    Output = LogOutput.Console,
+    MinimumLogLevel = LogLevel.Information,
+    ConsoleColors = new ConsoleColorOptions
+    {
+        ColorSpace = ColorSpace.TrueColor
+    }
+};
+
+// After (10.2.39)
+var options = new MikuLoggerOptions
+{
+    Output = MikuLogOutput.Console,
+    MinimumLogLevel = MikuLogLevel.Information,
+    ConsoleColors = new MikuConsoleColorOptions
+    {
+        ColorSpace = MikuColorSpace.TrueColor
+    }
+};
+```
+
 ## Libraries
 
 ### MikuLib.Core
@@ -121,11 +167,11 @@ using Miku.Logger.Configuration.Models;
 
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.Console,
-    ConsoleColors = new ConsoleColorOptions
+    Output = MikuLogOutput.Console,
+    ConsoleColors = new MikuConsoleColorOptions
     {
-        ColorSpace = ColorSpace.TrueColor,
-        TrueColors = new TrueColorOptions
+        ColorSpace = MikuColorSpace.TrueColor,
+        TrueColors = new MikuTrueColorOptions
         {
             InformationColor = RgbColor.MikuCyan,
             ErrorColor = RgbColor.MikuPink
@@ -288,14 +334,14 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ```
 MikuLib/
-??? Miku/                   # Meta package
-??? Miku.Core/              # Core types (RgbColor, AnsiCodes, ColorHelper)
-??? MikuLib.Console/        # Console utilities (MikuConsole, ConsoleAnimation)
-??? Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
-??? Miku.Logger/            # Logging library with SSE and TrueColor support
-??? Miku.*.Tests/           # Unit tests
-??? MikuConsoleAndLogger.Preview/  # Color demo application
-??? README.md               # This file
+? Miku/                   # Meta package
+? Miku.Core/              # Core types (RgbColor, AnsiCodes, ColorHelper)
+? MikuLib.Console/        # Console utilities (MikuConsole, ConsoleAnimation)
+? Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
+? Miku.Logger/            # Logging library with SSE and TrueColor support
+? Miku.*.Tests/           # Unit tests
+? MikuConsoleAndLogger.Preview/  # Color demo application
+? README.md               # This file
 ```
 
 ---

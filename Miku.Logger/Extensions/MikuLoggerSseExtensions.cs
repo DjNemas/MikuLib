@@ -30,7 +30,7 @@ namespace Miku.Logger.Extensions
         /// <code>
         /// builder.Logging.AddMikuLoggerWithSse(options =>
         /// {
-        ///     options.Output = LogOutput.All;
+        ///     options.Output = MikuLogOutput.All;
         ///     options.SseOptions.EndpointPath = "/api/logs/stream";
         /// });
         /// </code>
@@ -43,9 +43,9 @@ namespace Miku.Logger.Extensions
             configure(options);
 
             // Ensure SSE is enabled
-            if (!options.Output.HasFlag(LogOutput.ServerSentEvents))
+            if (!options.Output.HasFlag(MikuLogOutput.ServerSentEvents))
             {
-                options.Output |= LogOutput.ServerSentEvents;
+                options.Output |= MikuLogOutput.ServerSentEvents;
             }
 
             // Configure the SSE broadcaster
@@ -69,9 +69,9 @@ namespace Miku.Logger.Extensions
         /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddMikuLoggerSse(
             this IServiceCollection services,
-            Action<SseLoggerOptions>? configure = null)
+            Action<MikuSseLoggerOptions>? configure = null)
         {
-            var options = new SseLoggerOptions();
+            var options = new MikuSseLoggerOptions();
             configure?.Invoke(options);
 
             SseLogBroadcaster.Instance.Configure(options);
@@ -136,9 +136,9 @@ namespace Miku.Logger.Extensions
         /// <returns>The route handler builder for further configuration.</returns>
         public static RouteHandlerBuilder MapMikuLoggerSse(
             this IEndpointRouteBuilder endpoints,
-            Action<SseLoggerOptions> configure)
+            Action<MikuSseLoggerOptions> configure)
         {
-            var options = new SseLoggerOptions();
+            var options = new MikuSseLoggerOptions();
             configure(options);
 
             SseLogBroadcaster.Instance.Configure(options);

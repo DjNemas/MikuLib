@@ -15,32 +15,32 @@ namespace Miku.Logger.Configuration
         /// <summary>
         /// Gets or sets the log output targets.
         /// </summary>
-        public LogOutput Output { get; set; } = LogOutput.ConsoleAndFile;
+        public MikuLogOutput Output { get; set; } = MikuLogOutput.ConsoleAndFile;
 
         /// <summary>
         /// Gets or sets the minimum log level to be written.
         /// </summary>
-        public LogLevel MinimumLogLevel { get; set; } = LogLevel.Information;
+        public MikuLogLevel MinimumLogLevel { get; set; } = MikuLogLevel.Information;
 
         /// <summary>
         /// Gets or sets the console color options.
         /// </summary>
-        public ConsoleColorOptions ConsoleColors { get; set; } = new();
+        public MikuConsoleColorOptions ConsoleColors { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the file logging options.
         /// </summary>
-        public FileLoggerOptions FileOptions { get; set; } = new();
+        public MikuFileLoggerOptions FileOptions { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the Server-Sent Events (SSE) logging options.
         /// </summary>
-        public SseLoggerOptions SseOptions { get; set; } = new();
+        public MikuSseLoggerOptions SseOptions { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the log message formatting options.
         /// </summary>
-        public LogFormatOptions FormatOptions { get; set; } = new();
+        public MikuLogFormatOptions FormatOptions { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the date format for log messages.

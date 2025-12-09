@@ -247,11 +247,11 @@ public class Program
         // Configure logger to use standard 16-color output
         var options = new MikuLoggerOptions
         {
-            Output = LogOutput.Console,
-            MinimumLogLevel = LogLevel.Trace,  // Show all log levels
-            ConsoleColors = new ConsoleColorOptions
+            Output = MikuLogOutput.Console,
+            MinimumLogLevel = MikuLogLevel.Trace,
+            ConsoleColors = new MikuConsoleColorOptions
             {
-                ColorSpace = ColorSpace.Console,  // Use 16-color mode
+                ColorSpace = MikuColorSpace.Console,
                 Enabled = true
             }
         };
@@ -359,13 +359,12 @@ public class Program
 
         var options = new MikuLoggerOptions
         {
-            Output = LogOutput.Console,
-            MinimumLogLevel = LogLevel.Trace,
-            ConsoleColors = new ConsoleColorOptions
+            Output = MikuLogOutput.Console,
+            MinimumLogLevel = MikuLogLevel.Trace,
+            ConsoleColors = new MikuConsoleColorOptions
             {
-                ColorSpace = ColorSpace.Extended256,
-                // Custom 256-color indices for each log level
-                Extended256Colors = new Extended256ColorOptions
+                ColorSpace = MikuColorSpace.Extended256,
+                Extended256Colors = new MikuExtended256ColorOptions
                 {
                     TraceColor = 245,       // Light gray
                     DebugColor = 226,       // Yellow
@@ -473,19 +472,18 @@ public class Program
 
         var options = new MikuLoggerOptions
         {
-            Output = LogOutput.Console,
-            MinimumLogLevel = LogLevel.Trace,
-            ConsoleColors = new ConsoleColorOptions
+            Output = MikuLogOutput.Console,
+            MinimumLogLevel = MikuLogLevel.Trace,
+            ConsoleColors = new MikuConsoleColorOptions
             {
-                ColorSpace = ColorSpace.TrueColor,
-                // Custom RGB colors for each log level
-                TrueColors = new TrueColorOptions
+                ColorSpace = MikuColorSpace.TrueColor,
+                TrueColors = new MikuTrueColorOptions
                 {
                     TraceColor = RgbColor.Gray,
                     DebugColor = RgbColor.Yellow,
-                    InformationColor = RgbColor.MikuCyan,  // Signature Miku color
+                    InformationColor = RgbColor.MikuCyan,
                     WarningColor = RgbColor.Orange,
-                    ErrorColor = RgbColor.FromHex("#E12885"),  // Miku Pink
+                    ErrorColor = RgbColor.FromHex("#E12885"),
                     CriticalColor = RgbColor.DarkRed
                 }
             }
@@ -714,79 +712,73 @@ public class Program
         // Configure logger with custom TrueColor theme
         var options = new MikuLoggerOptions
         {
-            Output = LogOutput.Console,
-            MinimumLogLevel = LogLevel.Trace,
-            ConsoleColors = new ConsoleColorOptions
+            Output = MikuLogOutput.Console,
+            MinimumLogLevel = MikuLogLevel.Trace,
+            ConsoleColors = new MikuConsoleColorOptions
             {
-                ColorSpace = ColorSpace.TrueColor,
-                TrueColors = new TrueColorOptions
+                ColorSpace = MikuColorSpace.TrueColor,
+                TrueColors = new MikuTrueColorOptions
                 {
-                    TraceColor = RgbColor.FromHex("#6B7280"),    // Tailwind Gray-500
-                    DebugColor = RgbColor.FromHex("#FBBF24"),    // Tailwind Amber-400
+                    TraceColor = RgbColor.FromHex("#6B7280"),
+                    DebugColor = RgbColor.FromHex("#FBBF24"),
                     InformationColor = RgbColor.MikuCyan,
-                    WarningColor = RgbColor.FromHex("#F97316"),  // Tailwind Orange-500
-                    ErrorColor = RgbColor.FromHex("#E12885"),    // Miku Pink
-                    CriticalColor = RgbColor.FromHex("#7F1D1D")  // Tailwind Red-900
+                    WarningColor = RgbColor.FromHex("#F97316"),
+                    ErrorColor = RgbColor.FromHex("#E12885"),
+                    CriticalColor = RgbColor.FromHex("#7F1D1D")
                 }
             }
         };
 
         using var logger = new MikuLogger("MikuApp", options);
 
-        // Simulate realistic application log messages with varying delays
-        var logMessages = new (LogLevel level, string message, int delay)[]
+        var logMessages = new (MikuLogLevel level, string message, int delay)[]
         {
-            // Startup phase
-            (LogLevel.Information, "Application starting...", 300),
-            (LogLevel.Debug, "Loading configuration from appsettings.json", 200),
-            (LogLevel.Trace, "Configuration values: Environment=Production, Port=5000", 150),
-            (LogLevel.Information, "Database connection established", 400),
-            (LogLevel.Debug, "Initializing Miku Voice Engine v39.0", 200),
-            (LogLevel.Information, "CV01 Module loaded successfully", 300),
+            (MikuLogLevel.Information, "Application starting...", 300),
+            (MikuLogLevel.Debug, "Loading configuration from appsettings.json", 200),
+            (MikuLogLevel.Trace, "Configuration values: Environment=Production, Port=5000", 150),
+            (MikuLogLevel.Information, "Database connection established", 400),
+            (MikuLogLevel.Debug, "Initializing Miku Voice Engine v39.0", 200),
+            (MikuLogLevel.Information, "CV01 Module loaded successfully", 300),
             
-            // Runtime phase with warnings
-            (LogLevel.Warning, "Memory usage approaching 80%", 500),
-            (LogLevel.Debug, "Running garbage collection...", 200),
-            (LogLevel.Information, "Memory optimized: 45% usage", 300),
-            (LogLevel.Information, "HTTP Server listening on port 5000", 300),
-            (LogLevel.Trace, "Request received: GET /api/songs", 100),
-            (LogLevel.Information, "Request processed in 23ms", 200),
-            (LogLevel.Warning, "Rate limit approaching for client 192.168.1.39", 400),
+            (MikuLogLevel.Warning, "Memory usage approaching 80%", 500),
+            (MikuLogLevel.Debug, "Running garbage collection...", 200),
+            (MikuLogLevel.Information, "Memory optimized: 45% usage", 300),
+            (MikuLogLevel.Information, "HTTP Server listening on port 5000", 300),
+            (MikuLogLevel.Trace, "Request received: GET /api/songs", 100),
+            (MikuLogLevel.Information, "Request processed in 23ms", 200),
+            (MikuLogLevel.Warning, "Rate limit approaching for client 192.168.1.39", 400),
             
-            // Error handling demonstration
-            (LogLevel.Error, "Failed to connect to external API: Timeout after 30s", 600),
-            (LogLevel.Information, "Retrying connection (attempt 2/3)...", 300),
-            (LogLevel.Information, "Connection restored successfully", 300),
-            (LogLevel.Critical, "CRITICAL: Unhandled exception in voice synthesis!", 800),
-            (LogLevel.Information, "Exception handled, service recovered", 400),
+            (MikuLogLevel.Error, "Failed to connect to external API: Timeout after 30s", 600),
+            (MikuLogLevel.Information, "Retrying connection (attempt 2/3)...", 300),
+            (MikuLogLevel.Information, "Connection restored successfully", 300),
+            (MikuLogLevel.Critical, "CRITICAL: Unhandled exception in voice synthesis!", 800),
+            (MikuLogLevel.Information, "Exception handled, service recovered", 400),
             
-            // Shutdown phase
-            (LogLevel.Information, "Graceful shutdown initiated...", 300),
-            (LogLevel.Information, "All 39 connections closed", 200),
-            (LogLevel.Information, "Application stopped. Goodbye!", 300)
+            (MikuLogLevel.Information, "Graceful shutdown initiated...", 300),
+            (MikuLogLevel.Information, "All 39 connections closed", 200),
+            (MikuLogLevel.Information, "Application stopped. Goodbye!", 300)
         };
 
-        // Output each log message with the appropriate level
         foreach (var (level, message, delay) in logMessages)
         {
             switch (level)
             {
-                case LogLevel.Trace:
+                case MikuLogLevel.Trace:
                     logger.LogTrace(message);
                     break;
-                case LogLevel.Debug:
+                case MikuLogLevel.Debug:
                     logger.LogDebug(message);
                     break;
-                case LogLevel.Information:
+                case MikuLogLevel.Information:
                     logger.LogInformation(message);
                     break;
-                case LogLevel.Warning:
+                case MikuLogLevel.Warning:
                     logger.LogWarning(message);
                     break;
-                case LogLevel.Error:
+                case MikuLogLevel.Error:
                     logger.LogError(message);
                     break;
-                case LogLevel.Critical:
+                case MikuLogLevel.Critical:
                     logger.LogCritical(message);
                     break;
             }

@@ -4,8 +4,6 @@ using Miku.Logger.Configuration;
 using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Extensions;
 
-using MikuLogLevel = Miku.Logger.Configuration.Enums.LogLevel;
-
 namespace Miku.Logger.Tests
 {
     public class MikuLoggerExtensionsTests
@@ -34,7 +32,7 @@ namespace Miku.Logger.Tests
             var services = new ServiceCollection();
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
+                Output = MikuLogOutput.Console,
                 MinimumLogLevel = MikuLogLevel.Debug
             };
 
@@ -60,7 +58,7 @@ namespace Miku.Logger.Tests
                 // Act
                 loggingBuilder.AddMikuLogger(options =>
                 {
-                    options.Output = LogOutput.Console;
+                    options.Output = MikuLogOutput.Console;
                     options.MinimumLogLevel = MikuLogLevel.Trace;
                 });
             });
@@ -80,7 +78,7 @@ namespace Miku.Logger.Tests
             {
                 loggingBuilder.AddMikuLogger(options =>
                 {
-                    options.Output = LogOutput.Console;
+                    options.Output = MikuLogOutput.Console;
                 });
             });
 
@@ -118,7 +116,7 @@ namespace Miku.Logger.Tests
         {
             // Arrange
             var services = new ServiceCollection();
-            var options = new MikuLoggerOptions { Output = LogOutput.Console };
+            var options = new MikuLoggerOptions { Output = MikuLogOutput.Console };
             ILoggingBuilder? result = null;
 
             services.AddLogging(loggingBuilder =>
@@ -143,7 +141,7 @@ namespace Miku.Logger.Tests
                 // Act
                 result = loggingBuilder.AddMikuLogger(options =>
                 {
-                    options.Output = LogOutput.Console;
+                    options.Output = MikuLogOutput.Console;
                 });
             });
 
@@ -160,7 +158,7 @@ namespace Miku.Logger.Tests
             {
                 loggingBuilder.AddMikuLogger(options =>
                 {
-                    options.Output = LogOutput.Console;
+                    options.Output = MikuLogOutput.Console;
                 });
             });
 

@@ -7,7 +7,7 @@ namespace Miku.Logger.Configuration.Models
     /// Like adjusting the mix in a song, these options control
     /// which elements are visible in the final log output.
     /// </remarks>
-    public class LogFormatOptions
+    public class MikuLogFormatOptions
     {
         /// <summary>
         /// Gets or sets whether to show the date in log messages. Default: true.

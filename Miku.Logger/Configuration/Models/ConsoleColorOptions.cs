@@ -12,13 +12,13 @@ namespace Miku.Logger.Configuration.Models
     /// - Extended256: 256-color palette with ANSI escape codes
     /// - TrueColor: Full 24-bit RGB colors (16 million colors!)
     /// </remarks>
-    public class ConsoleColorOptions
+    public class MikuConsoleColorOptions
     {
         /// <summary>Gets or sets whether to use colored output.</summary>
         public bool Enabled { get; set; } = true;
 
         /// <summary>Gets or sets the color space to use.</summary>
-        public ColorSpace ColorSpace { get; set; } = ColorSpace.Console;
+        public MikuColorSpace ColorSpace { get; set; } = MikuColorSpace.Console;
 
         #region Standard Console Colors (16 colors)
 
@@ -48,13 +48,13 @@ namespace Miku.Logger.Configuration.Models
         /// Gets or sets the Extended256 color options.
         /// Used when ColorSpace is set to Extended256.
         /// </summary>
-        public Extended256ColorOptions Extended256Colors { get; set; } = new();
+        public MikuExtended256ColorOptions Extended256Colors { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the TrueColor (24-bit RGB) options.
         /// Used when ColorSpace is set to TrueColor.
         /// </summary>
-        public TrueColorOptions TrueColors { get; set; } = new();
+        public MikuTrueColorOptions TrueColors { get; set; } = new();
 
         #endregion
     }

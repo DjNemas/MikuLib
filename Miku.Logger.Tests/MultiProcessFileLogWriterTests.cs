@@ -46,7 +46,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
             try
             {
                 // Each "process" creates its own FileLogWriter instance
-                var options = new FileLoggerOptions
+                var options = new MikuFileLoggerOptions
                 {
                     LogDirectory = _testDirectory,
                     FileNamePattern = "multi-process.log",
@@ -114,7 +114,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         {
             try
             {
-                var options = new FileLoggerOptions
+                var options = new MikuFileLoggerOptions
                 {
                     LogDirectory = _testDirectory,
                     FileNamePattern = "gateway-scenario.log",

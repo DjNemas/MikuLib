@@ -127,26 +127,26 @@ public class ExtendedColorTests
     public void Extended256ColorOptions_DefaultValues_ShouldBeSet()
     {
         // Arrange & Act
-        var options = new Extended256ColorOptions();
+        var options = new MikuExtended256ColorOptions();
 
         // Assert
-        Assert.Equal(245, options.TraceColor);      // Light gray
-        Assert.Equal(226, options.DebugColor);      // Yellow
-        Assert.Equal(44, options.InformationColor); // Cyan (Miku!)
-        Assert.Equal(208, options.WarningColor);    // Orange
-        Assert.Equal(196, options.ErrorColor);      // Red
-        Assert.Equal(160, options.CriticalColor);   // Dark red
+        Assert.Equal(245, options.TraceColor);
+        Assert.Equal(226, options.DebugColor);
+        Assert.Equal(44, options.InformationColor);
+        Assert.Equal(208, options.WarningColor);
+        Assert.Equal(196, options.ErrorColor);
+        Assert.Equal(160, options.CriticalColor);
     }
 
     [Fact]
     public void Extended256ColorOptions_CustomValues_ShouldBeSettable()
     {
         // Arrange & Act
-        var options = new Extended256ColorOptions
+        var options = new MikuExtended256ColorOptions
         {
             TraceColor = 250,
             DebugColor = 220,
-            InformationColor = 39, // Another cyan shade
+            InformationColor = 39,
             WarningColor = 214,
             ErrorColor = 9,
             CriticalColor = 52
@@ -169,9 +169,9 @@ public class ExtendedColorTests
     public void TrueColorOptions_DefaultValues_ShouldBeSet()
     {
         // Arrange & Act
-        var options = new TrueColorOptions();
+        var options = new MikuTrueColorOptions();
 
-        // Assert - Information should be Miku Cyan by default
+        // Assert
         Assert.Equal(RgbColor.Gray, options.TraceColor);
         Assert.Equal(RgbColor.Yellow, options.DebugColor);
         Assert.Equal(RgbColor.MikuCyan, options.InformationColor);
@@ -185,7 +185,7 @@ public class ExtendedColorTests
     {
         // Arrange & Act
         var customCyan = RgbColor.FromHex("#39C5BB"); // Miku's hair highlight
-        var options = new TrueColorOptions
+        var options = new MikuTrueColorOptions
         {
             InformationColor = customCyan
         };
@@ -203,16 +203,16 @@ public class ExtendedColorTests
     public void ConsoleColorOptions_Extended256Colors_ShouldBeAccessible()
     {
         // Arrange
-        var options = new ConsoleColorOptions
+        var options = new MikuConsoleColorOptions
         {
-            ColorSpace = ColorSpace.Extended256
+            ColorSpace = MikuColorSpace.Extended256
         };
 
         // Act
         options.Extended256Colors.InformationColor = 51; // Bright cyan
 
         // Assert
-        Assert.Equal(ColorSpace.Extended256, options.ColorSpace);
+        Assert.Equal(MikuColorSpace.Extended256, options.ColorSpace);
         Assert.Equal(51, options.Extended256Colors.InformationColor);
     }
 
@@ -220,16 +220,16 @@ public class ExtendedColorTests
     public void ConsoleColorOptions_TrueColors_ShouldBeAccessible()
     {
         // Arrange
-        var options = new ConsoleColorOptions
+        var options = new MikuConsoleColorOptions
         {
-            ColorSpace = ColorSpace.TrueColor
+            ColorSpace = MikuColorSpace.TrueColor
         };
 
         // Act
         options.TrueColors.InformationColor = RgbColor.MikuTeal;
 
         // Assert
-        Assert.Equal(ColorSpace.TrueColor, options.ColorSpace);
+        Assert.Equal(MikuColorSpace.TrueColor, options.ColorSpace);
         Assert.Equal(RgbColor.MikuTeal, options.TrueColors.InformationColor);
     }
 
@@ -237,7 +237,7 @@ public class ExtendedColorTests
     public void ConsoleColorOptions_AllColorSpaces_ShouldHaveDefaults()
     {
         // Arrange & Act
-        var options = new ConsoleColorOptions();
+        var options = new MikuConsoleColorOptions();
 
         // Assert
         Assert.NotNull(options.Extended256Colors);
@@ -257,11 +257,11 @@ public class ExtendedColorTests
         // Arrange
         var options = new MikuLoggerOptions
         {
-            Output = LogOutput.Console,
-            ConsoleColors = new ConsoleColorOptions
+            Output = MikuLogOutput.Console,
+            ConsoleColors = new MikuConsoleColorOptions
             {
                 Enabled = true,
-                ColorSpace = ColorSpace.Extended256
+                ColorSpace = MikuColorSpace.Extended256
             }
         };
 
@@ -277,12 +277,12 @@ public class ExtendedColorTests
         // Arrange
         var options = new MikuLoggerOptions
         {
-            Output = LogOutput.Console,
-            ConsoleColors = new ConsoleColorOptions
+            Output = MikuLogOutput.Console,
+            ConsoleColors = new MikuConsoleColorOptions
             {
                 Enabled = true,
-                ColorSpace = ColorSpace.TrueColor,
-                TrueColors = new TrueColorOptions
+                ColorSpace = MikuColorSpace.TrueColor,
+                TrueColors = new MikuTrueColorOptions
                 {
                     InformationColor = RgbColor.MikuCyan
                 }
@@ -301,12 +301,12 @@ public class ExtendedColorTests
         // Arrange
         var options = new MikuLoggerOptions
         {
-            Output = LogOutput.Console,
-            ConsoleColors = new ConsoleColorOptions
+            Output = MikuLogOutput.Console,
+            ConsoleColors = new MikuConsoleColorOptions
             {
                 Enabled = true,
-                ColorSpace = ColorSpace.TrueColor,
-                TrueColors = new TrueColorOptions
+                ColorSpace = MikuColorSpace.TrueColor,
+                TrueColors = new MikuTrueColorOptions
                 {
                     TraceColor = RgbColor.FromHex("#808080"),
                     DebugColor = RgbColor.FromHex("#FFD700"),
@@ -340,11 +340,11 @@ public class ExtendedColorTests
         // Arrange
         var options = new MikuLoggerOptions
         {
-            Output = LogOutput.Console,
-            ConsoleColors = new ConsoleColorOptions
+            Output = MikuLogOutput.Console,
+            ConsoleColors = new MikuConsoleColorOptions
             {
                 Enabled = false, // Disabled - should not use any colors
-                ColorSpace = ColorSpace.TrueColor
+                ColorSpace = MikuColorSpace.TrueColor
             }
         };
 

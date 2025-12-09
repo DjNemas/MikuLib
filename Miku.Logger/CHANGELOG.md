@@ -4,15 +4,46 @@ All notable changes to Miku.Logger will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [10.2.39] - 2025-12-06
+## [10.2.39] - 2025-12-10
+
+### Breaking Changes ??
+- **All enums and configuration models renamed with `Miku` prefix**
+  - `LogLevel` ? `MikuLogLevel`
+  - `LogOutput` ? `MikuLogOutput`
+  - `ColorSpace` ? `MikuColorSpace`
+  - `ConsoleColorOptions` ? `MikuConsoleColorOptions`
+  - `FileLoggerOptions` ? `MikuFileLoggerOptions`
+  - `LogFormatOptions` ? `MikuLogFormatOptions`
+  - `SseLoggerOptions` ? `MikuSseLoggerOptions`
+  - `Extended256ColorOptions` ? `MikuExtended256ColorOptions`
+  - `TrueColorOptions` ? `MikuTrueColorOptions`
+
+### Migration Guide
+```csharp
+// Before
+var options = new MikuLoggerOptions
+{
+    Output = LogOutput.Console,
+    MinimumLogLevel = LogLevel.Information,
+    ConsoleColors = new ConsoleColorOptions { ColorSpace = ColorSpace.TrueColor }
+};
+
+// After
+var options = new MikuLoggerOptions
+{
+    Output = MikuLogOutput.Console,
+    MinimumLogLevel = MikuLogLevel.Information,
+    ConsoleColors = new MikuConsoleColorOptions { ColorSpace = MikuColorSpace.TrueColor }
+};
+```
 
 ### Added
 - **Server-Sent Events (SSE) Support** - Real-time log streaming to web clients!
   - New `SseLogBroadcaster` singleton for managing SSE client connections
   - New `SseLogEntry` class for structured log data in JSON format
-  - New `SseLoggerOptions` for configuring SSE behavior
-  - New `LogOutput.ServerSentEvents` flag for enabling SSE output
-  - New `LogOutput.All` combining Console, File, and SSE
+  - New `MikuSseLoggerOptions` for configuring SSE behavior
+  - New `MikuLogOutput.ServerSentEvents` flag for enabling SSE output
+  - New `MikuLogOutput.All` combining Console, File, and SSE
   - ASP.NET Core extensions:
     - `AddMikuLoggerWithSse()` - Adds MikuLogger with SSE to logging builder
     - `AddMikuLoggerSse()` - Adds SSE services to DI container
@@ -23,20 +54,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Independent minimum log level filter for SSE output
 
 - **Extended Color Support** - Full 256-color and TrueColor (24-bit RGB) support!
-  - `Extended256ColorOptions` for 256-color palette configuration
-  - `TrueColorOptions` for TrueColor RGB configuration
+  - `MikuExtended256ColorOptions` for 256-color palette configuration
+  - `MikuTrueColorOptions` for TrueColor RGB configuration
   - ANSI escape sequence support for modern terminals
   - Automatic fallback to standard colors when ANSI not supported
 
 - Namespace reorganization: Enums and Models now in separate files and namespaces
-  - `Miku.Logger.Configuration.Enums` - LogOutput, LogLevel, ColorSpace
-  - `Miku.Logger.Configuration.Models` - LogFormatOptions, ConsoleColorOptions, FileLoggerOptions, etc.
+  - `Miku.Logger.Configuration.Enums` - MikuLogOutput, MikuLogLevel, MikuColorSpace
+  - `Miku.Logger.Configuration.Models` - MikuLogFormatOptions, MikuConsoleColorOptions, MikuFileLoggerOptions, etc.
 
 ### Changed
 - **Now depends on Miku.Core** for shared types (RgbColor, AnsiCodes, ColorHelper)
 - `MikuLoggerOptions` now includes `SseOptions` property
 - `MikuLogger` now broadcasts to SSE clients when enabled
-- `ConsoleColorOptions` now includes `Extended256Colors` and `TrueColors` properties
+- `MikuConsoleColorOptions` now includes `Extended256Colors` and `TrueColors` properties
 - `ConsoleLogWriter` now supports all three color spaces with automatic ANSI detection
 - Updated package description and tags to include SSE and extended colors
 
@@ -158,4 +189,4 @@ MAJOR.MINOR.39
 - **MINOR**: Increments for new features and updates
 - **39**: Always 39 in honor of Hatsune Miku (Mi-Ku)
 
-**Examples**: 10.0.39 -> 10.1.39 -> 10.2.39 -> 11.0.39
+**Examples**: 10.0.39 -> 10.1.39 -> 10.2.39 -> 10.3.39 -> 11.0.39

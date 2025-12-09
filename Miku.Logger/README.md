@@ -8,6 +8,22 @@ A powerful, thread-safe logging library for .NET 10 with console, file, and **Se
 
 ![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_Utmoe5RPDL.gif)
 
+## ⚠️ Breaking Changes in Version 10.2.39
+
+**All enums and configuration models have been renamed with the `Miku` prefix.**
+
+| Old Name | New Name |
+|----------|----------|
+| `LogLevel` | `MikuLogLevel` |
+| `LogOutput` | `MikuLogOutput` |
+| `ColorSpace` | `MikuColorSpace` |
+| `ConsoleColorOptions` | `MikuConsoleColorOptions` |
+| `FileLoggerOptions` | `MikuFileLoggerOptions` |
+| `LogFormatOptions` | `MikuLogFormatOptions` |
+| `SseLoggerOptions` | `MikuSseLoggerOptions` |
+| `Extended256ColorOptions` | `MikuExtended256ColorOptions` |
+| `TrueColorOptions` | `MikuTrueColorOptions` |
+
 ## Features
 
 - **ILogger Compatible** - Implements `Microsoft.Extensions.Logging.ILogger` interface
@@ -15,7 +31,7 @@ A powerful, thread-safe logging library for .NET 10 with console, file, and **Se
 - **Async Support** - Asynchronous logging methods for better performance
 - **High Performance** - Batch writing up to 100 messages per operation
 - **Multiple Output Targets** - Console, File, SSE, or any combination
-- **Server-Sent Events** - Real-time log streaming to web clients (NEW!)
+- **Server-Sent Events** - Real-time log streaming to web clients
 - **Log Levels** - Trace, Debug, Information, Warning, Error, Critical
 - **Colored Console Output** - Customizable colors for each log level
 - **Log Rotation** - Automatic file rotation based on file size
@@ -67,15 +83,19 @@ await logger.LogInformationAsync("Async log message");
 ### Custom Configuration
 
 ```csharp
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
+
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.All, // Console, File, and SSE
-    MinimumLogLevel = LogLevel.Debug,
+    Output = MikuLogOutput.All, // Console, File, and SSE
+    MinimumLogLevel = MikuLogLevel.Debug,
     DateFormat = "yyyy-MM-dd HH:mm:ss.fff",
     UseUtcTime = false,
     
     // Console options
-    ConsoleColors = new ConsoleColorOptions
+    ConsoleColors = new MikuConsoleColorOptions
     {
         Enabled = true,
         DebugColor = ConsoleColor.Yellow,
@@ -84,7 +104,7 @@ var options = new MikuLoggerOptions
     },
     
     // File options
-    FileOptions = new FileLoggerOptions
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         FileNamePattern = "app.log",
@@ -94,8 +114,8 @@ var options = new MikuLoggerOptions
         DateFolderFormat = "yyyy-MM-dd"
     },
     
-    // SSE options (NEW!)
-    SseOptions = new SseLoggerOptions
+    // SSE options
+    SseOptions = new MikuSseLoggerOptions
     {
         EndpointPath = "/miku/logs/stream",
         EventType = "miku-log",
@@ -106,7 +126,7 @@ var options = new MikuLoggerOptions
 var logger = new MikuLogger("MyApp", options);
 ```
 
-## Server-Sent Events (SSE) - NEW! 🎤
+## Server-Sent Events (SSE) 🎤
 
 Stream your logs in real-time to web clients using Server-Sent Events!
 
@@ -114,14 +134,15 @@ Stream your logs in real-time to web clients using Server-Sent Events!
 
 ```csharp
 using Miku.Logger.Extensions;
+using Miku.Logger.Configuration.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add MikuLogger with SSE support
 builder.Logging.AddMikuLoggerWithSse(options =>
 {
-    options.Output = LogOutput.All;
-    options.MinimumLogLevel = LogLevel.Debug;
+    options.Output = MikuLogOutput.All;
+    options.MinimumLogLevel = MikuLogLevel.Debug;
     options.SseOptions.EndpointPath = "/api/logs/stream";
     options.SseOptions.MaxClients = 50;
 });
@@ -169,7 +190,7 @@ eventSource.onerror = (error) => {
 ### SSE Configuration Options
 
 ```csharp
-SseOptions = new SseLoggerOptions
+SseOptions = new MikuSseLoggerOptions
 {
     // Endpoint path for SSE streaming
     EndpointPath = "/miku/logs/stream",
@@ -191,7 +212,7 @@ SseOptions = new SseLoggerOptions
     AuthorizationPolicy = null,
     
     // Minimum log level for SSE (independent of other outputs)
-    MinimumLogLevel = LogLevel.Information
+    MinimumLogLevel = MikuLogLevel.Information
 }
 ```
 
@@ -201,14 +222,15 @@ SseOptions = new SseLoggerOptions
 
 ```csharp
 using Miku.Logger.Extensions;
+using Miku.Logger.Configuration.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add MikuLogger to ASP.NET Core logging
 builder.Logging.AddMikuLogger(options =>
 {
-    options.Output = LogOutput.ConsoleAndFile;
-    options.MinimumLogLevel = LogLevel.Information;
+    options.Output = MikuLogOutput.ConsoleAndFile;
+    options.MinimumLogLevel = MikuLogLevel.Information;
     options.FileOptions.MaxFileSizeBytes = 5 * 1024 * 1024; // 5 MB
     options.FileOptions.UseDateFolders = true;
 });
@@ -241,24 +263,24 @@ public class HomeController : Controller
 ### Output Targets
 
 ```csharp
-LogOutput.None              // No output
-LogOutput.Console           // Console only
-LogOutput.File              // File only
-LogOutput.ServerSentEvents  // SSE only (NEW!)
-LogOutput.ConsoleAndFile    // Both console and file
-LogOutput.All               // Console, File, and SSE
+MikuLogOutput.None              // No output
+MikuLogOutput.Console           // Console only
+MikuLogOutput.File              // File only
+MikuLogOutput.ServerSentEvents  // SSE only
+MikuLogOutput.ConsoleAndFile    // Both console and file
+MikuLogOutput.All               // Console, File, and SSE
 ```
 
 ### Log Levels
 
 ```csharp
-LogLevel.Trace       // Most detailed messages
-LogLevel.Debug       // Development debugging
-LogLevel.Information // General information
-LogLevel.Warning     // Abnormal events
-LogLevel.Error       // Error events
-LogLevel.Critical    // Critical failures
-LogLevel.None        // No logging
+MikuLogLevel.Trace       // Most detailed messages
+MikuLogLevel.Debug       // Development debugging
+MikuLogLevel.Information // General information
+MikuLogLevel.Warning     // Abnormal events
+MikuLogLevel.Error       // Error events
+MikuLogLevel.Critical    // Critical failures
+MikuLogLevel.None        // No logging
 ```
 
 ### Format Options
@@ -268,7 +290,7 @@ Control which elements are shown in log messages:
 ```csharp
 var options = new MikuLoggerOptions
 {
-    FormatOptions = new LogFormatOptions
+    FormatOptions = new MikuLogFormatOptions
     {
         ShowDate = true,        // Show date (default: true)
         ShowTime = true,        // Show time (default: true)
@@ -283,7 +305,7 @@ var options = new MikuLoggerOptions
 The logger automatically rotates log files when they exceed the specified size:
 
 ```csharp
-FileOptions = new FileLoggerOptions
+FileOptions = new MikuFileLoggerOptions
 {
     MaxFileSizeBytes = 10 * 1024 * 1024, // 10 MB
     MaxFileCount = 10,                    // Keep last 10 files
@@ -298,10 +320,10 @@ MikuLogger supports three color modes for console output:
 #### Standard Console Colors (16 colors)
 
 ```csharp
-ConsoleColors = new ConsoleColorOptions
+ConsoleColors = new MikuConsoleColorOptions
 {
     Enabled = true,
-    ColorSpace = ColorSpace.Console, // Default
+    ColorSpace = MikuColorSpace.Console, // Default
     TraceColor = ConsoleColor.Gray,
     DebugColor = ConsoleColor.Yellow,
     InformationColor = ConsoleColor.Cyan,
@@ -316,11 +338,11 @@ ConsoleColors = new ConsoleColorOptions
 For terminals supporting 256-color palette:
 
 ```csharp
-ConsoleColors = new ConsoleColorOptions
+ConsoleColors = new MikuConsoleColorOptions
 {
     Enabled = true,
-    ColorSpace = ColorSpace.Extended256,
-    Extended256Colors = new Extended256ColorOptions
+    ColorSpace = MikuColorSpace.Extended256,
+    Extended256Colors = new MikuExtended256ColorOptions
     {
         TraceColor = 245,      // Light gray
         DebugColor = 226,      // Yellow
@@ -337,11 +359,13 @@ ConsoleColors = new ConsoleColorOptions
 For modern terminals supporting 16 million colors:
 
 ```csharp
-ConsoleColors = new ConsoleColorOptions
+using Miku.Core;
+
+ConsoleColors = new MikuConsoleColorOptions
 {
     Enabled = true,
-    ColorSpace = ColorSpace.TrueColor,
-    TrueColors = new TrueColorOptions
+    ColorSpace = MikuColorSpace.TrueColor,
+    TrueColors = new MikuTrueColorOptions
     {
         TraceColor = RgbColor.Gray,
         DebugColor = RgbColor.Yellow,
@@ -353,7 +377,7 @@ ConsoleColors = new ConsoleColorOptions
 }
 
 // Custom hex colors
-TrueColors = new TrueColorOptions
+TrueColors = new MikuTrueColorOptions
 {
     InformationColor = RgbColor.FromHex("#39C5BB"), // Miku's hair highlight
     WarningColor = new RgbColor(255, 165, 0),       // RGB values

@@ -40,7 +40,7 @@ public class FileLogWriterTests : IDisposable
 
     private FileLogWriter CreateWriter(string? fileName = null)
     {
-        var options = new FileLoggerOptions
+        var options = new MikuFileLoggerOptions
         {
             LogDirectory = _testDirectory,
             FileNamePattern = fileName ?? "test.log",
@@ -250,7 +250,7 @@ public class FileLogWriterTests : IDisposable
         // In production, each application instance would log to its own file
         for (int i = 0; i < writerCount; i++)
         {
-            var options = new FileLoggerOptions
+            var options = new MikuFileLoggerOptions
             {
                 LogDirectory = _testDirectory,
                 FileNamePattern = $"dispose-concurrent-{i}.log", // Unique file per writer
@@ -349,7 +349,7 @@ public class FileLogWriterTests : IDisposable
     public async Task MultipleWriters_WithDateFolders_NoConflict()
     {
         // Arrange
-        var options = new FileLoggerOptions
+        var options = new MikuFileLoggerOptions
         {
             LogDirectory = _testDirectory,
             FileNamePattern = "dated.log",

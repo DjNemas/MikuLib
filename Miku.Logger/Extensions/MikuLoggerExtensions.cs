@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Providers;
 
 namespace Miku.Logger.Extensions
@@ -42,8 +43,8 @@ namespace Miku.Logger.Extensions
         /// <code>
         /// builder.Logging.AddMikuLogger(options =>
         /// {
-        ///     options.Output = LogOutput.ConsoleAndFile;
-        ///     options.MinimumLogLevel = LogLevel.Debug;
+        ///     options.Output = MikuLogOutput.ConsoleAndFile;
+        ///     options.MinimumLogLevel = MikuLogLevel.Debug;
         ///     options.FileOptions.MaxFileSizeBytes = 5 * 1024 * 1024; // 5 MB
         ///     options.FileOptions.UseDateFolders = true;
         /// });

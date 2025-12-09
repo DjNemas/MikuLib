@@ -12,7 +12,7 @@ namespace Miku.Logger.Configuration.Models
     /// - 16-231: 216 colors (6x6x6 color cube)
     /// - 232-255: 24 grayscale colors
     /// </remarks>
-    public class Extended256ColorOptions
+    public class MikuExtended256ColorOptions
     {
         /// <summary>Gets or sets the color code for Trace level logs (0-255). Default: 245 (light gray).</summary>
         public byte TraceColor { get; set; } = 245;
@@ -40,7 +40,7 @@ namespace Miku.Logger.Configuration.Models
     /// Like painting with all 16 million colors of the rainbow!
     /// Miku's cyan (#00CED1) is the default for Information level.
     /// </remarks>
-    public class TrueColorOptions
+    public class MikuTrueColorOptions
     {
         /// <summary>Gets or sets the RGB color for Trace level logs. Default: Gray.</summary>
         public RgbColor TraceColor { get; set; } = RgbColor.Gray;

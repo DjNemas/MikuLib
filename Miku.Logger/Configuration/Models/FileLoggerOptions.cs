@@ -7,7 +7,7 @@ namespace Miku.Logger.Configuration.Models
     /// Like organizing concert recordings by date and venue,
     /// these options control how log files are organized and managed.
     /// </remarks>
-    public class FileLoggerOptions
+    public class MikuFileLoggerOptions
     {
         /// <summary>Gets or sets the base directory for log files.</summary>
         public string LogDirectory { get; set; } = "./logs";

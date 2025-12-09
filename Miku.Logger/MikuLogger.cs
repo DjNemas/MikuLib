@@ -5,9 +5,6 @@ using Miku.Logger.Sse;
 using Miku.Logger.Writers;
 using System.Diagnostics;
 
-// Alias to avoid conflict with Microsoft.Extensions.Logging.LogLevel
-using MikuLogLevel = Miku.Logger.Configuration.Enums.LogLevel;
-
 namespace Miku.Logger
 {
     /// <summary>
@@ -31,8 +28,8 @@ namespace Miku.Logger
     /// // With options including SSE
     /// var options = new MikuLoggerOptions
     /// {
-    ///     Output = LogOutput.All, // Console, File, and SSE
-    ///     MinimumLogLevel = LogLevel.Debug
+    ///     Output = MikuLogOutput.All, // Console, File, and SSE
+    ///     MinimumLogLevel = MikuLogLevel.Debug
     /// };
     /// var logger = new MikuLogger("MyApp", options);
     /// 
@@ -71,17 +68,17 @@ namespace Miku.Logger
             _categoryName = categoryName ?? GetCallingClassName();
             _options = options ?? new MikuLoggerOptions();
 
-            if (_options.Output.HasFlag(LogOutput.Console))
+            if (_options.Output.HasFlag(MikuLogOutput.Console))
             {
                 _consoleWriter = new ConsoleLogWriter(_options.ConsoleColors);
             }
 
-            if (_options.Output.HasFlag(LogOutput.File))
+            if (_options.Output.HasFlag(MikuLogOutput.File))
             {
                 _fileWriter = new FileLogWriter(_options.FileOptions);
             }
 
-            if (_options.Output.HasFlag(LogOutput.ServerSentEvents))
+            if (_options.Output.HasFlag(MikuLogOutput.ServerSentEvents))
             {
                 _useSse = true;
                 SseLogBroadcaster.Instance.Configure(_options.SseOptions);

@@ -58,7 +58,7 @@ namespace Miku.Logger.Sse
         /// Creates an SseLogEntry from log parameters.
         /// </summary>
         internal static SseLogEntry Create(
-            LogLevel logLevel,
+            MikuLogLevel logLevel,
             string category,
             string message,
             Exception? exception = null,
@@ -75,17 +75,17 @@ namespace Miku.Logger.Sse
             };
         }
 
-        private static string GetLogLevelString(LogLevel logLevel)
+        private static string GetLogLevelString(MikuLogLevel logLevel)
         {
             return logLevel switch
             {
-                LogLevel.Trace => "Trace",
-                LogLevel.Debug => "Debug",
-                LogLevel.Information => "Information",
-                LogLevel.Warning => "Warning",
-                LogLevel.Error => "Error",
-                LogLevel.Critical => "Critical",
-                LogLevel.None => "None",
+                MikuLogLevel.Trace => "Trace",
+                MikuLogLevel.Debug => "Debug",
+                MikuLogLevel.Information => "Information",
+                MikuLogLevel.Warning => "Warning",
+                MikuLogLevel.Error => "Error",
+                MikuLogLevel.Critical => "Critical",
+                MikuLogLevel.None => "None",
                 _ => "Unknown"
             };
         }

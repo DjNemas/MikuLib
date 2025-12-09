@@ -9,14 +9,14 @@ namespace Miku.Logger.Writers
     /// </summary>
     internal class FileLogWriter : IDisposable
     {
-        private readonly FileLoggerOptions _options;
+        private readonly MikuFileLoggerOptions _options;
         private readonly ConcurrentQueue<string> _writeQueue = new();
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly Task _writerTask;
         private bool _disposed;
         private SharedFileStream? _currentStream;
 
-        public FileLogWriter(FileLoggerOptions options)
+        public FileLogWriter(MikuFileLoggerOptions options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _writerTask = Task.Run(ProcessQueueAsync);

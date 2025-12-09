@@ -27,7 +27,7 @@ namespace Miku.Logger.Sse
 
         private readonly List<Channel<SseLogEntry>> _clientChannels = new();
         private readonly SemaphoreSlim _channelLock = new(1, 1);
-        private readonly SseLoggerOptions _options = new();
+        private readonly MikuSseLoggerOptions _options = new();
         private bool _disposed;
 
         private SseLogBroadcaster() { }
@@ -36,7 +36,7 @@ namespace Miku.Logger.Sse
         /// Configures the broadcaster with the specified options.
         /// </summary>
         /// <param name="options">The SSE logger options.</param>
-        public void Configure(SseLoggerOptions options)
+        public void Configure(MikuSseLoggerOptions options)
         {
             if (options != null)
             {
@@ -52,7 +52,7 @@ namespace Miku.Logger.Sse
         /// <summary>
         /// Gets the current SSE options.
         /// </summary>
-        public SseLoggerOptions Options => _options;
+        public MikuSseLoggerOptions Options => _options;
 
         /// <summary>
         /// Gets the number of currently connected clients.
@@ -82,7 +82,7 @@ namespace Miku.Logger.Sse
         /// <param name="exception">Optional exception.</param>
         /// <param name="useUtcTime">Whether to use UTC time.</param>
         public void Broadcast(
-            LogLevel logLevel,
+            MikuLogLevel logLevel,
             string category,
             string message,
             Exception? exception = null,

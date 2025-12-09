@@ -13,8 +13,8 @@ namespace Miku.Logger.Tests
             var options = new MikuLoggerOptions();
 
             // Assert
-            Assert.Equal(LogOutput.ConsoleAndFile, options.Output);
-            Assert.Equal(LogLevel.Information, options.MinimumLogLevel);
+            Assert.Equal(MikuLogOutput.ConsoleAndFile, options.Output);
+            Assert.Equal(MikuLogLevel.Information, options.MinimumLogLevel);
             Assert.NotNull(options.ConsoleColors);
             Assert.NotNull(options.FileOptions);
             Assert.NotNull(options.FormatOptions);
@@ -26,7 +26,7 @@ namespace Miku.Logger.Tests
         public void LogFormatOptions_DefaultValues_ShouldBeSet()
         {
             // Arrange & Act
-            var options = new LogFormatOptions();
+            var options = new MikuLogFormatOptions();
 
             // Assert
             Assert.True(options.ShowDate);
@@ -39,11 +39,11 @@ namespace Miku.Logger.Tests
         public void ConsoleColorOptions_DefaultValues_ShouldBeSet()
         {
             // Arrange & Act
-            var options = new ConsoleColorOptions();
+            var options = new MikuConsoleColorOptions();
 
             // Assert
             Assert.True(options.Enabled);
-            Assert.Equal(ColorSpace.Console, options.ColorSpace);
+            Assert.Equal(MikuColorSpace.Console, options.ColorSpace);
             Assert.Equal(ConsoleColor.Gray, options.TraceColor);
             Assert.Equal(ConsoleColor.Yellow, options.DebugColor);
             Assert.Equal(ConsoleColor.Cyan, options.InformationColor);
@@ -56,7 +56,7 @@ namespace Miku.Logger.Tests
         public void FileLoggerOptions_DefaultValues_ShouldBeSet()
         {
             // Arrange & Act
-            var options = new FileLoggerOptions();
+            var options = new MikuFileLoggerOptions();
 
             // Assert
             Assert.Equal("./logs", options.LogDirectory);
@@ -72,27 +72,27 @@ namespace Miku.Logger.Tests
         public void LogOutput_Flags_ShouldCombineProperly()
         {
             // Arrange & Act
-            var consoleOnly = LogOutput.Console;
-            var fileOnly = LogOutput.File;
-            var both = LogOutput.ConsoleAndFile;
+            var consoleOnly = MikuLogOutput.Console;
+            var fileOnly = MikuLogOutput.File;
+            var both = MikuLogOutput.ConsoleAndFile;
 
             // Assert
-            Assert.True(both.HasFlag(LogOutput.Console));
-            Assert.True(both.HasFlag(LogOutput.File));
-            Assert.False(consoleOnly.HasFlag(LogOutput.File));
-            Assert.False(fileOnly.HasFlag(LogOutput.Console));
+            Assert.True(both.HasFlag(MikuLogOutput.Console));
+            Assert.True(both.HasFlag(MikuLogOutput.File));
+            Assert.False(consoleOnly.HasFlag(MikuLogOutput.File));
+            Assert.False(fileOnly.HasFlag(MikuLogOutput.Console));
         }
 
         [Fact]
         public void LogLevel_Values_ShouldBeOrdered()
         {
             // Assert
-            Assert.True(LogLevel.Trace < LogLevel.Debug);
-            Assert.True(LogLevel.Debug < LogLevel.Information);
-            Assert.True(LogLevel.Information < LogLevel.Warning);
-            Assert.True(LogLevel.Warning < LogLevel.Error);
-            Assert.True(LogLevel.Error < LogLevel.Critical);
-            Assert.True(LogLevel.Critical < LogLevel.None);
+            Assert.True(MikuLogLevel.Trace < MikuLogLevel.Debug);
+            Assert.True(MikuLogLevel.Debug < MikuLogLevel.Information);
+            Assert.True(MikuLogLevel.Information < MikuLogLevel.Warning);
+            Assert.True(MikuLogLevel.Warning < MikuLogLevel.Error);
+            Assert.True(MikuLogLevel.Error < MikuLogLevel.Critical);
+            Assert.True(MikuLogLevel.Critical < MikuLogLevel.None);
         }
 
         [Fact]
@@ -101,15 +101,15 @@ namespace Miku.Logger.Tests
             // Arrange & Act
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
-                MinimumLogLevel = LogLevel.Debug,
+                Output = MikuLogOutput.Console,
+                MinimumLogLevel = MikuLogLevel.Debug,
                 DateFormat = "yyyy-MM-dd",
                 UseUtcTime = true
             };
 
             // Assert
-            Assert.Equal(LogOutput.Console, options.Output);
-            Assert.Equal(LogLevel.Debug, options.MinimumLogLevel);
+            Assert.Equal(MikuLogOutput.Console, options.Output);
+            Assert.Equal(MikuLogLevel.Debug, options.MinimumLogLevel);
             Assert.Equal("yyyy-MM-dd", options.DateFormat);
             Assert.True(options.UseUtcTime);
         }
@@ -118,7 +118,7 @@ namespace Miku.Logger.Tests
         public void LogFormatOptions_CustomValues_ShouldBeSettable()
         {
             // Arrange & Act
-            var options = new LogFormatOptions
+            var options = new MikuLogFormatOptions
             {
                 ShowDate = false,
                 ShowTime = true,
@@ -137,16 +137,16 @@ namespace Miku.Logger.Tests
         public void ConsoleColorOptions_CustomValues_ShouldBeSettable()
         {
             // Arrange & Act
-            var options = new ConsoleColorOptions
+            var options = new MikuConsoleColorOptions
             {
                 Enabled = false,
-                ColorSpace = ColorSpace.Extended256,
+                ColorSpace = MikuColorSpace.Extended256,
                 InformationColor = ConsoleColor.Green
             };
 
             // Assert
             Assert.False(options.Enabled);
-            Assert.Equal(ColorSpace.Extended256, options.ColorSpace);
+            Assert.Equal(MikuColorSpace.Extended256, options.ColorSpace);
             Assert.Equal(ConsoleColor.Green, options.InformationColor);
         }
 
@@ -154,7 +154,7 @@ namespace Miku.Logger.Tests
         public void FileLoggerOptions_CustomValues_ShouldBeSettable()
         {
             // Arrange & Act
-            var options = new FileLoggerOptions
+            var options = new MikuFileLoggerOptions
             {
                 LogDirectory = "./custom_logs",
                 FileNamePattern = "app_{0:yyyy-MM-dd}.log",
@@ -177,9 +177,9 @@ namespace Miku.Logger.Tests
         public void ColorSpace_Values_ShouldExist()
         {
             // Arrange & Act
-            var console = ColorSpace.Console;
-            var extended = ColorSpace.Extended256;
-            var trueColor = ColorSpace.TrueColor;
+            var console = MikuColorSpace.Console;
+            var extended = MikuColorSpace.Extended256;
+            var trueColor = MikuColorSpace.TrueColor;
 
             // Assert
             Assert.NotEqual(console, extended);

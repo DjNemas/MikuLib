@@ -75,7 +75,7 @@ namespace Miku.Tests
             {
                 using var logger = new Logger.MikuLogger("TestLogger", new Logger.Configuration.MikuLoggerOptions
                 {
-                    Output = LogOutput.Console
+                    Output = MikuLogOutput.Console
                 });
                 logger.LogInformation("Test from Miku main package");
             });

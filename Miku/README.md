@@ -12,6 +12,22 @@ A collection of powerful .NET 10 libraries inspired by Hatsune Miku.
 
 MikuLib is a comprehensive .NET 10 library collection that brings together powerful utilities for modern application development. Named after and inspired by Hatsune Miku, the virtual singer who revolutionized music and technology.
 
+## ⚠️ Breaking Changes in Version 10.2.39
+
+All enums and configuration models have been renamed with the `Miku` prefix for better consistency:
+
+| Old Name | New Name |
+|----------|----------|
+| `LogLevel` | `MikuLogLevel` |
+| `LogOutput` | `MikuLogOutput` |
+| `ColorSpace` | `MikuColorSpace` |
+| `ConsoleColorOptions` | `MikuConsoleColorOptions` |
+| `FileLoggerOptions` | `MikuFileLoggerOptions` |
+| `LogFormatOptions` | `MikuLogFormatOptions` |
+| `SseLoggerOptions` | `MikuSseLoggerOptions` |
+| `Extended256ColorOptions` | `MikuExtended256ColorOptions` |
+| `TrueColorOptions` | `MikuTrueColorOptions` |
+
 ## Included Libraries
 
 This meta package includes all MikuLib sub-libraries:
@@ -105,11 +121,11 @@ using Miku.Logger.Configuration.Models;
 
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.Console,
-    ConsoleColors = new ConsoleColorOptions
+    Output = MikuLogOutput.Console,
+    ConsoleColors = new MikuConsoleColorOptions
     {
-        ColorSpace = ColorSpace.TrueColor,
-        TrueColors = new TrueColorOptions
+        ColorSpace = MikuColorSpace.TrueColor,
+        TrueColors = new MikuTrueColorOptions
         {
             InformationColor = RgbColor.MikuCyan,
             ErrorColor = RgbColor.MikuPink

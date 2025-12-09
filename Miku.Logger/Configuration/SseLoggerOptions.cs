@@ -9,7 +9,7 @@ namespace Miku.Logger.Configuration
     /// Like Miku's voice streaming to fans worldwide, 
     /// these options configure how logs are broadcast to connected clients.
     /// </remarks>
-    public class SseLoggerOptions
+    public class MikuSseLoggerOptions
     {
         /// <summary>
         /// Gets or sets the endpoint path for SSE log streaming.
@@ -65,6 +65,6 @@ namespace Miku.Logger.Configuration
         /// Allows filtering logs sent to SSE clients independently of other outputs.
         /// Default: null (uses the main MinimumLogLevel from MikuLoggerOptions)
         /// </summary>
-        public LogLevel? MinimumLogLevel { get; set; }
+        public MikuLogLevel? MinimumLogLevel { get; set; }
     }
 }
