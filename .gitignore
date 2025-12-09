@@ -48,3 +48,5 @@ bld/
 # OS specific
 .DS_Store
 Thumbs.db
+/pack.bat
+/create-packages.bat
