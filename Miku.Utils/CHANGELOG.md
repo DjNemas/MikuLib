@@ -8,7 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - **MikuMapper**: Renamed `MapPropertys` to `MapProperties` (fixed typo in method name)
-  - Even Miku makes typos sometimes! ♪
+  - Even Miku makes typos sometimes!
+
+### Removed
+- **MikuConsole** and **ConsoleAnimation** moved to new `MikuLib.Console` package
+  - If you were using console utilities, add: `dotnet add package MikuLib.Console`
 
 ### Deprecated
 - `MapPropertys<T>(object, bool, params string[])` - Use `MapProperties` instead
@@ -17,6 +21,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - All deprecated methods will be removed in version 10.2.39
 
 ### Migration Guide
+
+#### MikuMapper
 Simply replace `MapPropertys` with `MapProperties` in your code:
 ```csharp
 // Before
@@ -24,6 +30,19 @@ var dto = MikuMapper.MapPropertys<UserDto>(user);
 
 // After
 var dto = MikuMapper.MapProperties<UserDto>(user);
+```
+
+#### Console Utilities
+Console utilities have moved to a dedicated package:
+```csharp
+// Before
+using Miku.Utils.ConsoleHelper;
+
+// After
+using MikuLib.Console;
+
+// Install the new package
+// dotnet add package MikuLib.Console
 ```
 
 ---

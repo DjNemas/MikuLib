@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>14.0</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
+    <!-- Package Information -->
+    <PackageId>MikuLib.Core</PackageId>
+    <Title>Miku Core</Title>
+    <Version>10.0.39</Version>
+    <Authors>Hatsune Nemas</Authors>
+    <Company>CV01 Development</Company>
+    <Product>MikuLib.Core</Product>
+    <Description>Core types and utilities shared across MikuLib packages. Contains common structures like RgbColor, ANSI codes, and ColorHelper.</Description>
+    <Copyright>Copyright (c) 2025 Hatsune Nemas</Copyright>
+    <PackageTags>miku;core;rgb;color;console;ansi;utilities;hatsune-miku;cv01</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/DjNemas/MikuLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DjNemas/MikuLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <!-- Assembly Information -->
+    <AssemblyName>Miku.Core</AssemblyName>
+    <RootNamespace>Miku.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

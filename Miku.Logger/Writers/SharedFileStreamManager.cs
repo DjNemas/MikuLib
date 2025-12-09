@@ -8,7 +8,7 @@ namespace Miku.Logger.Writers
     /// </summary>
     internal sealed class SharedFileStreamManager
     {
-        private static readonly Lazy<SharedFileStreamManager> _instance = 
+        private static readonly Lazy<SharedFileStreamManager> _instance =
             new(() => new SharedFileStreamManager());
 
         public static SharedFileStreamManager Instance => _instance.Value;

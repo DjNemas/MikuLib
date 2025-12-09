@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Providers;
 
 namespace Miku.Logger.Tests

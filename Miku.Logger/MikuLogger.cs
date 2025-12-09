@@ -1,17 +1,23 @@
 using Microsoft.Extensions.Logging;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Sse;
 using Miku.Logger.Writers;
 using System.Diagnostics;
+
+// Alias to avoid conflict with Microsoft.Extensions.Logging.LogLevel
+using MikuLogLevel = Miku.Logger.Configuration.Enums.LogLevel;
 
 namespace Miku.Logger
 {
     /// <summary>
-    /// Advanced logging implementation with console and file output support.
+    /// Advanced logging implementation with console, file, and SSE output support.
     /// Implements Microsoft.Extensions.Logging.ILogger for compatibility.
     /// </summary>
     /// <remarks>
     /// Like a voice echoing through concerts since August 31st, 2007,
     /// this logger carries your messages with CV01 precision and clarity.
+    /// Now with Server-Sent Events for real-time log streaming!
     /// </remarks>
     /// <example>
     /// <code>
@@ -22,10 +28,10 @@ namespace Miku.Logger
     /// // Explicit category name
     /// var logger = new MikuLogger("MyApp");
     /// 
-    /// // With options
+    /// // With options including SSE
     /// var options = new MikuLoggerOptions
     /// {
-    ///     Output = LogOutput.ConsoleAndFile,
+    ///     Output = LogOutput.All, // Console, File, and SSE
     ///     MinimumLogLevel = LogLevel.Debug
     /// };
     /// var logger = new MikuLogger("MyApp", options);
@@ -51,6 +57,7 @@ namespace Miku.Logger
         private readonly MikuLoggerOptions _options;
         private readonly ConsoleLogWriter? _consoleWriter;
         private readonly FileLogWriter? _fileWriter;
+        private readonly bool _useSse;
         private bool _disposed;
 
         /// <summary>
@@ -72,6 +79,12 @@ namespace Miku.Logger
             if (_options.Output.HasFlag(LogOutput.File))
             {
                 _fileWriter = new FileLogWriter(_options.FileOptions);
+            }
+
+            if (_options.Output.HasFlag(LogOutput.ServerSentEvents))
+            {
+                _useSse = true;
+                SseLogBroadcaster.Instance.Configure(_options.SseOptions);
             }
         }
 
@@ -144,54 +157,54 @@ namespace Miku.Logger
         /// Logs a trace message.
         /// </summary>
         public void LogTrace(string message, params object[] args)
-            => Log(Configuration.LogLevel.Trace, message, args);
+            => Log(MikuLogLevel.Trace, message, args);
 
         /// <summary>
         /// Logs a debug message.
         /// </summary>
         public void LogDebug(string message, params object[] args)
-            => Log(Configuration.LogLevel.Debug, message, args);
+            => Log(MikuLogLevel.Debug, message, args);
 
         /// <summary>
         /// Logs an informational message.
         /// </summary>
         public void LogInformation(string message, params object[] args)
-            => Log(Configuration.LogLevel.Information, message, args);
+            => Log(MikuLogLevel.Information, message, args);
 
         /// <summary>
         /// Logs a warning message.
         /// </summary>
         public void LogWarning(string message, params object[] args)
-            => Log(Configuration.LogLevel.Warning, message, args);
+            => Log(MikuLogLevel.Warning, message, args);
 
         /// <summary>
         /// Logs an error message.
         /// </summary>
         public void LogError(string message, params object[] args)
-            => Log(Configuration.LogLevel.Error, message, args);
+            => Log(MikuLogLevel.Error, message, args);
 
         /// <summary>
         /// Logs an error message with exception.
         /// </summary>
         public void LogError(Exception exception, string message, params object[] args)
-            => Log(Configuration.LogLevel.Error, message, exception, args);
+            => Log(MikuLogLevel.Error, message, exception, args);
 
         /// <summary>
         /// Logs a critical message.
         /// </summary>
         public void LogCritical(string message, params object[] args)
-            => Log(Configuration.LogLevel.Critical, message, args);
+            => Log(MikuLogLevel.Critical, message, args);
 
         /// <summary>
         /// Logs a critical message with exception.
         /// </summary>
         public void LogCritical(Exception exception, string message, params object[] args)
-            => Log(Configuration.LogLevel.Critical, message, exception, args);
+            => Log(MikuLogLevel.Critical, message, exception, args);
 
-        private void Log(Configuration.LogLevel logLevel, string message, params object[] args)
+        private void Log(MikuLogLevel logLevel, string message, params object[] args)
             => Log(logLevel, message, null, args);
 
-        private void Log(Configuration.LogLevel logLevel, string message, Exception? exception, params object[] args)
+        private void Log(MikuLogLevel logLevel, string message, Exception? exception, params object[] args)
         {
             if (logLevel < _options.MinimumLogLevel)
                 return;
@@ -208,54 +221,54 @@ namespace Miku.Logger
         /// Logs a trace message asynchronously.
         /// </summary>
         public Task LogTraceAsync(string message, params object[] args)
-            => LogAsync(Configuration.LogLevel.Trace, message, args);
+            => LogAsync(MikuLogLevel.Trace, message, args);
 
         /// <summary>
         /// Logs a debug message asynchronously.
         /// </summary>
         public Task LogDebugAsync(string message, params object[] args)
-            => LogAsync(Configuration.LogLevel.Debug, message, args);
+            => LogAsync(MikuLogLevel.Debug, message, args);
 
         /// <summary>
         /// Logs an informational message asynchronously.
         /// </summary>
         public Task LogInformationAsync(string message, params object[] args)
-            => LogAsync(Configuration.LogLevel.Information, message, args);
+            => LogAsync(MikuLogLevel.Information, message, args);
 
         /// <summary>
         /// Logs a warning message asynchronously.
         /// </summary>
         public Task LogWarningAsync(string message, params object[] args)
-            => LogAsync(Configuration.LogLevel.Warning, message, args);
+            => LogAsync(MikuLogLevel.Warning, message, args);
 
         /// <summary>
         /// Logs an error message asynchronously.
         /// </summary>
         public Task LogErrorAsync(string message, params object[] args)
-            => LogAsync(Configuration.LogLevel.Error, message, args);
+            => LogAsync(MikuLogLevel.Error, message, args);
 
         /// <summary>
         /// Logs an error message with exception asynchronously.
         /// </summary>
         public Task LogErrorAsync(Exception exception, string message, params object[] args)
-            => LogAsync(Configuration.LogLevel.Error, message, exception, args);
+            => LogAsync(MikuLogLevel.Error, message, exception, args);
 
         /// <summary>
         /// Logs a critical message asynchronously.
         /// </summary>
         public Task LogCriticalAsync(string message, params object[] args)
-            => LogAsync(Configuration.LogLevel.Critical, message, args);
+            => LogAsync(MikuLogLevel.Critical, message, args);
 
         /// <summary>
         /// Logs a critical message with exception asynchronously.
         /// </summary>
         public Task LogCriticalAsync(Exception exception, string message, params object[] args)
-            => LogAsync(Configuration.LogLevel.Critical, message, exception, args);
+            => LogAsync(MikuLogLevel.Critical, message, exception, args);
 
-        private Task LogAsync(Configuration.LogLevel logLevel, string message, params object[] args)
+        private Task LogAsync(MikuLogLevel logLevel, string message, params object[] args)
             => LogAsync(logLevel, message, null, args);
 
-        private async Task LogAsync(Configuration.LogLevel logLevel, string message, Exception? exception, params object[] args)
+        private async Task LogAsync(MikuLogLevel logLevel, string message, Exception? exception, params object[] args)
         {
             if (logLevel < _options.MinimumLogLevel)
                 return;
@@ -268,15 +281,21 @@ namespace Miku.Logger
 
         #region Internal Logging Logic
 
-        private void LogInternal(Configuration.LogLevel logLevel, string message, Exception? exception)
+        private void LogInternal(MikuLogLevel logLevel, string message, Exception? exception)
         {
             var logMessage = FormatLogMessage(logLevel, message, exception);
 
             _consoleWriter?.Write(logMessage, logLevel);
             _fileWriter?.Write(logMessage);
+
+            // Broadcast to SSE clients
+            if (_useSse)
+            {
+                SseLogBroadcaster.Instance.Broadcast(logLevel, _categoryName, message, exception, _options.UseUtcTime);
+            }
         }
 
-        private async Task LogInternalAsync(Configuration.LogLevel logLevel, string message, Exception? exception)
+        private async Task LogInternalAsync(MikuLogLevel logLevel, string message, Exception? exception)
         {
             var logMessage = FormatLogMessage(logLevel, message, exception);
 
@@ -289,9 +308,15 @@ namespace Miku.Logger
                 tasks.Add(_fileWriter.WriteAsync(logMessage));
 
             await Task.WhenAll(tasks);
+
+            // Broadcast to SSE clients (synchronous, uses channels internally)
+            if (_useSse)
+            {
+                SseLogBroadcaster.Instance.Broadcast(logLevel, _categoryName, message, exception, _options.UseUtcTime);
+            }
         }
 
-        private string FormatLogMessage(Configuration.LogLevel logLevel, string message, Exception? exception)
+        private string FormatLogMessage(MikuLogLevel logLevel, string message, Exception? exception)
         {
             var parts = new List<string>();
 
@@ -340,33 +365,33 @@ namespace Miku.Logger
             return formatted;
         }
 
-        private static string GetLogLevelString(Configuration.LogLevel logLevel)
+        private static string GetLogLevelString(MikuLogLevel logLevel)
         {
             return logLevel switch
             {
-                Configuration.LogLevel.Trace => "TRACE",
-                Configuration.LogLevel.Debug => "DEBUG",
-                Configuration.LogLevel.Information => "INFO",
-                Configuration.LogLevel.Warning => "WARN",
-                Configuration.LogLevel.Error => "ERROR",
-                Configuration.LogLevel.Critical => "CRITICAL",
-                Configuration.LogLevel.None => "NONE",
+                MikuLogLevel.Trace => "TRACE",
+                MikuLogLevel.Debug => "DEBUG",
+                MikuLogLevel.Information => "INFO",
+                MikuLogLevel.Warning => "WARN",
+                MikuLogLevel.Error => "ERROR",
+                MikuLogLevel.Critical => "CRITICAL",
+                MikuLogLevel.None => "NONE",
                 _ => "UNKNOWN"
             };
         }
 
-        private static Configuration.LogLevel ConvertLogLevel(Microsoft.Extensions.Logging.LogLevel logLevel)
+        private static MikuLogLevel ConvertLogLevel(Microsoft.Extensions.Logging.LogLevel logLevel)
         {
             return logLevel switch
             {
-                Microsoft.Extensions.Logging.LogLevel.Trace => Configuration.LogLevel.Trace,
-                Microsoft.Extensions.Logging.LogLevel.Debug => Configuration.LogLevel.Debug,
-                Microsoft.Extensions.Logging.LogLevel.Information => Configuration.LogLevel.Information,
-                Microsoft.Extensions.Logging.LogLevel.Warning => Configuration.LogLevel.Warning,
-                Microsoft.Extensions.Logging.LogLevel.Error => Configuration.LogLevel.Error,
-                Microsoft.Extensions.Logging.LogLevel.Critical => Configuration.LogLevel.Critical,
-                Microsoft.Extensions.Logging.LogLevel.None => Configuration.LogLevel.None,
-                _ => Configuration.LogLevel.Information
+                Microsoft.Extensions.Logging.LogLevel.Trace => MikuLogLevel.Trace,
+                Microsoft.Extensions.Logging.LogLevel.Debug => MikuLogLevel.Debug,
+                Microsoft.Extensions.Logging.LogLevel.Information => MikuLogLevel.Information,
+                Microsoft.Extensions.Logging.LogLevel.Warning => MikuLogLevel.Warning,
+                Microsoft.Extensions.Logging.LogLevel.Error => MikuLogLevel.Error,
+                Microsoft.Extensions.Logging.LogLevel.Critical => MikuLogLevel.Critical,
+                Microsoft.Extensions.Logging.LogLevel.None => MikuLogLevel.None,
+                _ => MikuLogLevel.Information
             };
         }
 

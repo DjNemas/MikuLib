@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>14.0</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
+    <!-- Package Information -->
+    <PackageId>MikuLib.Console</PackageId>
+    <Title>Miku Console</Title>
+    <Version>10.0.39</Version>
+    <Authors>Hatsune Nemas</Authors>
+    <Company>CV01 Development</Company>
+    <Product>MikuLib.Console</Product>
+    <Description>Beautiful colored console output with TrueColor (24-bit RGB) and 256-color support. Features MikuConsole for styled output and ConsoleAnimation for typewriter, fade, pulse, and wave effects. Paint your terminal with Miku's colors!</Description>
+    <Copyright>Copyright (c) 2025 Hatsune Nemas</Copyright>
+    <PackageTags>miku;console;color;ansi;truecolor;256-color;animation;terminal;cli;hatsune-miku;cv01;39</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/DjNemas/MikuLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DjNemas/MikuLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <!-- Assembly Information -->
+    <AssemblyName>MikuLib.Console</AssemblyName>
+    <RootNamespace>MikuLib.Console</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Miku.Core\Miku.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

@@ -36,7 +36,7 @@ namespace Miku.Utils
     {
         // 39 (Mi-Ku in Japanese) - Default timeout
         private const int DefaultTimeoutSeconds = 39;
-        
+
         // Character Vocal Series 01
         private const string VocaloidVersion = "CV01";
 
@@ -80,14 +80,14 @@ namespace Miku.Utils
             StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             var actualArgs = GetArgs(args);
-            
+
             if (actualArgs.Length < 2)
                 return false;
 
             return actualArgs
                 .Zip(actualArgs.Skip(1), (param, val) => new { Parameter = param, Value = val })
-                .Any(pair => 
-                    pair.Parameter.Equals(parameter, comparison) && 
+                .Any(pair =>
+                    pair.Parameter.Equals(parameter, comparison) &&
                     pair.Value.Equals(value, comparison));
         }
 
@@ -155,7 +155,7 @@ namespace Miku.Utils
             StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             var actualArgs = GetArgs(args);
-            
+
             if (actualArgs.Length == 0)
                 return false;
 
@@ -187,7 +187,7 @@ namespace Miku.Utils
             StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             var actualArgs = GetArgs(args);
-            
+
             if (actualArgs.Length < 2)
                 return null;
 
@@ -197,9 +197,9 @@ namespace Miku.Utils
                 {
                     return actualArgs[i + 1];
                 }
-                
+
                 // Support format: --param:value or /param=value
-                if (actualArgs[i].StartsWith(parameter + ":", comparison) || 
+                if (actualArgs[i].StartsWith(parameter + ":", comparison) ||
                     actualArgs[i].StartsWith(parameter + "=", comparison))
                 {
                     var separatorIndex = actualArgs[i].IndexOfAny([':', '=']);
@@ -234,7 +234,7 @@ namespace Miku.Utils
             StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             var actualArgs = GetArgs(args);
-            
+
             if (actualArgs.Length < 2)
                 return Array.Empty<string>();
 
@@ -360,10 +360,10 @@ namespace Miku.Utils
                 {
                     var key = arg[..separatorIndex];
                     var value = arg[(separatorIndex + 1)..];
-                    
+
                     if (!result.ContainsKey(key))
                         result[key] = new List<string>();
-                    
+
                     result[key].Add(value);
                     continue;
                 }

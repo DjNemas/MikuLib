@@ -1,0 +1,358 @@
+using Miku.Core;
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
+
+namespace Miku.Logger.Tests;
+
+/// <summary>
+/// Tests for Extended256 and TrueColor console output.
+/// Like testing all the colors of Miku's concerts!
+/// </summary>
+public class ExtendedColorTests
+{
+    #region RgbColor Tests
+
+    [Fact]
+    public void RgbColor_Constructor_ShouldSetValues()
+    {
+        // Arrange & Act
+        var color = new RgbColor(0x00, 0xCE, 0xD1);
+
+        // Assert
+        Assert.Equal(0x00, color.R);
+        Assert.Equal(0xCE, color.G);
+        Assert.Equal(0xD1, color.B);
+    }
+
+    [Fact]
+    public void RgbColor_FromHex_WithHash_ShouldParse()
+    {
+        // Arrange & Act
+        var color = RgbColor.FromHex("#00CED1");
+
+        // Assert
+        Assert.Equal(0x00, color.R);
+        Assert.Equal(0xCE, color.G);
+        Assert.Equal(0xD1, color.B);
+    }
+
+    [Fact]
+    public void RgbColor_FromHex_WithoutHash_ShouldParse()
+    {
+        // Arrange & Act
+        var color = RgbColor.FromHex("FF5733");
+
+        // Assert
+        Assert.Equal(0xFF, color.R);
+        Assert.Equal(0x57, color.G);
+        Assert.Equal(0x33, color.B);
+    }
+
+    [Fact]
+    public void RgbColor_ToHex_ShouldReturnCorrectFormat()
+    {
+        // Arrange
+        var color = new RgbColor(0, 206, 209);
+
+        // Act
+        var hex = color.ToHex();
+
+        // Assert
+        Assert.Equal("#00CED1", hex);
+    }
+
+    [Fact]
+    public void RgbColor_MikuCyan_ShouldBeCorrect()
+    {
+        // Arrange & Act
+        var mikuCyan = RgbColor.MikuCyan;
+
+        // Assert - Miku's signature color #00CED1
+        Assert.Equal(0x00, mikuCyan.R);
+        Assert.Equal(0xCE, mikuCyan.G);
+        Assert.Equal(0xD1, mikuCyan.B);
+        Assert.Equal("#00CED1", mikuCyan.ToHex());
+    }
+
+    [Fact]
+    public void RgbColor_Equality_ShouldWork()
+    {
+        // Arrange
+        var color1 = new RgbColor(100, 150, 200);
+        var color2 = new RgbColor(100, 150, 200);
+        var color3 = new RgbColor(100, 150, 201);
+
+        // Assert
+        Assert.Equal(color1, color2);
+        Assert.True(color1 == color2);
+        Assert.NotEqual(color1, color3);
+        Assert.True(color1 != color3);
+    }
+
+    [Fact]
+    public void RgbColor_FromHex_InvalidLength_ShouldThrow()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => RgbColor.FromHex("FFF"));
+        Assert.Throws<ArgumentException>(() => RgbColor.FromHex("FFFFFFF"));
+    }
+
+    [Fact]
+    public void RgbColor_FromHex_Null_ShouldThrow()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => RgbColor.FromHex(null!));
+    }
+
+    [Fact]
+    public void RgbColor_PredefinedColors_ShouldExist()
+    {
+        // Act & Assert - Verify all predefined colors are accessible
+        Assert.Equal(new RgbColor(0, 0, 0), RgbColor.Black);
+        Assert.Equal(new RgbColor(255, 255, 255), RgbColor.White);
+        Assert.Equal(new RgbColor(255, 0, 0), RgbColor.Red);
+        Assert.Equal(new RgbColor(0, 255, 0), RgbColor.Green);
+        Assert.Equal(new RgbColor(0, 0, 255), RgbColor.Blue);
+        Assert.Equal(new RgbColor(255, 255, 0), RgbColor.Yellow);
+        Assert.Equal(new RgbColor(0, 255, 255), RgbColor.Cyan);
+        Assert.Equal(new RgbColor(255, 0, 255), RgbColor.Magenta);
+    }
+
+    #endregion
+
+    #region Extended256ColorOptions Tests
+
+    [Fact]
+    public void Extended256ColorOptions_DefaultValues_ShouldBeSet()
+    {
+        // Arrange & Act
+        var options = new Extended256ColorOptions();
+
+        // Assert
+        Assert.Equal(245, options.TraceColor);      // Light gray
+        Assert.Equal(226, options.DebugColor);      // Yellow
+        Assert.Equal(44, options.InformationColor); // Cyan (Miku!)
+        Assert.Equal(208, options.WarningColor);    // Orange
+        Assert.Equal(196, options.ErrorColor);      // Red
+        Assert.Equal(160, options.CriticalColor);   // Dark red
+    }
+
+    [Fact]
+    public void Extended256ColorOptions_CustomValues_ShouldBeSettable()
+    {
+        // Arrange & Act
+        var options = new Extended256ColorOptions
+        {
+            TraceColor = 250,
+            DebugColor = 220,
+            InformationColor = 39, // Another cyan shade
+            WarningColor = 214,
+            ErrorColor = 9,
+            CriticalColor = 52
+        };
+
+        // Assert
+        Assert.Equal(250, options.TraceColor);
+        Assert.Equal(220, options.DebugColor);
+        Assert.Equal(39, options.InformationColor);
+        Assert.Equal(214, options.WarningColor);
+        Assert.Equal(9, options.ErrorColor);
+        Assert.Equal(52, options.CriticalColor);
+    }
+
+    #endregion
+
+    #region TrueColorOptions Tests
+
+    [Fact]
+    public void TrueColorOptions_DefaultValues_ShouldBeSet()
+    {
+        // Arrange & Act
+        var options = new TrueColorOptions();
+
+        // Assert - Information should be Miku Cyan by default
+        Assert.Equal(RgbColor.Gray, options.TraceColor);
+        Assert.Equal(RgbColor.Yellow, options.DebugColor);
+        Assert.Equal(RgbColor.MikuCyan, options.InformationColor);
+        Assert.Equal(RgbColor.Orange, options.WarningColor);
+        Assert.Equal(RgbColor.Red, options.ErrorColor);
+        Assert.Equal(RgbColor.DarkRed, options.CriticalColor);
+    }
+
+    [Fact]
+    public void TrueColorOptions_CustomRgbValues_ShouldBeSettable()
+    {
+        // Arrange & Act
+        var customCyan = RgbColor.FromHex("#39C5BB"); // Miku's hair highlight
+        var options = new TrueColorOptions
+        {
+            InformationColor = customCyan
+        };
+
+        // Assert
+        Assert.Equal(customCyan, options.InformationColor);
+        Assert.Equal("#39C5BB", options.InformationColor.ToHex());
+    }
+
+    #endregion
+
+    #region ConsoleColorOptions Integration Tests
+
+    [Fact]
+    public void ConsoleColorOptions_Extended256Colors_ShouldBeAccessible()
+    {
+        // Arrange
+        var options = new ConsoleColorOptions
+        {
+            ColorSpace = ColorSpace.Extended256
+        };
+
+        // Act
+        options.Extended256Colors.InformationColor = 51; // Bright cyan
+
+        // Assert
+        Assert.Equal(ColorSpace.Extended256, options.ColorSpace);
+        Assert.Equal(51, options.Extended256Colors.InformationColor);
+    }
+
+    [Fact]
+    public void ConsoleColorOptions_TrueColors_ShouldBeAccessible()
+    {
+        // Arrange
+        var options = new ConsoleColorOptions
+        {
+            ColorSpace = ColorSpace.TrueColor
+        };
+
+        // Act
+        options.TrueColors.InformationColor = RgbColor.MikuTeal;
+
+        // Assert
+        Assert.Equal(ColorSpace.TrueColor, options.ColorSpace);
+        Assert.Equal(RgbColor.MikuTeal, options.TrueColors.InformationColor);
+    }
+
+    [Fact]
+    public void ConsoleColorOptions_AllColorSpaces_ShouldHaveDefaults()
+    {
+        // Arrange & Act
+        var options = new ConsoleColorOptions();
+
+        // Assert
+        Assert.NotNull(options.Extended256Colors);
+        Assert.NotNull(options.TrueColors);
+        Assert.Equal(ConsoleColor.Cyan, options.InformationColor);
+        Assert.Equal(44, options.Extended256Colors.InformationColor);
+        Assert.Equal(RgbColor.MikuCyan, options.TrueColors.InformationColor);
+    }
+
+    #endregion
+
+    #region MikuLogger Integration Tests
+
+    [Fact]
+    public void MikuLogger_WithExtended256_ShouldNotThrow()
+    {
+        // Arrange
+        var options = new MikuLoggerOptions
+        {
+            Output = LogOutput.Console,
+            ConsoleColors = new ConsoleColorOptions
+            {
+                Enabled = true,
+                ColorSpace = ColorSpace.Extended256
+            }
+        };
+
+        // Act & Assert
+        using var logger = new MikuLogger("Extended256Test", options);
+        var exception = Record.Exception(() => logger.LogInformation("Test with 256 colors"));
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void MikuLogger_WithTrueColor_ShouldNotThrow()
+    {
+        // Arrange
+        var options = new MikuLoggerOptions
+        {
+            Output = LogOutput.Console,
+            ConsoleColors = new ConsoleColorOptions
+            {
+                Enabled = true,
+                ColorSpace = ColorSpace.TrueColor,
+                TrueColors = new TrueColorOptions
+                {
+                    InformationColor = RgbColor.MikuCyan
+                }
+            }
+        };
+
+        // Act & Assert
+        using var logger = new MikuLogger("TrueColorTest", options);
+        var exception = Record.Exception(() => logger.LogInformation("Test with TrueColor - Miku Cyan!"));
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void MikuLogger_WithCustomHexColor_ShouldNotThrow()
+    {
+        // Arrange
+        var options = new MikuLoggerOptions
+        {
+            Output = LogOutput.Console,
+            ConsoleColors = new ConsoleColorOptions
+            {
+                Enabled = true,
+                ColorSpace = ColorSpace.TrueColor,
+                TrueColors = new TrueColorOptions
+                {
+                    TraceColor = RgbColor.FromHex("#808080"),
+                    DebugColor = RgbColor.FromHex("#FFD700"),
+                    InformationColor = RgbColor.FromHex("#00CED1"),
+                    WarningColor = RgbColor.FromHex("#FFA500"),
+                    ErrorColor = RgbColor.FromHex("#FF4444"),
+                    CriticalColor = RgbColor.FromHex("#8B0000")
+                }
+            }
+        };
+
+        // Act & Assert
+        using var logger = new MikuLogger("CustomColorTest", options);
+
+        var exceptions = new List<Exception?>
+        {
+            Record.Exception(() => logger.LogTrace("Trace")),
+            Record.Exception(() => logger.LogDebug("Debug")),
+            Record.Exception(() => logger.LogInformation("Info")),
+            Record.Exception(() => logger.LogWarning("Warning")),
+            Record.Exception(() => logger.LogError("Error")),
+            Record.Exception(() => logger.LogCritical("Critical"))
+        };
+
+        Assert.All(exceptions, ex => Assert.Null(ex));
+    }
+
+    [Fact]
+    public void MikuLogger_ColorSpaceFallback_WhenDisabled_ShouldNotThrow()
+    {
+        // Arrange
+        var options = new MikuLoggerOptions
+        {
+            Output = LogOutput.Console,
+            ConsoleColors = new ConsoleColorOptions
+            {
+                Enabled = false, // Disabled - should not use any colors
+                ColorSpace = ColorSpace.TrueColor
+            }
+        };
+
+        // Act & Assert
+        using var logger = new MikuLogger("DisabledColorTest", options);
+        var exception = Record.Exception(() => logger.LogInformation("Test without colors"));
+        Assert.Null(exception);
+    }
+
+    #endregion
+}

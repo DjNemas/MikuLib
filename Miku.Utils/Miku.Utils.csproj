@@ -4,21 +4,29 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>14.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     
+    <!-- Package Information -->
     <PackageId>MikuLib.Utils</PackageId>
-	<Title>Miku Utils</Title>
+    <Title>Miku Utils</Title>
     <Version>10.1.39</Version>
     <Authors>Hatsune Nemas</Authors>
-    <Company>Crypton Future Media (Inspired)</Company>
-    <Description>Comprehensive utility library for .NET 10 featuring MikuMapper for object mapping with nullable primitive support, and CommandLineHelper for modern argument parsing with multi-value support and environment integration. Powered by CV01 energy! ⚡</Description>
+    <Company>CV01 Development</Company>
+    <Product>MikuLib.Utils</Product>
+    <Description>Comprehensive utility library for .NET 10 featuring MikuMapper for object mapping with nullable primitive support, and CommandLineHelper for modern argument parsing. Powered by CV01 energy!</Description>
+    <Copyright>Copyright (c) 2025 Hatsune Nemas</Copyright>
     <PackageTags>miku;mapper;object-mapper;dto;nullable;mapping;utils;commandline;arguments;cli;parser;vocaloid;39</PackageTags>
-    <RepositoryUrl>https://github.com/DjNemas/MikuLib</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/DjNemas/MikuLib</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/DjNemas/MikuLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DjNemas/MikuLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Copyright>© 2025 Hatsune Nemas. Singing the code since 2007! 🎵</Copyright>
+    
+    <!-- Assembly Information -->
+    <AssemblyName>Miku.Utils</AssemblyName>
+    <RootNamespace>Miku.Utils</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

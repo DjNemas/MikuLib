@@ -1,4 +1,6 @@
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 namespace Miku.Logger.Tests
 {

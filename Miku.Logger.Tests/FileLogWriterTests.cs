@@ -1,4 +1,4 @@
-using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Models;
 using Miku.Logger.Writers;
 
 namespace Miku.Logger.Tests;
@@ -141,7 +141,7 @@ public class FileLogWriterTests : IDisposable
         Assert.True(File.Exists(logFile));
 
         var lines = await File.ReadAllLinesAsync(logFile);
-        
+
         // With high-performance async writing, we expect all messages
         Assert.Equal(writerCount * messagesPerWriter, lines.Length);
 
@@ -154,7 +154,7 @@ public class FileLogWriterTests : IDisposable
                 expectedMessages.Add($"Writer{w}_Message{m}");
             }
         }
-        
+
         var actualMessages = new HashSet<string>(lines);
         Assert.Equal(expectedMessages.Count, actualMessages.Count);
     }
@@ -212,7 +212,7 @@ public class FileLogWriterTests : IDisposable
 
         var logFile = Path.Combine(_testDirectory, "concurrent.log");
         var lines = await File.ReadAllLinesAsync(logFile);
-        
+
         // All messages should be written
         Assert.Equal(writerCount * messagesPerWriter, lines.Length);
     }
@@ -292,7 +292,7 @@ public class FileLogWriterTests : IDisposable
             var lines = await File.ReadAllLinesAsync(logFile);
             totalLines += lines.Length;
         }
-        
+
         Assert.Equal(writerCount * messagesPerWriter, totalLines);
     }
 

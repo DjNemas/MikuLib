@@ -1,4 +1,4 @@
-using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Models;
 using Miku.Logger.Writers;
 
 namespace Miku.Logger.Tests;

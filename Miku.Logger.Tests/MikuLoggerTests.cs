@@ -1,5 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
+
+using MikuLogLevel = Miku.Logger.Configuration.Enums.LogLevel;
 
 namespace Miku.Logger.Tests
 {
@@ -49,7 +53,7 @@ namespace Miku.Logger.Tests
             var options = new MikuLoggerOptions
             {
                 Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Debug
+                MinimumLogLevel = MikuLogLevel.Debug
             };
 
             // Act
@@ -66,7 +70,7 @@ namespace Miku.Logger.Tests
             var options = new MikuLoggerOptions
             {
                 Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Trace
+                MinimumLogLevel = MikuLogLevel.Trace
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -128,7 +132,7 @@ namespace Miku.Logger.Tests
             var options = new MikuLoggerOptions
             {
                 Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Debug
+                MinimumLogLevel = MikuLogLevel.Debug
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -144,7 +148,7 @@ namespace Miku.Logger.Tests
             var options = new MikuLoggerOptions
             {
                 Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Trace
+                MinimumLogLevel = MikuLogLevel.Trace
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -246,7 +250,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                MinimumLogLevel = Configuration.LogLevel.Information
+                MinimumLogLevel = MikuLogLevel.Information
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -263,7 +267,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                MinimumLogLevel = Configuration.LogLevel.Warning
+                MinimumLogLevel = MikuLogLevel.Warning
             };
             using var logger = new MikuLogger("TestLogger", options);
 

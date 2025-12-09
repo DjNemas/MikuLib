@@ -1,3 +1,5 @@
+using Miku.Logger.Configuration.Enums;
+
 namespace Miku.Tests
 {
     /// <summary>
@@ -45,7 +47,7 @@ namespace Miku.Tests
             // Act
             var exception = Record.Exception(() =>
             {
-                var target = Utils.MikuMapper.MapPropertys<TestDto>(source);
+                var target = Utils.MikuMapper.MapProperties<TestDto>(source);
             });
 
             // Assert
@@ -73,7 +75,7 @@ namespace Miku.Tests
             {
                 using var logger = new Logger.MikuLogger("TestLogger", new Logger.Configuration.MikuLoggerOptions
                 {
-                    Output = Logger.Configuration.LogOutput.Console
+                    Output = LogOutput.Console
                 });
                 logger.LogInformation("Test from Miku main package");
             });

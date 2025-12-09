@@ -31,7 +31,7 @@ namespace Miku.Utils
         // Character age and vocal series number
         private const int CharacterAge = 16;
         private const string CharacterVocalSeries = "CV01";
-        
+
         // Mi-Ku in Japanese goroawase
         private const int MikuNumber = 39;
 

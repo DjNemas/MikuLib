@@ -1,7 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Extensions;
+
+using MikuLogLevel = Miku.Logger.Configuration.Enums.LogLevel;
 
 namespace Miku.Logger.Tests
 {
@@ -32,7 +35,7 @@ namespace Miku.Logger.Tests
             var options = new MikuLoggerOptions
             {
                 Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Debug
+                MinimumLogLevel = MikuLogLevel.Debug
             };
 
             var builder = services.AddLogging(loggingBuilder =>
@@ -58,7 +61,7 @@ namespace Miku.Logger.Tests
                 loggingBuilder.AddMikuLogger(options =>
                 {
                     options.Output = LogOutput.Console;
-                    options.MinimumLogLevel = Configuration.LogLevel.Trace;
+                    options.MinimumLogLevel = MikuLogLevel.Trace;
                 });
             });
 

@@ -1,4 +1,4 @@
-using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Models;
 using System.Collections.Concurrent;
 
 namespace Miku.Logger.Writers
