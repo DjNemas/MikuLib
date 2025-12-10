@@ -18,8 +18,8 @@ namespace Miku.Tests
             // Arrange & Act
             var exception = Record.Exception(() =>
             {
-                var mapper = typeof(Utils.MikuMapper);
-                var commandLineHelper = typeof(Utils.MikuCommandLineHelper);
+                _ = typeof(Utils.MikuMapper);
+                _ = typeof(Utils.MikuCommandLineHelper);
             });
 
             // Assert
@@ -33,8 +33,8 @@ namespace Miku.Tests
             // Arrange & Act
             var exception = Record.Exception(() =>
             {
-                var logger = typeof(Logger.MikuLogger);
-                var options = typeof(Logger.Configuration.MikuLoggerOptions);
+                _ = typeof(Logger.MikuLogger);
+                _ = typeof(Logger.Configuration.MikuLoggerOptions);
             });
 
             // Assert

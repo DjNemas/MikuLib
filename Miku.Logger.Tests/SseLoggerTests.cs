@@ -55,7 +55,7 @@ public class SseLogBroadcasterTests : IDisposable
     {
         // Arrange
         var receivedLogs = new List<MikuSseLogEntry>();
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
 
         var subscribeTask = Task.Run(async () =>
         {
@@ -94,7 +94,7 @@ public class SseLogBroadcasterTests : IDisposable
         {
             try
             {
-                await foreach (var entry in MikuSseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
+                await foreach (var _ in MikuSseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
                 {
                     receivedCount++;
                 }
