@@ -33,6 +33,60 @@ namespace Miku.Logger.Sse
         private MikuSseLogBroadcaster() { }
 
         /// <summary>
+        /// Helper struct for using SemaphoreSlim with using statements.
+        /// </summary>
+        private readonly struct SemaphoreLock : IDisposable
+        {
+            private readonly SemaphoreSlim _semaphore;
+
+            public SemaphoreLock(SemaphoreSlim semaphore)
+            {
+                _semaphore = semaphore;
+                _semaphore.Wait();
+            }
+
+            public void Dispose()
+            {
+                _semaphore.Release();
+            }
+        }
+
+        /// <summary>
+        /// Helper struct for using SemaphoreSlim with async using statements.
+        /// </summary>
+        private readonly struct AsyncSemaphoreLock : IDisposable
+        {
+            private readonly SemaphoreSlim _semaphore;
+
+            private AsyncSemaphoreLock(SemaphoreSlim semaphore)
+            {
+                _semaphore = semaphore;
+            }
+
+            public static async ValueTask<AsyncSemaphoreLock> CreateAsync(SemaphoreSlim semaphore, CancellationToken cancellationToken)
+            {
+                await semaphore.WaitAsync(cancellationToken);
+                return new AsyncSemaphoreLock(semaphore);
+            }
+
+            public void Dispose()
+            {
+                _semaphore.Release();
+            }
+        }
+
+        /// <summary>
+        /// Acquires the channel lock in a way that can be used with using statements.
+        /// </summary>
+        private SemaphoreLock AcquireLock() => new(_channelLock);
+
+        /// <summary>
+        /// Acquires the channel lock asynchronously in a way that can be used with using statements.
+        /// </summary>
+        private ValueTask<AsyncSemaphoreLock> AcquireLockAsync(CancellationToken cancellationToken) => 
+            AsyncSemaphoreLock.CreateAsync(_channelLock, cancellationToken);
+
+        /// <summary>
         /// Configures the broadcaster with the specified options.
         /// </summary>
         /// <param name="options">The SSE logger options.</param>
@@ -61,14 +115,9 @@ namespace Miku.Logger.Sse
         {
             get
             {
-                _channelLock.Wait();
-                try
+                using (AcquireLock())
                 {
                     return _clientChannels.Count;
-                }
-                finally
-                {
-                    _channelLock.Release();
                 }
             }
         }
@@ -104,8 +153,7 @@ namespace Miku.Logger.Sse
         {
             if (_disposed) return;
 
-            _channelLock.Wait();
-            try
+            using (AcquireLock())
             {
                 // Remove completed channels and broadcast to active ones
                 var channelsToRemove = new List<Channel<MikuSseLogEntry>>();
@@ -126,10 +174,6 @@ namespace Miku.Logger.Sse
                 {
                     _clientChannels.Remove(channel);
                 }
-            }
-            finally
-            {
-                _channelLock.Release();
             }
         }
 
@@ -154,14 +198,9 @@ namespace Miku.Logger.Sse
                 SingleWriter = false
             });
 
-            await _channelLock.WaitAsync(cancellationToken);
-            try
+            using (await AcquireLockAsync(cancellationToken))
             {
                 _clientChannels.Add(channel);
-            }
-            finally
-            {
-                _channelLock.Release();
             }
 
             try
@@ -174,15 +213,10 @@ namespace Miku.Logger.Sse
             finally
             {
                 // Cleanup on disconnect
-                await _channelLock.WaitAsync(CancellationToken.None);
-                try
+                using (await AcquireLockAsync(CancellationToken.None))
                 {
                     _clientChannels.Remove(channel);
                     channel.Writer.Complete();
-                }
-                finally
-                {
-                    _channelLock.Release();
                 }
             }
         }
@@ -196,8 +230,7 @@ namespace Miku.Logger.Sse
 
             _disposed = true;
 
-            _channelLock.Wait();
-            try
+            using (AcquireLock())
             {
                 foreach (var channel in _clientChannels)
                 {
@@ -205,11 +238,8 @@ namespace Miku.Logger.Sse
                 }
                 _clientChannels.Clear();
             }
-            finally
-            {
-                _channelLock.Release();
-                _channelLock.Dispose();
-            }
+
+            _channelLock.Dispose();
         }
     }
 }
