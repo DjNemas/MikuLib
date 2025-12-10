@@ -50,7 +50,7 @@ namespace Miku.Tests
             // Act
             var exception = Record.Exception(() =>
             {
-                _ = Utils.MikuMapper.MapProperties<TestDto>(source);
+                Utils.MikuMapper.MapProperties<TestDto>(source);
             });
 
             // Assert
