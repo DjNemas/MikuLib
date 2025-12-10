@@ -55,7 +55,7 @@ public class SseLogBroadcasterTests : IDisposable
     {
         // Arrange
         var receivedLogs = new List<MikuSseLogEntry>();
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
 
         var subscribeTask = Task.Run(async () =>
         {
