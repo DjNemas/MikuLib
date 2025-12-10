@@ -10,7 +10,7 @@ A collection of powerful .NET 10 libraries inspired by Hatsune Miku.
 
 MikuLib is a comprehensive .NET 10 library collection that brings together powerful utilities for modern application development. Named after and inspired by Hatsune Miku, the virtual singer who revolutionized music and technology.
 
-![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_4XPonwjrkx.gif)
+![WindowsTerminal_4XPonwjrkx](https://github.com/user-attachments/assets/bf7ad8a5-a21a-4f97-a04f-a355545a93bf)
 
 ## ⚠️ Breaking Changes in Version 10.2.39
 
@@ -52,6 +52,7 @@ var options = new MikuLoggerOptions
         ColorSpace = ColorSpace.TrueColor
     }
 };
+![WindowsTerminal_4XPonwjrkx](https://github.com/user-attachments/assets/4cd9eddc-9b78-495d-ba06-92ea9b97cf07)
 
 // After (10.2.39)
 var options = new MikuLoggerOptions
