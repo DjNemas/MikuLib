@@ -94,7 +94,7 @@ public class SseLogBroadcasterTests : IDisposable
         {
             try
             {
-                await foreach (var entry in MikuSseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
+                await foreach (var _ in MikuSseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
                 {
                     receivedCount++;
                 }
