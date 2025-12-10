@@ -68,7 +68,7 @@ namespace MikuLib.Console
         /// </example>
         public static async Task TypewriterAsync(
             string text,
-            RgbColor color,
+            MikuRgbColor color,
             int delayMs = 30,
             CancellationToken cancellationToken = default)
         {
@@ -98,7 +98,7 @@ namespace MikuLib.Console
         /// </example>
         public static async Task TypewriterLineAsync(
             string text,
-            RgbColor color,
+            MikuRgbColor color,
             int delayMs = 30,
             CancellationToken cancellationToken = default)
         {
@@ -134,8 +134,8 @@ namespace MikuLib.Console
         /// </example>
         public static async Task TypewriterGradientAsync(
             string text,
-            RgbColor from,
-            RgbColor to,
+            MikuRgbColor from,
+            MikuRgbColor to,
             int delayMs = 30,
             CancellationToken cancellationToken = default)
         {
@@ -143,7 +143,7 @@ namespace MikuLib.Console
             {
                 if (cancellationToken.IsCancellationRequested) break;
                 // Calculate the interpolation factor (0.0 to 1.0) based on character position
-                var color = RgbColor.Lerp(from, to, i / (double)(text.Length - 1));
+                var color = MikuRgbColor.Lerp(from, to, i / (double)(text.Length - 1));
                 MikuConsole.Write(text[i].ToString(), color);
                 await Task.Delay(delayMs, cancellationToken);
             }
@@ -186,7 +186,7 @@ namespace MikuLib.Console
         /// </example>
         public static async Task FadeInAsync(
             string text,
-            RgbColor targetColor,
+            MikuRgbColor targetColor,
             int x,
             int y,
             int durationMs = 500,
@@ -200,7 +200,7 @@ namespace MikuLib.Console
                 if (cancellationToken.IsCancellationRequested) break;
 
                 // Interpolate from black (0%) to target color (100%)
-                var color = RgbColor.Lerp(RgbColor.Black, targetColor, i / (double)steps);
+                var color = MikuRgbColor.Lerp(MikuRgbColor.Black, targetColor, i / (double)steps);
                 MikuConsole.WriteAt(x, y, text, color);
                 await Task.Delay(delayPerStep, cancellationToken);
             }
@@ -237,7 +237,7 @@ namespace MikuLib.Console
         /// </example>
         public static async Task FadeOutAsync(
             string text,
-            RgbColor startColor,
+            MikuRgbColor startColor,
             int x,
             int y,
             int durationMs = 500,
@@ -251,13 +251,13 @@ namespace MikuLib.Console
                 if (cancellationToken.IsCancellationRequested) break;
 
                 // Interpolate from start color (0%) to black (100%)
-                var color = RgbColor.Lerp(startColor, RgbColor.Black, i / (double)steps);
+                var color = MikuRgbColor.Lerp(startColor, MikuRgbColor.Black, i / (double)steps);
                 MikuConsole.WriteAt(x, y, text, color);
                 await Task.Delay(delayPerStep, cancellationToken);
             }
 
             // Clear the text by overwriting with spaces
-            MikuConsole.WriteAt(x, y, new string(' ', text.Length), RgbColor.Black);
+            MikuConsole.WriteAt(x, y, new string(' ', text.Length), MikuRgbColor.Black);
         }
 
         #endregion
@@ -296,8 +296,8 @@ namespace MikuLib.Console
         /// </example>
         public static async Task PulseAsync(
             string text,
-            RgbColor color1,
-            RgbColor color2,
+            MikuRgbColor color1,
+            MikuRgbColor color2,
             int x,
             int y,
             int pulseCount = 3,
@@ -313,7 +313,7 @@ namespace MikuLib.Console
                 for (int i = 0; i <= steps; i++)
                 {
                     if (cancellationToken.IsCancellationRequested) return;
-                    var color = RgbColor.Lerp(color1, color2, i / (double)steps);
+                    var color = MikuRgbColor.Lerp(color1, color2, i / (double)steps);
                     MikuConsole.WriteAt(x, y, text, color);
                     await Task.Delay(delayPerStep, cancellationToken);
                 }
@@ -322,7 +322,7 @@ namespace MikuLib.Console
                 for (int i = steps; i >= 0; i--)
                 {
                     if (cancellationToken.IsCancellationRequested) return;
-                    var color = RgbColor.Lerp(color1, color2, i / (double)steps);
+                    var color = MikuRgbColor.Lerp(color1, color2, i / (double)steps);
                     MikuConsole.WriteAt(x, y, text, color);
                     await Task.Delay(delayPerStep, cancellationToken);
                 }
@@ -361,8 +361,8 @@ namespace MikuLib.Console
         /// </example>
         public static async Task BreathingAsync(
             string text,
-            RgbColor darkColor,
-            RgbColor brightColor,
+            MikuRgbColor darkColor,
+            MikuRgbColor brightColor,
             int x,
             int y,
             int breathCount = 3,
@@ -381,7 +381,7 @@ namespace MikuLib.Console
                     // Use sine wave for smooth oscillation
                     // Sin returns -1 to 1, we normalize to 0 to 1
                     double t = (Math.Sin(i * Math.PI * 2 / steps) + 1) / 2;
-                    var color = RgbColor.Lerp(darkColor, brightColor, t);
+                    var color = MikuRgbColor.Lerp(darkColor, brightColor, t);
                     MikuConsole.WriteAt(x, y, text, color);
                     await Task.Delay(delayPerStep, cancellationToken);
                 }
@@ -424,8 +424,8 @@ namespace MikuLib.Console
         /// </example>
         public static async Task ColorWaveAsync(
             string text,
-            RgbColor color1,
-            RgbColor color2,
+            MikuRgbColor color1,
+            MikuRgbColor color2,
             int x,
             int y,
             int waveDurationMs = 2000,
@@ -450,7 +450,7 @@ namespace MikuLib.Console
                         double phase = (frame + i * 3) * 0.2;
                         // Normalize sine wave from -1..1 to 0..1
                         double t = (Math.Sin(phase) + 1) / 2;
-                        var color = RgbColor.Lerp(color1, color2, t);
+                        var color = MikuRgbColor.Lerp(color1, color2, t);
                         MikuConsole.Write(text[i].ToString(), color);
                     }
 
@@ -462,7 +462,7 @@ namespace MikuLib.Console
         /// <summary>
         /// Creates a rainbow wave effect that travels across the text.
         /// <para>
-        /// Uses <see cref="ColorHelper.GetRainbow(double)"/> to cycle through
+        /// Uses <see cref="MikuColorHelper.GetRainbow(double)"/> to cycle through
         /// the full spectrum of rainbow colors.
         /// </para>
         /// </summary>
@@ -501,7 +501,7 @@ namespace MikuLib.Console
                 for (int i = 0; i < text.Length; i++)
                 {
                     // Phase based on frame and character position creates wave motion
-                    var color = ColorHelper.GetRainbow((frame + i) * 0.2);
+                    var color = MikuColorHelper.GetRainbow((frame + i) * 0.2);
                     MikuConsole.Write(text[i].ToString(), color);
                 }
 
@@ -553,7 +553,7 @@ namespace MikuLib.Console
         /// </example>
         public static async Task SpinnerAsync(
             string message,
-            RgbColor color,
+            MikuRgbColor color,
             int x,
             int y,
             int durationMs = 2000,
@@ -604,8 +604,8 @@ namespace MikuLib.Console
             int x,
             int y,
             int width,
-            RgbColor fillColor,
-            RgbColor emptyColor,
+            MikuRgbColor fillColor,
+            MikuRgbColor emptyColor,
             int durationMs = 2000,
             CancellationToken cancellationToken = default)
         {
@@ -625,10 +625,10 @@ namespace MikuLib.Console
 
                 // Draw progress bar: [????????????????] XX%
                 MikuConsole.SetCursorPosition(x, y);
-                MikuConsole.Write("[", RgbColor.White);
+                MikuConsole.Write("[", MikuRgbColor.White);
                 MikuConsole.Write(new string(fullBlock, filled), fillColor);
                 MikuConsole.Write(new string(lightShade, empty), emptyColor);
-                MikuConsole.Write($"] {i * 100 / steps}%", RgbColor.White);
+                MikuConsole.Write($"] {i * 100 / steps}%", MikuRgbColor.White);
 
                 await Task.Delay(delayPerStep, cancellationToken);
             }
@@ -673,7 +673,7 @@ namespace MikuLib.Console
         /// </example>
         public static async Task RevealLinesAsync(
             string[] lines,
-            RgbColor color,
+            MikuRgbColor color,
             int startX,
             int startY,
             int delayPerLineMs = 100,
@@ -726,8 +726,8 @@ namespace MikuLib.Console
         /// </example>
         public static async Task RevealLinesAlternatingAsync(
             string[] lines,
-            RgbColor color1,
-            RgbColor color2,
+            MikuRgbColor color1,
+            MikuRgbColor color2,
             int startX,
             int startY,
             int delayPerLineMs = 100,

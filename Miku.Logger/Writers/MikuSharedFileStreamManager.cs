@@ -4,22 +4,22 @@ namespace Miku.Logger.Writers
 {
     /// <summary>
     /// Thread-safe singleton manager for shared file streams.
-    /// Ensures only one FileStream per file path across all FileLogWriter instances.
+    /// Ensures only one FileStream per file path across all MikuFileLogWriter instances.
     /// </summary>
-    internal sealed class SharedFileStreamManager
+    internal sealed class MikuSharedFileStreamManager
     {
-        private static readonly Lazy<SharedFileStreamManager> _instance =
-            new(() => new SharedFileStreamManager());
+        private static readonly Lazy<MikuSharedFileStreamManager> _instance =
+            new(() => new MikuSharedFileStreamManager());
 
-        public static SharedFileStreamManager Instance => _instance.Value;
+        public static MikuSharedFileStreamManager Instance => _instance.Value;
 
-        private readonly ConcurrentDictionary<string, SharedFileStream> _streams = new();
+        private readonly ConcurrentDictionary<string, MikuSharedFileStream> _streams = new();
 
-        private SharedFileStreamManager() { }
+        private MikuSharedFileStreamManager() { }
 
-        public SharedFileStream GetOrCreateStream(string filePath)
+        public MikuSharedFileStream GetOrCreateStream(string filePath)
         {
-            return _streams.GetOrAdd(filePath, path => new SharedFileStream(path));
+            return _streams.GetOrAdd(filePath, path => new MikuSharedFileStream(path));
         }
 
         public void RemoveStream(string filePath)
@@ -43,7 +43,7 @@ namespace Miku.Logger.Writers
     /// <summary>
     /// Thread-safe wrapper around FileStream with reference counting.
     /// </summary>
-    internal sealed class SharedFileStream : IDisposable
+    internal sealed class MikuSharedFileStream : IDisposable
     {
         private readonly string _filePath;
         private readonly SemaphoreSlim _writeLock = new(1, 1);
@@ -51,7 +51,7 @@ namespace Miku.Logger.Writers
         private int _refCount;
         private bool _disposed;
 
-        public SharedFileStream(string filePath)
+        public MikuSharedFileStream(string filePath)
         {
             _filePath = filePath;
         }
@@ -63,7 +63,6 @@ namespace Miku.Logger.Writers
             {
                 if (_disposed) return;
 
-                // Lazy initialization of FileStream
                 _fileStream ??= new FileStream(
                     _filePath,
                     FileMode.Append,
@@ -89,7 +88,6 @@ namespace Miku.Logger.Writers
             {
                 if (_disposed) return;
 
-                // Lazy initialization of FileStream
                 _fileStream ??= new FileStream(
                     _filePath,
                     FileMode.Append,

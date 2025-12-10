@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Core types and utilities shared across MikuLib packages.
 
-#### RgbColor Structure
+#### MikuRgbColor Structure
 - 24-bit RGB color representation
 - Hex string parsing with `FromHex()` (supports "#RRGGBB" and "RRGGBB")
 - Hex string output with `ToHex()`
@@ -19,14 +19,14 @@ Core types and utilities shared across MikuLib packages.
 - Standard colors: Black, White, Red, Green, Blue, Yellow, Magenta, Cyan, Gray, DarkRed, Orange
 - Equality operators and IEquatable implementation
 
-#### AnsiCodes Constants
+#### MikuAnsiCodes Constants
 - Text styles: Bold, Dim, Italic, Underline, Blink, Reverse, Hidden, Strikethrough
 - Style resets for individual styles
 - Cursor control: Hide, Show, Save, Restore, MoveTo, MoveUp/Down/Left/Right
 - Screen control: ClearScreen, ClearLine, ClearToEnd, ClearToBeginning
 - Color helpers: ForegroundRgb, BackgroundRgb, Foreground256, Background256
 
-#### ColorHelper Utilities
+#### MikuColorHelper Utilities
 - `Lerp()` - Color interpolation
 - `GetRainbow()` - Rainbow color from phase
 - `GetMikuRainbow()` - Miku-themed rainbow (cyan/pink biased)

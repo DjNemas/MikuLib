@@ -1,6 +1,10 @@
 using Miku.Logger.Configuration.Models;
 using Miku.Logger.Writers;
 
+// Type aliases for backward compatibility
+using FileLogWriter = Miku.Logger.Writers.MikuFileLogWriter;
+using SharedFileStreamManager = Miku.Logger.Writers.MikuSharedFileStreamManager;
+
 namespace Miku.Logger.Tests;
 
 public class FileLogWriterTests : IDisposable

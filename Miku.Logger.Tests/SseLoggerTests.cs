@@ -34,32 +34,32 @@ public class SseLogBroadcasterTests : IDisposable
         };
 
         // Act
-        SseLogBroadcaster.Instance.Configure(options);
+        MikuSseLogBroadcaster.Instance.Configure(options);
 
         // Assert
-        Assert.Equal("/custom/logs", SseLogBroadcaster.Instance.Options.EndpointPath);
-        Assert.Equal("custom-event", SseLogBroadcaster.Instance.Options.EventType);
-        Assert.Equal(50, SseLogBroadcaster.Instance.Options.MaxClients);
-        Assert.Equal(5000, SseLogBroadcaster.Instance.Options.ReconnectionIntervalMs);
+        Assert.Equal("/custom/logs", MikuSseLogBroadcaster.Instance.Options.EndpointPath);
+        Assert.Equal("custom-event", MikuSseLogBroadcaster.Instance.Options.EventType);
+        Assert.Equal(50, MikuSseLogBroadcaster.Instance.Options.MaxClients);
+        Assert.Equal(5000, MikuSseLogBroadcaster.Instance.Options.ReconnectionIntervalMs);
     }
 
     [Fact]
     public void ClientCount_WithNoClients_ShouldBeZero()
     {
         // Act & Assert
-        Assert.True(SseLogBroadcaster.Instance.ClientCount >= 0);
+        Assert.True(MikuSseLogBroadcaster.Instance.ClientCount >= 0);
     }
 
     [Fact]
     public async Task SubscribeAsync_ShouldReceiveBroadcastedLogs()
     {
         // Arrange
-        var receivedLogs = new List<SseLogEntry>();
+        var receivedLogs = new List<MikuSseLogEntry>();
         var cts = new CancellationTokenSource();
 
         var subscribeTask = Task.Run(async () =>
         {
-            await foreach (var entry in SseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
+            await foreach (var entry in MikuSseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
             {
                 receivedLogs.Add(entry);
                 if (receivedLogs.Count >= 3)
@@ -72,9 +72,9 @@ public class SseLogBroadcasterTests : IDisposable
         await Task.Delay(100);
 
         // Act
-        SseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Information, "TestCategory", "Message 1");
-        SseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Warning, "TestCategory", "Message 2");
-        SseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Error, "TestCategory", "Message 3");
+        MikuSseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Information, "TestCategory", "Message 1");
+        MikuSseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Warning, "TestCategory", "Message 2");
+        MikuSseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Error, "TestCategory", "Message 3");
 
         var completedTask = await Task.WhenAny(subscribeTask, Task.Delay(2000));
         cts.Cancel();
@@ -94,7 +94,7 @@ public class SseLogBroadcasterTests : IDisposable
         {
             try
             {
-                await foreach (var entry in SseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
+                await foreach (var entry in MikuSseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
                 {
                     receivedCount++;
                 }
@@ -122,14 +122,14 @@ public class SseLogBroadcasterTests : IDisposable
         {
             MinimumLogLevel = MikuLogLevel.Warning
         };
-        SseLogBroadcaster.Instance.Configure(options);
+        MikuSseLogBroadcaster.Instance.Configure(options);
 
-        var receivedLogs = new List<SseLogEntry>();
+        var receivedLogs = new List<MikuSseLogEntry>();
         var cts = new CancellationTokenSource();
 
         var subscribeTask = Task.Run(async () =>
         {
-            await foreach (var entry in SseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
+            await foreach (var entry in MikuSseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
             {
                 receivedLogs.Add(entry);
             }
@@ -138,16 +138,16 @@ public class SseLogBroadcasterTests : IDisposable
         Thread.Sleep(50);
 
         // Act
-        SseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Debug, "Test", "Debug message");
-        SseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Information, "Test", "Info message");
-        SseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Warning, "Test", "Warning message");
-        SseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Error, "Test", "Error message");
+        MikuSseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Debug, "Test", "Debug message");
+        MikuSseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Information, "Test", "Info message");
+        MikuSseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Warning, "Test", "Warning message");
+        MikuSseLogBroadcaster.Instance.Broadcast(MikuLogLevel.Error, "Test", "Error message");
 
         Thread.Sleep(100);
         cts.Cancel();
 
         // Reset filter
-        SseLogBroadcaster.Instance.Configure(new MikuSseLoggerOptions { MinimumLogLevel = null });
+        MikuSseLogBroadcaster.Instance.Configure(new MikuSseLoggerOptions { MinimumLogLevel = null });
 
         // Assert
         var warningAndErrorLogs = receivedLogs.Where(l =>
@@ -159,10 +159,10 @@ public class SseLogBroadcasterTests : IDisposable
     public void BroadcastEntry_ShouldNotThrowWhenNoClients()
     {
         // Arrange
-        var entry = SseLogEntry.Create(MikuLogLevel.Information, "Test", "Test message");
+        var entry = MikuSseLogEntry.Create(MikuLogLevel.Information, "Test", "Test message");
 
         // Act & Assert
-        var exception = Record.Exception(() => SseLogBroadcaster.Instance.BroadcastEntry(entry));
+        var exception = Record.Exception(() => MikuSseLogBroadcaster.Instance.BroadcastEntry(entry));
         Assert.Null(exception);
     }
 }
@@ -173,7 +173,7 @@ public class SseLogEntryTests
     public void Create_ShouldSetAllProperties()
     {
         // Arrange & Act
-        var entry = SseLogEntry.Create(
+        var entry = MikuSseLogEntry.Create(
             MikuLogLevel.Error,
             "TestCategory",
             "Test message",
@@ -193,7 +193,7 @@ public class SseLogEntryTests
     public void Create_WithoutException_ShouldHaveNullException()
     {
         // Arrange & Act
-        var entry = SseLogEntry.Create(MikuLogLevel.Information, "Test", "Message");
+        var entry = MikuSseLogEntry.Create(MikuLogLevel.Information, "Test", "Message");
 
         // Assert
         Assert.Null(entry.Exception);
@@ -209,7 +209,7 @@ public class SseLogEntryTests
     public void Create_ShouldMapLogLevelCorrectly(MikuLogLevel logLevel, string expectedLevelString)
     {
         // Act
-        var entry = SseLogEntry.Create(logLevel, "Test", "Message");
+        var entry = MikuSseLogEntry.Create(logLevel, "Test", "Message");
 
         // Assert
         Assert.Equal(expectedLevelString, entry.Level);
@@ -221,7 +221,7 @@ public class SseLogEntryTests
     {
         // Act
         var beforeUtc = DateTime.UtcNow;
-        var entry = SseLogEntry.Create(MikuLogLevel.Information, "Test", "Message", useUtcTime: true);
+        var entry = MikuSseLogEntry.Create(MikuLogLevel.Information, "Test", "Message", useUtcTime: true);
         var afterUtc = DateTime.UtcNow;
 
         // Assert
@@ -256,7 +256,7 @@ public class MikuLoggerSseIntegrationTests
     public void MikuLogger_WithSseOutput_ShouldBroadcastLogs()
     {
         // Arrange
-        var receivedLogs = new List<SseLogEntry>();
+        var receivedLogs = new List<MikuSseLogEntry>();
         var cts = new CancellationTokenSource();
 
         var options = new MikuLoggerOptions
@@ -267,7 +267,7 @@ public class MikuLoggerSseIntegrationTests
 
         var subscribeTask = Task.Run(async () =>
         {
-            await foreach (var entry in SseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
+            await foreach (var entry in MikuSseLogBroadcaster.Instance.SubscribeAsync(cts.Token))
             {
                 receivedLogs.Add(entry);
                 if (receivedLogs.Count >= 2)

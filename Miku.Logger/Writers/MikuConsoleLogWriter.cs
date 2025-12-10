@@ -8,7 +8,7 @@ namespace Miku.Logger.Writers
     /// Thread-safe console writer with color support.
     /// Supports standard 16 colors, 256-color palette, and TrueColor (24-bit RGB).
     /// </summary>
-    internal class ConsoleLogWriter
+    internal class MikuConsoleLogWriter
     {
         // ANSI escape sequence constants
         private const string AnsiReset = "\x1b[0m";
@@ -19,7 +19,7 @@ namespace Miku.Logger.Writers
         private readonly SemaphoreSlim _writeSemaphore = new(1, 1);
         private readonly bool _supportsAnsi;
 
-        public ConsoleLogWriter(MikuConsoleColorOptions colorOptions)
+        public MikuConsoleLogWriter(MikuConsoleColorOptions colorOptions)
         {
             _colorOptions = colorOptions ?? throw new ArgumentNullException(nameof(colorOptions));
             _supportsAnsi = CheckAnsiSupport();
@@ -30,28 +30,21 @@ namespace Miku.Logger.Writers
         /// </summary>
         private static bool CheckAnsiSupport()
         {
-            // Windows 10+ and most Unix terminals support ANSI
-            // Check for common environment variables that indicate ANSI support
             var term = Environment.GetEnvironmentVariable("TERM");
             var colorTerm = Environment.GetEnvironmentVariable("COLORTERM");
 
-            // TrueColor support indicators
             if (colorTerm == "truecolor" || colorTerm == "24bit")
                 return true;
 
-            // Common terminal types that support ANSI
             if (!string.IsNullOrEmpty(term) &&
                 (term.Contains("xterm") || term.Contains("256color") || term.Contains("color")))
                 return true;
 
-            // Windows Terminal and modern Windows consoles support ANSI
             if (Environment.OSVersion.Platform == PlatformID.Win32NT &&
                 Environment.OSVersion.Version.Major >= 10)
             {
-                // Try to enable virtual terminal processing on Windows
                 try
                 {
-                    // Writing ANSI codes will work if VT is enabled
                     return true;
                 }
                 catch
@@ -60,7 +53,6 @@ namespace Miku.Logger.Writers
                 }
             }
 
-            // Unix-like systems generally support ANSI
             if (Environment.OSVersion.Platform == PlatformID.Unix ||
                 Environment.OSVersion.Platform == PlatformID.MacOSX)
                 return true;
@@ -118,14 +110,14 @@ namespace Miku.Logger.Writers
                     if (_supportsAnsi)
                         WriteWithExtended256Color(message, logLevel);
                     else
-                        WriteWithConsoleColor(message, logLevel); // Fallback
+                        WriteWithConsoleColor(message, logLevel);
                     break;
 
                 case MikuColorSpace.TrueColor:
                     if (_supportsAnsi)
                         WriteWithTrueColor(message, logLevel);
                     else
-                        WriteWithConsoleColor(message, logLevel); // Fallback
+                        WriteWithConsoleColor(message, logLevel);
                     break;
 
                 default:
@@ -134,9 +126,6 @@ namespace Miku.Logger.Writers
             }
         }
 
-        /// <summary>
-        /// Writes using standard 16 console colors.
-        /// </summary>
         private void WriteWithConsoleColor(string message, MikuLogLevel logLevel)
         {
             var color = GetConsoleColorForLogLevel(logLevel);
@@ -145,9 +134,6 @@ namespace Miku.Logger.Writers
             Console.ResetColor();
         }
 
-        /// <summary>
-        /// Writes using 256-color palette with ANSI escape sequences.
-        /// </summary>
         private void WriteWithExtended256Color(string message, MikuLogLevel logLevel)
         {
             var colorCode = GetExtended256ColorForLogLevel(logLevel);
@@ -155,9 +141,6 @@ namespace Miku.Logger.Writers
             Console.WriteLine();
         }
 
-        /// <summary>
-        /// Writes using TrueColor (24-bit RGB) with ANSI escape sequences.
-        /// </summary>
         private void WriteWithTrueColor(string message, MikuLogLevel logLevel)
         {
             var rgb = GetTrueColorForLogLevel(logLevel);
@@ -190,11 +173,11 @@ namespace Miku.Logger.Writers
                 MikuLogLevel.Warning => colors.WarningColor,
                 MikuLogLevel.Error => colors.ErrorColor,
                 MikuLogLevel.Critical => colors.CriticalColor,
-                _ => 7 // Default white
+                _ => 7
             };
         }
 
-        private RgbColor GetTrueColorForLogLevel(MikuLogLevel logLevel)
+        private MikuRgbColor GetTrueColorForLogLevel(MikuLogLevel logLevel)
         {
             var colors = _colorOptions.TrueColors;
             return logLevel switch
@@ -205,7 +188,7 @@ namespace Miku.Logger.Writers
                 MikuLogLevel.Warning => colors.WarningColor,
                 MikuLogLevel.Error => colors.ErrorColor,
                 MikuLogLevel.Critical => colors.CriticalColor,
-                _ => RgbColor.White
+                _ => MikuRgbColor.White
             };
         }
     }

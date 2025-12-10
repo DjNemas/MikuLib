@@ -43,21 +43,21 @@ namespace Miku.Logger.Configuration.Models
     public class MikuTrueColorOptions
     {
         /// <summary>Gets or sets the RGB color for Trace level logs. Default: Gray.</summary>
-        public RgbColor TraceColor { get; set; } = RgbColor.Gray;
+        public MikuRgbColor TraceColor { get; set; } = MikuRgbColor.Gray;
 
         /// <summary>Gets or sets the RGB color for Debug level logs. Default: Yellow.</summary>
-        public RgbColor DebugColor { get; set; } = RgbColor.Yellow;
+        public MikuRgbColor DebugColor { get; set; } = MikuRgbColor.Yellow;
 
         /// <summary>Gets or sets the RGB color for Information level logs. Default: Miku Cyan (#00CED1).</summary>
-        public RgbColor InformationColor { get; set; } = RgbColor.MikuCyan;
+        public MikuRgbColor InformationColor { get; set; } = MikuRgbColor.MikuCyan;
 
         /// <summary>Gets or sets the RGB color for Warning level logs. Default: Orange.</summary>
-        public RgbColor WarningColor { get; set; } = RgbColor.Orange;
+        public MikuRgbColor WarningColor { get; set; } = MikuRgbColor.Orange;
 
         /// <summary>Gets or sets the RGB color for Error level logs. Default: Red.</summary>
-        public RgbColor ErrorColor { get; set; } = RgbColor.Red;
+        public MikuRgbColor ErrorColor { get; set; } = MikuRgbColor.Red;
 
         /// <summary>Gets or sets the RGB color for Critical level logs. Default: Dark Red.</summary>
-        public RgbColor CriticalColor { get; set; } = RgbColor.DarkRed;
+        public MikuRgbColor CriticalColor { get; set; } = MikuRgbColor.DarkRed;
     }
 }

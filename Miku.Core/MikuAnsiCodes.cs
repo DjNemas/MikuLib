@@ -7,7 +7,7 @@ namespace Miku.Core
     /// Like the visual effects at Miku's concerts,
     /// these codes add style and flair to console output!
     /// </remarks>
-    public static class AnsiCodes
+    public static class MikuAnsiCodes
     {
         /// <summary>Escape character for ANSI sequences.</summary>
         public const string Escape = "\x1b[";
@@ -119,7 +119,7 @@ namespace Miku.Core
         /// <summary>
         /// Gets the ANSI escape sequence for a TrueColor foreground.
         /// </summary>
-        public static string ForegroundRgb(RgbColor color) => ForegroundRgb(color.R, color.G, color.B);
+        public static string ForegroundRgb(MikuRgbColor color) => ForegroundRgb(color.R, color.G, color.B);
 
         /// <summary>
         /// Gets the ANSI escape sequence for a TrueColor background.
@@ -129,7 +129,7 @@ namespace Miku.Core
         /// <summary>
         /// Gets the ANSI escape sequence for a TrueColor background.
         /// </summary>
-        public static string BackgroundRgb(RgbColor color) => BackgroundRgb(color.R, color.G, color.B);
+        public static string BackgroundRgb(MikuRgbColor color) => BackgroundRgb(color.R, color.G, color.B);
 
         /// <summary>
         /// Gets the ANSI escape sequence for a 256-color foreground.

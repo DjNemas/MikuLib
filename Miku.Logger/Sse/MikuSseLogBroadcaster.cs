@@ -12,25 +12,25 @@ namespace Miku.Logger.Sse
     /// this service streams logs to all connected SSE clients in real-time.
     /// Born from the CV01 spirit of connection.
     /// </remarks>
-    public sealed class SseLogBroadcaster : IDisposable
+    public sealed class MikuSseLogBroadcaster : IDisposable
     {
         // Mi-Ku number - the magic of 39
         private const int MikuChannelCapacity = 39;
 
-        private static readonly Lazy<SseLogBroadcaster> _instance =
-            new(() => new SseLogBroadcaster());
+        private static readonly Lazy<MikuSseLogBroadcaster> _instance =
+            new(() => new MikuSseLogBroadcaster());
 
         /// <summary>
-        /// Gets the singleton instance of the SseLogBroadcaster.
+        /// Gets the singleton instance of the MikuSseLogBroadcaster.
         /// </summary>
-        public static SseLogBroadcaster Instance => _instance.Value;
+        public static MikuSseLogBroadcaster Instance => _instance.Value;
 
-        private readonly List<Channel<SseLogEntry>> _clientChannels = new();
+        private readonly List<Channel<MikuSseLogEntry>> _clientChannels = new();
         private readonly SemaphoreSlim _channelLock = new(1, 1);
         private readonly MikuSseLoggerOptions _options = new();
         private bool _disposed;
 
-        private SseLogBroadcaster() { }
+        private MikuSseLogBroadcaster() { }
 
         /// <summary>
         /// Configures the broadcaster with the specified options.
@@ -92,7 +92,7 @@ namespace Miku.Logger.Sse
             if (_options.MinimumLogLevel.HasValue && logLevel < _options.MinimumLogLevel.Value)
                 return;
 
-            var entry = SseLogEntry.Create(logLevel, category, message, exception, useUtcTime);
+            var entry = MikuSseLogEntry.Create(logLevel, category, message, exception, useUtcTime);
             BroadcastEntry(entry);
         }
 
@@ -100,7 +100,7 @@ namespace Miku.Logger.Sse
         /// Broadcasts a log entry to all connected SSE clients.
         /// </summary>
         /// <param name="entry">The log entry to broadcast.</param>
-        public void BroadcastEntry(SseLogEntry entry)
+        public void BroadcastEntry(MikuSseLogEntry entry)
         {
             if (_disposed) return;
 
@@ -108,7 +108,7 @@ namespace Miku.Logger.Sse
             try
             {
                 // Remove completed channels and broadcast to active ones
-                var channelsToRemove = new List<Channel<SseLogEntry>>();
+                var channelsToRemove = new List<Channel<MikuSseLogEntry>>();
 
                 foreach (var channel in _clientChannels)
                 {
@@ -138,7 +138,7 @@ namespace Miku.Logger.Sse
         /// </summary>
         /// <param name="cancellationToken">Cancellation token for the subscription.</param>
         /// <returns>An async enumerable of log entries.</returns>
-        public async IAsyncEnumerable<SseLogEntry> SubscribeAsync(
+        public async IAsyncEnumerable<MikuSseLogEntry> SubscribeAsync(
             [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             // Check max clients limit
@@ -147,7 +147,7 @@ namespace Miku.Logger.Sse
                 yield break;
             }
 
-            var channel = Channel.CreateBounded<SseLogEntry>(new BoundedChannelOptions(MikuChannelCapacity)
+            var channel = Channel.CreateBounded<MikuSseLogEntry>(new BoundedChannelOptions(MikuChannelCapacity)
             {
                 FullMode = BoundedChannelFullMode.DropOldest,
                 SingleReader = true,

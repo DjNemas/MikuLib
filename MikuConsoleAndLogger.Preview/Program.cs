@@ -5,6 +5,10 @@ using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Configuration.Models;
 using MikuLib.Console;
 
+// Type aliases for backward compatibility
+using RgbColor = Miku.Core.MikuRgbColor;
+using ColorHelper = Miku.Core.MikuColorHelper;
+
 namespace MikuConsoleAndLogger.Preview;
 
 /// <summary>

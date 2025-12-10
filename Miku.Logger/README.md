@@ -367,30 +367,30 @@ ConsoleColors = new MikuConsoleColorOptions
     ColorSpace = MikuColorSpace.TrueColor,
     TrueColors = new MikuTrueColorOptions
     {
-        TraceColor = RgbColor.Gray,
-        DebugColor = RgbColor.Yellow,
-        InformationColor = RgbColor.MikuCyan, // #00CED1 - Miku's signature color!
-        WarningColor = RgbColor.Orange,
-        ErrorColor = RgbColor.Red,
-        CriticalColor = RgbColor.DarkRed
+        TraceColor = MikuRgbColor.Gray,
+        DebugColor = MikuRgbColor.Yellow,
+        InformationColor = MikuRgbColor.MikuCyan, // #00CED1 - Miku's signature color!
+        WarningColor = MikuRgbColor.Orange,
+        ErrorColor = MikuRgbColor.Red,
+        CriticalColor = MikuRgbColor.DarkRed
     }
 }
 
 // Custom hex colors
 TrueColors = new MikuTrueColorOptions
 {
-    InformationColor = RgbColor.FromHex("#39C5BB"), // Miku's hair highlight
-    WarningColor = new RgbColor(255, 165, 0),       // RGB values
-    ErrorColor = RgbColor.FromHex("FF4444")         // Without # prefix
+    InformationColor = MikuRgbColor.FromHex("#39C5BB"), // Miku's hair highlight
+    WarningColor = new MikuRgbColor(255, 165, 0),       // RGB values
+    ErrorColor = MikuRgbColor.FromHex("FF4444")         // Without # prefix
 }
 ```
 
 #### Predefined Miku Colors
 
 ```csharp
-RgbColor.MikuCyan     // #00CED1 - Signature cyan
-RgbColor.MikuTeal     // #39C5BB - Hair highlight
-RgbColor.MikuDarkCyan // #008B8B - Dark accent
+MikuRgbColor.MikuCyan     // #00CED1 - Signature cyan
+MikuRgbColor.MikuTeal     // #39C5BB - Hair highlight
+MikuRgbColor.MikuDarkCyan // #008B8B - Dark accent
 ```
 
 ## Performance

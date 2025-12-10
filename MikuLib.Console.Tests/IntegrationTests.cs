@@ -56,10 +56,10 @@ public class IntegrationTests
     {
         var output = CaptureOutput(() =>
         {
-            MikuConsole.Write("Cyan", RgbColor.MikuCyan);
-            MikuConsole.Write("Pink", RgbColor.MikuPink);
-            MikuConsole.Write("Teal", RgbColor.MikuTeal);
-            MikuConsole.Write("DarkCyan", RgbColor.MikuDarkCyan);
+            MikuConsole.Write("Cyan", MikuRgbColor.MikuCyan);
+            MikuConsole.Write("Pink", MikuRgbColor.MikuPink);
+            MikuConsole.Write("Teal", MikuRgbColor.MikuTeal);
+            MikuConsole.Write("DarkCyan", MikuRgbColor.MikuDarkCyan);
         });
 
         Assert.Contains("Cyan", output);
@@ -73,7 +73,7 @@ public class IntegrationTests
     {
         var output = CaptureOutput(() =>
         {
-            var customColor = RgbColor.FromHex("#FF6B9D");
+            var customColor = MikuRgbColor.FromHex("#FF6B9D");
             MikuConsole.Write("Custom", customColor);
         });
 
@@ -90,9 +90,9 @@ public class IntegrationTests
     {
         var output = CaptureOutput(() =>
         {
-            MikuConsole.Write("1", RgbColor.Red);
-            MikuConsole.Write("2", RgbColor.Green);
-            MikuConsole.Write("3", RgbColor.Blue);
+            MikuConsole.Write("1", MikuRgbColor.Red);
+            MikuConsole.Write("2", MikuRgbColor.Green);
+            MikuConsole.Write("3", MikuRgbColor.Blue);
         });
         
         // Verify all parts are present
@@ -106,9 +106,9 @@ public class IntegrationTests
     {
         var output = CaptureOutput(() =>
         {
-            MikuConsole.Write("Colored", RgbColor.MikuCyan);
+            MikuConsole.Write("Colored", MikuRgbColor.MikuCyan);
             MikuConsole.Write("Plain");
-            MikuConsole.WriteLine("Line", RgbColor.MikuPink);
+            MikuConsole.WriteLine("Line", MikuRgbColor.MikuPink);
         });
         
         Assert.Contains("Colored", output);
@@ -127,8 +127,8 @@ public class IntegrationTests
         {
             await MikuConsoleAnimation.TypewriterGradientAsync(
                 "Miku",
-                RgbColor.MikuCyan,
-                RgbColor.MikuPink,
+                MikuRgbColor.MikuCyan,
+                MikuRgbColor.MikuPink,
                 delayMs: 1
             );
         });
@@ -144,7 +144,7 @@ public class IntegrationTests
     {
         var output = await CaptureOutputAsync(async () =>
         {
-            await MikuConsoleAnimation.TypewriterAsync("ABC", RgbColor.MikuCyan, delayMs: 1);
+            await MikuConsoleAnimation.TypewriterAsync("ABC", MikuRgbColor.MikuCyan, delayMs: 1);
         });
         
         // Verify output contains the expected characters
@@ -160,7 +160,7 @@ public class IntegrationTests
     [Fact]
     public void DrawBar_WithMikuColors_ShouldProduceCorrectOutput()
     {
-        var output = CaptureOutput(() => MikuConsole.DrawBar(5, RgbColor.MikuCyan));
+        var output = CaptureOutput(() => MikuConsole.DrawBar(5, MikuRgbColor.MikuCyan));
 
         int blockCount = output.Count(c => c == MikuConsole.FullBlock);
         Assert.Equal(5, blockCount);
@@ -189,7 +189,7 @@ public class IntegrationTests
     [Fact]
     public void AfterColoredWrite_ResetShouldBeIncluded()
     {
-        var output = CaptureOutput(() => MikuConsole.Write("Test", RgbColor.MikuCyan));
+        var output = CaptureOutput(() => MikuConsole.Write("Test", MikuRgbColor.MikuCyan));
         
         Assert.Contains("\x1b[0m", output);
     }
@@ -199,8 +199,8 @@ public class IntegrationTests
     {
         var output = CaptureOutput(() =>
         {
-            MikuConsole.Write("A", RgbColor.Red);
-            MikuConsole.Write("B", RgbColor.Blue);
+            MikuConsole.Write("A", MikuRgbColor.Red);
+            MikuConsole.Write("B", MikuRgbColor.Blue);
         });
         
         // Each colored write should have its own reset code
@@ -218,9 +218,9 @@ public class IntegrationTests
     {
         CaptureOutput(() =>
         {
-            MikuConsole.Write("", RgbColor.MikuCyan);
-            MikuConsole.WriteLine("", RgbColor.MikuPink);
-            MikuConsole.WriteGradient("", RgbColor.Red, RgbColor.Blue);
+            MikuConsole.Write("", MikuRgbColor.MikuCyan);
+            MikuConsole.WriteLine("", MikuRgbColor.MikuPink);
+            MikuConsole.WriteGradient("", MikuRgbColor.Red, MikuRgbColor.Blue);
             MikuConsole.WriteRainbow("");
         });
 
@@ -230,7 +230,7 @@ public class IntegrationTests
     [Fact]
     public void SingleCharacter_ShouldWorkCorrectly()
     {
-        var output = CaptureOutput(() => MikuConsole.Write("X", RgbColor.MikuCyan));
+        var output = CaptureOutput(() => MikuConsole.Write("X", MikuRgbColor.MikuCyan));
         Assert.Contains("X", output);
     }
 
@@ -238,14 +238,14 @@ public class IntegrationTests
     public void VeryLongString_ShouldWorkCorrectly()
     {
         var longString = new string('X', 1000);
-        var output = CaptureOutput(() => MikuConsole.Write(longString, RgbColor.MikuCyan));
+        var output = CaptureOutput(() => MikuConsole.Write(longString, MikuRgbColor.MikuCyan));
         Assert.Contains(longString, output);
     }
 
     [Fact]
     public void SpecialCharacters_ShouldWorkCorrectly()
     {
-        var output = CaptureOutput(() => MikuConsole.Write("Hello\tWorld\n!", RgbColor.MikuCyan));
+        var output = CaptureOutput(() => MikuConsole.Write("Hello\tWorld\n!", MikuRgbColor.MikuCyan));
 
         Assert.Contains("Hello", output);
         Assert.Contains("World", output);
@@ -257,8 +257,8 @@ public class IntegrationTests
     {
         var output = CaptureOutput(() =>
         {
-            MikuConsole.Write("??", RgbColor.MikuCyan);
-            MikuConsole.Write("????", RgbColor.MikuPink);
+            MikuConsole.Write("??", MikuRgbColor.MikuCyan);
+            MikuConsole.Write("????", MikuRgbColor.MikuPink);
         });
 
         Assert.Contains("??", output);

@@ -1,5 +1,8 @@
 using Miku.Logger.Configuration.Enums;
 
+// Type alias for backward compatibility
+using CommandLineHelper = Miku.Utils.MikuCommandLineHelper;
+
 namespace Miku.Tests
 {
     /// <summary>
@@ -16,7 +19,7 @@ namespace Miku.Tests
             var exception = Record.Exception(() =>
             {
                 var mapper = typeof(Utils.MikuMapper);
-                var commandLineHelper = typeof(Utils.CommandLineHelper);
+                var commandLineHelper = typeof(Utils.MikuCommandLineHelper);
             });
 
             // Assert
@@ -61,7 +64,7 @@ namespace Miku.Tests
             var args = new[] { "--configuration", "Release" };
 
             // Act
-            var result = Utils.CommandLineHelper.IsReleaseConfiguration(args);
+            var result = Utils.MikuCommandLineHelper.IsReleaseConfiguration(args);
 
             // Assert
             Assert.True(result);

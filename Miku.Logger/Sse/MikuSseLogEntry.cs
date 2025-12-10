@@ -10,7 +10,7 @@ namespace Miku.Logger.Sse
     /// Like the data packets in Miku's digital voice,
     /// this class carries log information to connected clients.
     /// </remarks>
-    public class SseLogEntry
+    public class MikuSseLogEntry
     {
         /// <summary>
         /// Gets or sets the unique identifier for this log entry.
@@ -55,16 +55,16 @@ namespace Miku.Logger.Sse
         public string? Exception { get; set; }
 
         /// <summary>
-        /// Creates an SseLogEntry from log parameters.
+        /// Creates an MikuSseLogEntry from log parameters.
         /// </summary>
-        internal static SseLogEntry Create(
+        internal static MikuSseLogEntry Create(
             MikuLogLevel logLevel,
             string category,
             string message,
             Exception? exception = null,
             bool useUtcTime = true)
         {
-            return new SseLogEntry
+            return new MikuSseLogEntry
             {
                 Timestamp = useUtcTime ? DateTime.UtcNow : DateTime.Now,
                 Level = GetLogLevelString(logLevel),

@@ -14,19 +14,19 @@ Beautiful colored console output with TrueColor and 256-color support.
 
 **Write Methods**
 - `Write(string)` / `WriteLine(string)` - Plain text output
-- `Write(string, RgbColor)` / `WriteLine(string, RgbColor)` - TrueColor output
-- `Write(string, RgbColor, RgbColor)` - With foreground and background
+- `Write(string, MikuRgbColor)` / `WriteLine(string, MikuRgbColor)` - TrueColor output
+- `Write(string, MikuRgbColor, MikuRgbColor)` - With foreground and background
 - `Write256(string, byte)` / `WriteLine256(string, byte)` - 256-color output
 
 **Styled Text**
-- `WriteBold(string, RgbColor)` - Bold text
-- `WriteUnderline(string, RgbColor)` - Underlined text
-- `WriteItalic(string, RgbColor)` - Italic text
-- `WriteStyled(string, RgbColor, params string[])` - Custom ANSI styles
+- `WriteBold(string, MikuRgbColor)` - Bold text
+- `WriteUnderline(string, MikuRgbColor)` - Underlined text
+- `WriteItalic(string, MikuRgbColor)` - Italic text
+- `WriteStyled(string, MikuRgbColor, params string[])` - Custom ANSI styles
 
 **Gradient and Rainbow**
-- `WriteGradient(string, RgbColor, RgbColor)` - Horizontal gradient
-- `WriteGradientLine(string, RgbColor, RgbColor)` - Gradient with newline
+- `WriteGradient(string, MikuRgbColor, MikuRgbColor)` - Horizontal gradient
+- `WriteGradientLine(string, MikuRgbColor, MikuRgbColor)` - Gradient with newline
 - `WriteRainbow(string, double)` / `WriteRainbowLine(string, double)` - Rainbow colors
 - `WriteMikuRainbow(string, double)` / `WriteMikuRainbowLine(string, double)` - Miku-themed rainbow
 
@@ -34,13 +34,13 @@ Beautiful colored console output with TrueColor and 256-color support.
 - `SetCursorPosition(int, int)` - Set cursor position
 - `CursorLeft` / `CursorTop` - Get cursor position
 - `WriteAt(int, int, string)` - Write at position (plain)
-- `WriteAt(int, int, string, RgbColor)` - Write at position (colored)
-- `WriteCentered(string, RgbColor)` / `WriteCenteredLine(string, RgbColor)` - Centered text
+- `WriteAt(int, int, string, MikuRgbColor)` - Write at position (colored)
+- `WriteCentered(string, MikuRgbColor)` / `WriteCenteredLine(string, MikuRgbColor)` - Centered text
 
 **Drawing**
-- `DrawBar(int, RgbColor, char)` - Solid color bar
-- `DrawGradientBar(int, RgbColor, RgbColor, char)` - Gradient bar
-- `DrawBox(int, int, int, int, RgbColor)` - Box with Unicode borders
+- `DrawBar(int, MikuRgbColor, char)` - Solid color bar
+- `DrawGradientBar(int, MikuRgbColor, MikuRgbColor, char)` - Gradient bar
+- `DrawBox(int, int, int, int, MikuRgbColor)` - Box with Unicode borders
 
 **Console Control**
 - `Initialize()` - Setup UTF-8 encoding
@@ -83,7 +83,7 @@ Beautiful colored console output with TrueColor and 256-color support.
 - Automatic ANSI support detection
 - CancellationToken support for all animations
 - Configurable timing for all effects
-- Uses Miku.Core for color types (RgbColor, AnsiCodes, ColorHelper)
+- Uses Miku.Core for color types (MikuRgbColor, AnsiCodes, MikuColorHelper)
 
 ---
 

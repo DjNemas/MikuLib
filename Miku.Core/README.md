@@ -8,9 +8,9 @@ Core types and utilities shared across all MikuLib packages.
 
 ## Features
 
-- **RgbColor** - 24-bit RGB color structure with hex parsing and interpolation
-- **AnsiCodes** - ANSI escape code constants for console styling
-- **ColorHelper** - Color manipulation utilities (gradients, rainbow, darken/lighten)
+- **MikuRgbColor** - 24-bit RGB color structure with hex parsing and interpolation
+- **MikuAnsiCodes** - ANSI escape code constants for console styling
+- **MikuColorHelper** - Color manipulation utilities (gradients, rainbow, darken/lighten)
 
 ## Installation
 
@@ -25,65 +25,65 @@ Or add to your `.csproj`:
 
 ## Quick Start
 
-### RgbColor
+### MikuRgbColor
 
 ```csharp
 using Miku.Core;
 
 // Create colors
-var cyan = RgbColor.MikuCyan;           // Predefined Miku cyan
-var pink = RgbColor.FromHex("#E12885"); // From hex string
-var custom = new RgbColor(255, 128, 0); // From RGB values
+var cyan = MikuRgbColor.MikuCyan;           // Predefined Miku cyan
+var pink = MikuRgbColor.FromHex("#E12885"); // From hex string
+var custom = new MikuRgbColor(255, 128, 0); // From RGB values
 
 // Convert to hex
 string hex = cyan.ToHex(); // "#00CED1"
 
 // Interpolate between colors
-var blend = RgbColor.Lerp(cyan, pink, 0.5); // 50% blend
+var blend = MikuRgbColor.Lerp(cyan, pink, 0.5); // 50% blend
 ```
 
-### AnsiCodes
+### MikuAnsiCodes
 
 ```csharp
 using Miku.Core;
 
 // Text styles
-Console.Write(AnsiCodes.Bold + "Bold text" + AnsiCodes.Reset);
-Console.Write(AnsiCodes.Underline + "Underlined" + AnsiCodes.Reset);
-Console.Write(AnsiCodes.Italic + "Italic" + AnsiCodes.Reset);
+Console.Write(MikuAnsiCodes.Bold + "Bold text" + MikuAnsiCodes.Reset);
+Console.Write(MikuAnsiCodes.Underline + "Underlined" + MikuAnsiCodes.Reset);
+Console.Write(MikuAnsiCodes.Italic + "Italic" + MikuAnsiCodes.Reset);
 
 // TrueColor (24-bit)
-var color = RgbColor.MikuCyan;
-Console.Write(AnsiCodes.ForegroundRgb(color) + "Miku Cyan!" + AnsiCodes.Reset);
+var color = MikuRgbColor.MikuCyan;
+Console.Write(MikuAnsiCodes.ForegroundRgb(color) + "Miku Cyan!" + MikuAnsiCodes.Reset);
 
 // 256-color palette
-Console.Write(AnsiCodes.Foreground256(44) + "256-color cyan" + AnsiCodes.Reset);
+Console.Write(MikuAnsiCodes.Foreground256(44) + "256-color cyan" + MikuAnsiCodes.Reset);
 
 // Cursor control
-Console.Write(AnsiCodes.MoveTo(5, 10)); // Move to row 5, column 10
-Console.Write(AnsiCodes.ClearLine);     // Clear current line
+Console.Write(MikuAnsiCodes.MoveTo(5, 10)); // Move to row 5, column 10
+Console.Write(MikuAnsiCodes.ClearLine);     // Clear current line
 ```
 
-### ColorHelper
+### MikuColorHelper
 
 ```csharp
 using Miku.Core;
 
 // Create gradients
-var gradient = ColorHelper.CreateGradient(RgbColor.MikuCyan, RgbColor.MikuPink, 10);
+var gradient = MikuColorHelper.CreateGradient(MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink, 10);
 
 // Rainbow colors
-var rainbow = ColorHelper.GetRainbow(phase); // phase in radians
-var mikuRainbow = ColorHelper.GetMikuRainbow(phase); // Miku-themed rainbow
+var rainbow = MikuColorHelper.GetRainbow(phase); // phase in radians
+var mikuRainbow = MikuColorHelper.GetMikuRainbow(phase); // Miku-themed rainbow
 
 // Modify colors
-var darker = ColorHelper.Darken(RgbColor.MikuCyan, 0.5);  // 50% darker
-var lighter = ColorHelper.Lighten(RgbColor.MikuCyan, 0.3); // 30% lighter
-var complement = ColorHelper.GetComplementary(RgbColor.MikuCyan);
+var darker = MikuColorHelper.Darken(MikuRgbColor.MikuCyan, 0.5);  // 50% darker
+var lighter = MikuColorHelper.Lighten(MikuRgbColor.MikuCyan, 0.3); // 30% lighter
+var complement = MikuColorHelper.GetComplementary(MikuRgbColor.MikuCyan);
 
 // Check brightness
-bool isDark = ColorHelper.IsDark(color);
-int brightness = ColorHelper.GetBrightness(color); // 0-255
+bool isDark = MikuColorHelper.IsDark(color);
+int brightness = MikuColorHelper.GetBrightness(color); // 0-255
 ```
 
 ## Predefined Miku Colors
@@ -92,28 +92,28 @@ Like the colors from Miku's iconic design:
 
 | Color | Hex | Property | Description |
 |-------|-----|----------|-------------|
-| Miku Cyan | #00CED1 | `RgbColor.MikuCyan` | Signature hair/outfit color |
-| Miku Pink | #E12885 | `RgbColor.MikuPink` | Secondary accent color |
-| Miku Teal | #39C5BB | `RgbColor.MikuTeal` | Hair highlight |
-| Miku Dark Cyan | #008B8B | `RgbColor.MikuDarkCyan` | Dark accent |
+| Miku Cyan | #00CED1 | `MikuRgbColor.MikuCyan` | Signature hair/outfit color |
+| Miku Pink | #E12885 | `MikuRgbColor.MikuPink` | Secondary accent color |
+| Miku Teal | #39C5BB | `MikuRgbColor.MikuTeal` | Hair highlight |
+| Miku Dark Cyan | #008B8B | `MikuRgbColor.MikuDarkCyan` | Dark accent |
 
 ## Standard Colors
 
 | Color | Property |
 |-------|----------|
-| Black | `RgbColor.Black` |
-| White | `RgbColor.White` |
-| Red | `RgbColor.Red` |
-| Green | `RgbColor.Green` |
-| Blue | `RgbColor.Blue` |
-| Yellow | `RgbColor.Yellow` |
-| Magenta | `RgbColor.Magenta` |
-| Cyan | `RgbColor.Cyan` |
-| Gray | `RgbColor.Gray` |
-| Dark Red | `RgbColor.DarkRed` |
-| Orange | `RgbColor.Orange` |
+| Black | `MikuRgbColor.Black` |
+| White | `MikuRgbColor.White` |
+| Red | `MikuRgbColor.Red` |
+| Green | `MikuRgbColor.Green` |
+| Blue | `MikuRgbColor.Blue` |
+| Yellow | `MikuRgbColor.Yellow` |
+| Magenta | `MikuRgbColor.Magenta` |
+| Cyan | `MikuRgbColor.Cyan` |
+| Gray | `MikuRgbColor.Gray` |
+| Dark Red | `MikuRgbColor.DarkRed` |
+| Orange | `MikuRgbColor.Orange` |
 
-## ANSI Code Categories
+## MikuAnsiCodes Categories
 
 ### Text Styles
 - `Bold`, `Dim`, `Italic`, `Underline`
@@ -133,7 +133,7 @@ Like the colors from Miku's iconic design:
 - `ForegroundRgb(color)`, `BackgroundRgb(color)` - TrueColor
 - `Foreground256(code)`, `Background256(code)` - 256-color
 
-## ColorHelper Methods
+## MikuColorHelper Methods
 
 | Method | Description |
 |--------|-------------|

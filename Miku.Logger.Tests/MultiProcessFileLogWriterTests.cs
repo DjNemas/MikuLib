@@ -54,7 +54,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
                     UseDateFolders = false
                 };
 
-                using var writer = new FileLogWriter(options);
+                using var writer = new MikuFileLogWriter(options);
 
                 // Simulate rapid concurrent writes
                 for (int m = 0; m < messagesPerProcess; m++)
@@ -86,7 +86,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         await Task.Delay(500);
 
         // Cleanup shared streams
-        SharedFileStreamManager.Instance.DisposeAll();
+        MikuSharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         Assert.Empty(exceptions); // No IOException should occur
@@ -122,7 +122,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
                     UseDateFolders = false
                 };
 
-                using var writer = new FileLogWriter(options);
+                using var writer = new MikuFileLogWriter(options);
 
                 for (int i = 0; i < messagesPerService; i++)
                 {
@@ -152,7 +152,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         await Task.Delay(500);
 
         // Cleanup shared streams
-        SharedFileStreamManager.Instance.DisposeAll();
+        MikuSharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         Assert.Empty(exceptions); // No IOException

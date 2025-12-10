@@ -1,6 +1,10 @@
 using Miku.Core;
 using MikuLib.Console;
 
+// Type aliases for backward compatibility
+using RgbColor = Miku.Core.MikuRgbColor;
+using AnsiCodes = Miku.Core.MikuAnsiCodes;
+
 namespace MikuLib.Console.Tests;
 
 /// <summary>

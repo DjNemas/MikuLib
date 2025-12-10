@@ -52,8 +52,8 @@ namespace Miku.Logger
 
         private readonly string _categoryName;
         private readonly MikuLoggerOptions _options;
-        private readonly ConsoleLogWriter? _consoleWriter;
-        private readonly FileLogWriter? _fileWriter;
+        private readonly MikuConsoleLogWriter? _consoleWriter;
+        private readonly MikuFileLogWriter? _fileWriter;
         private readonly bool _useSse;
         private bool _disposed;
 
@@ -70,18 +70,18 @@ namespace Miku.Logger
 
             if (_options.Output.HasFlag(MikuLogOutput.Console))
             {
-                _consoleWriter = new ConsoleLogWriter(_options.ConsoleColors);
+                _consoleWriter = new MikuConsoleLogWriter(_options.ConsoleColors);
             }
 
             if (_options.Output.HasFlag(MikuLogOutput.File))
             {
-                _fileWriter = new FileLogWriter(_options.FileOptions);
+                _fileWriter = new MikuFileLogWriter(_options.FileOptions);
             }
 
             if (_options.Output.HasFlag(MikuLogOutput.ServerSentEvents))
             {
                 _useSse = true;
-                SseLogBroadcaster.Instance.Configure(_options.SseOptions);
+                MikuSseLogBroadcaster.Instance.Configure(_options.SseOptions);
             }
         }
 
@@ -288,7 +288,7 @@ namespace Miku.Logger
             // Broadcast to SSE clients
             if (_useSse)
             {
-                SseLogBroadcaster.Instance.Broadcast(logLevel, _categoryName, message, exception, _options.UseUtcTime);
+                MikuSseLogBroadcaster.Instance.Broadcast(logLevel, _categoryName, message, exception, _options.UseUtcTime);
             }
         }
 
@@ -309,7 +309,7 @@ namespace Miku.Logger
             // Broadcast to SSE clients (synchronous, uses channels internally)
             if (_useSse)
             {
-                SseLogBroadcaster.Instance.Broadcast(logLevel, _categoryName, message, exception, _options.UseUtcTime);
+                MikuSseLogBroadcaster.Instance.Broadcast(logLevel, _categoryName, message, exception, _options.UseUtcTime);
             }
         }
 

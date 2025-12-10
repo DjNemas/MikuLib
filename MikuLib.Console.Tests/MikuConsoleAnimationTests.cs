@@ -1,5 +1,8 @@
 using Miku.Core;
 
+// Type alias for backward compatibility
+using RgbColor = Miku.Core.MikuRgbColor;
+
 namespace MikuLib.Console.Tests;
 
 /// <summary>

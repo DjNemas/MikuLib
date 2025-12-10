@@ -49,13 +49,13 @@ namespace Miku.Logger.Extensions
             }
 
             // Configure the SSE broadcaster
-            SseLogBroadcaster.Instance.Configure(options.SseOptions);
+            MikuSseLogBroadcaster.Instance.Configure(options.SseOptions);
 
             // Register the logger provider
             builder.Services.AddSingleton<ILoggerProvider>(new MikuLoggerProvider(options));
 
             // Register the broadcaster as a service for DI access
-            builder.Services.AddSingleton(SseLogBroadcaster.Instance);
+            builder.Services.AddSingleton(MikuSseLogBroadcaster.Instance);
 
             return builder;
         }
@@ -74,8 +74,8 @@ namespace Miku.Logger.Extensions
             var options = new MikuSseLoggerOptions();
             configure?.Invoke(options);
 
-            SseLogBroadcaster.Instance.Configure(options);
-            services.AddSingleton(SseLogBroadcaster.Instance);
+            MikuSseLogBroadcaster.Instance.Configure(options);
+            services.AddSingleton(MikuSseLogBroadcaster.Instance);
 
             return services;
         }
@@ -101,7 +101,7 @@ namespace Miku.Logger.Extensions
             this IEndpointRouteBuilder endpoints,
             string? pattern = null)
         {
-            var broadcaster = SseLogBroadcaster.Instance;
+            var broadcaster = MikuSseLogBroadcaster.Instance;
             var endpointPath = pattern ?? broadcaster.Options.EndpointPath;
             var options = broadcaster.Options;
 
@@ -141,13 +141,13 @@ namespace Miku.Logger.Extensions
             var options = new MikuSseLoggerOptions();
             configure(options);
 
-            SseLogBroadcaster.Instance.Configure(options);
+            MikuSseLogBroadcaster.Instance.Configure(options);
 
             return MapMikuLoggerSse(endpoints, options.EndpointPath);
         }
 
-        private static async IAsyncEnumerable<SseItem<SseLogEntry>> GetSseItems(
-            SseLogBroadcaster broadcaster,
+        private static async IAsyncEnumerable<SseItem<MikuSseLogEntry>> GetSseItems(
+            MikuSseLogBroadcaster broadcaster,
             [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var options = broadcaster.Options;
@@ -159,7 +159,7 @@ namespace Miku.Logger.Extensions
                     ? $"{options.EventType}-{entry.Level.ToLowerInvariant()}"
                     : options.EventType;
 
-                yield return new SseItem<SseLogEntry>(entry, eventType)
+                yield return new SseItem<MikuSseLogEntry>(entry, eventType)
                 {
                     ReconnectionInterval = reconnectInterval
                 };

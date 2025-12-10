@@ -38,11 +38,11 @@ using MikuLib.Console;
 MikuConsole.Initialize();
 
 // Write colored text
-MikuConsole.WriteLine("Hello Miku!", RgbColor.MikuCyan);
-MikuConsole.WriteLine("Error!", RgbColor.MikuPink);
+MikuConsole.WriteLine("Hello Miku!", MikuRgbColor.MikuCyan);
+MikuConsole.WriteLine("Error!", MikuRgbColor.MikuPink);
 
 // Gradient text
-MikuConsole.WriteGradientLine("Cyan to Pink", RgbColor.MikuCyan, RgbColor.MikuPink);
+MikuConsole.WriteGradientLine("Cyan to Pink", MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink);
 
 // Rainbow text
 MikuConsole.WriteRainbowLine("Rainbow colors!");
@@ -57,8 +57,8 @@ MikuConsole.WriteMikuRainbow("Miku Rainbow!");
 
 ```csharp
 // TrueColor (24-bit RGB)
-MikuConsole.Write("text", RgbColor.MikuCyan);
-MikuConsole.WriteLine("text", RgbColor.MikuCyan);
+MikuConsole.Write("text", MikuRgbColor.MikuCyan);
+MikuConsole.WriteLine("text", MikuRgbColor.MikuCyan);
 MikuConsole.WriteLine("text", foreground, background);
 
 // 256-Color palette
@@ -69,16 +69,16 @@ MikuConsole.WriteLine256("text", 44);
 ### Styled Text
 
 ```csharp
-MikuConsole.WriteBold("Bold text", RgbColor.MikuCyan);
-MikuConsole.WriteUnderline("Underlined", RgbColor.MikuPink);
-MikuConsole.WriteItalic("Italic text", RgbColor.MikuTeal);
-MikuConsole.WriteStyled("Custom", color, AnsiCodes.Bold, AnsiCodes.Underline);
+MikuConsole.WriteBold("Bold text", MikuRgbColor.MikuCyan);
+MikuConsole.WriteUnderline("Underlined", MikuRgbColor.MikuPink);
+MikuConsole.WriteItalic("Italic text", MikuRgbColor.MikuTeal);
+MikuConsole.WriteStyled("Custom", color, MikuAnsiCodes.Bold, MikuAnsiCodes.Underline);
 ```
 
 ### Gradients and Rainbow
 
 ```csharp
-MikuConsole.WriteGradient("Gradient text", RgbColor.MikuCyan, RgbColor.MikuPink);
+MikuConsole.WriteGradient("Gradient text", MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink);
 MikuConsole.WriteGradientLine("With newline", from, to);
 MikuConsole.WriteRainbow("Rainbow!");
 MikuConsole.WriteRainbowLine("Rainbow line!");
@@ -88,8 +88,8 @@ MikuConsole.WriteMikuRainbow("Miku colors!");
 ### Positioning
 
 ```csharp
-MikuConsole.WriteAt(10, 5, "At position", RgbColor.MikuCyan);
-MikuConsole.WriteCentered("Centered text", RgbColor.MikuPink);
+MikuConsole.WriteAt(10, 5, "At position", MikuRgbColor.MikuCyan);
+MikuConsole.WriteCentered("Centered text", MikuRgbColor.MikuPink);
 MikuConsole.WriteCenteredLine("Centered with newline", color);
 
 // Get current cursor position
@@ -100,13 +100,13 @@ MikuConsole.SetCursorPosition(x, y);
 ### Drawing
 
 ```csharp
-MikuConsole.DrawBar(20, RgbColor.MikuCyan);           // Solid bar at cursor
-MikuConsole.DrawBar(10, 5, 20, RgbColor.MikuCyan);    // Bar at position (x=10, y=5)
+MikuConsole.DrawBar(20, MikuRgbColor.MikuCyan);           // Solid bar at cursor
+MikuConsole.DrawBar(10, 5, 20, MikuRgbColor.MikuCyan);    // Bar at position (x=10, y=5)
 
 MikuConsole.DrawGradientBar(20, from, to);            // Gradient bar at cursor
 MikuConsole.DrawGradientBar(10, 5, 20, from, to);     // Gradient bar at position
 
-MikuConsole.DrawBox(0, 0, 40, 10, RgbColor.MikuCyan); // Box with border
+MikuConsole.DrawBox(0, 0, 40, 10, MikuRgbColor.MikuCyan); // Box with border
 ```
 
 ### Console Control
@@ -123,7 +123,7 @@ MikuConsole.ShowCursor();  // Show cursor
 ### Typewriter Effects
 
 ```csharp
-await MikuConsoleAnimation.TypewriterAsync("Typing...", RgbColor.MikuCyan, delayMs: 30);
+await MikuConsoleAnimation.TypewriterAsync("Typing...", MikuRgbColor.MikuCyan, delayMs: 30);
 await MikuConsoleAnimation.TypewriterLineAsync("With newline", color, delayMs: 30);
 await MikuConsoleAnimation.TypewriterGradientAsync("Gradient typing", from, to, delayMs: 30);
 ```
@@ -131,8 +131,8 @@ await MikuConsoleAnimation.TypewriterGradientAsync("Gradient typing", from, to, 
 ### Fade Effects
 
 ```csharp
-await MikuConsoleAnimation.FadeInAsync("Fade in", RgbColor.MikuCyan, x: 0, y: 0);
-await MikuConsoleAnimation.FadeOutAsync("Fade out", RgbColor.MikuCyan, x: 0, y: 0);
+await MikuConsoleAnimation.FadeInAsync("Fade in", MikuRgbColor.MikuCyan, x: 0, y: 0);
+await MikuConsoleAnimation.FadeOutAsync("Fade out", MikuRgbColor.MikuCyan, x: 0, y: 0);
 ```
 
 ### Pulse Effects
@@ -152,27 +152,27 @@ await MikuConsoleAnimation.RainbowWaveAsync("Rainbow wave", x: 0, y: 0);
 ### Loading Indicators
 
 ```csharp
-await MikuConsoleAnimation.SpinnerAsync("Loading...", RgbColor.MikuCyan, x: 0, y: 0);
+await MikuConsoleAnimation.SpinnerAsync("Loading...", MikuRgbColor.MikuCyan, x: 0, y: 0);
 await MikuConsoleAnimation.ProgressBarAsync(x: 0, y: 0, width: 40, fillColor, emptyColor);
 ```
 
 ### Screen Effects
 
 ```csharp
-await MikuConsoleAnimation.RevealLinesAsync(lines, RgbColor.MikuCyan, startX: 0, startY: 0);
+await MikuConsoleAnimation.RevealLinesAsync(lines, MikuRgbColor.MikuCyan, startX: 0, startY: 0);
 await MikuConsoleAnimation.RevealLinesAlternatingAsync(lines, color1, color2, startX: 0, startY: 0);
 ```
 
 ## Predefined Miku Colors
 
-Use colors from `Miku.Core.RgbColor`:
+Use colors from `Miku.Core.MikuRgbColor`:
 
 | Color | Hex | Description |
 |-------|-----|-------------|
-| `RgbColor.MikuCyan` | #00CED1 | Miku's signature cyan |
-| `RgbColor.MikuPink` | #E12885 | Secondary pink |
-| `RgbColor.MikuTeal` | #39C5BB | Hair highlight |
-| `RgbColor.MikuDarkCyan` | #008B8B | Dark accent |
+| `MikuRgbColor.MikuCyan` | #00CED1 | Miku's signature cyan |
+| `MikuRgbColor.MikuPink` | #E12885 | Secondary pink |
+| `MikuRgbColor.MikuTeal` | #39C5BB | Hair highlight |
+| `MikuRgbColor.MikuDarkCyan` | #008B8B | Dark accent |
 
 Plus standard colors: Black, White, Red, Green, Blue, Yellow, Magenta, Cyan, Gray, DarkRed, Orange
 
@@ -192,8 +192,8 @@ try
     // Animated title
     await MikuConsoleAnimation.TypewriterGradientAsync(
         "Welcome to MikuLib.Console!",
-        RgbColor.MikuCyan,
-        RgbColor.MikuPink,
+        MikuRgbColor.MikuCyan,
+        MikuRgbColor.MikuPink,
         delayMs: 50
     );
     
@@ -201,18 +201,18 @@ try
     MikuConsole.WriteLine();
     
     // Draw a box
-    MikuConsole.DrawBox(2, 3, 50, 10, RgbColor.MikuCyan);
+    MikuConsole.DrawBox(2, 3, 50, 10, MikuRgbColor.MikuCyan);
     
     // Text inside box
-    MikuConsole.WriteAt(4, 5, "Like Miku's concerts,", RgbColor.MikuPink);
-    MikuConsole.WriteAt(4, 6, "your console shines bright!", RgbColor.MikuCyan);
+    MikuConsole.WriteAt(4, 5, "Like Miku's concerts,", MikuRgbColor.MikuPink);
+    MikuConsole.WriteAt(4, 6, "your console shines bright!", MikuRgbColor.MikuCyan);
     
     // Progress bar
-    MikuConsole.WriteAt(4, 8, "Loading: ", RgbColor.White);
+    MikuConsole.WriteAt(4, 8, "Loading: ", MikuRgbColor.White);
     await MikuConsoleAnimation.ProgressBarAsync(
         13, 8, 30,
-        RgbColor.MikuCyan,
-        RgbColor.Gray,
+        MikuRgbColor.MikuCyan,
+        MikuRgbColor.Gray,
         durationMs: 2000
     );
     
@@ -232,7 +232,7 @@ finally
 
 ## Dependencies
 
-- `MikuLib.Core` - For RgbColor, AnsiCodes, and ColorHelper
+- `MikuLib.Core` - For MikuRgbColor, MikuAnsiCodes, and MikuColorHelper
 
 ## License
 

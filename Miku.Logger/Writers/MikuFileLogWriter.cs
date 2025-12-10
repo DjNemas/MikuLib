@@ -7,16 +7,16 @@ namespace Miku.Logger.Writers
     /// Thread-safe file writer with log rotation support.
     /// High-performance implementation using singleton shared file streams.
     /// </summary>
-    internal class FileLogWriter : IDisposable
+    internal class MikuFileLogWriter : IDisposable
     {
         private readonly MikuFileLoggerOptions _options;
         private readonly ConcurrentQueue<string> _writeQueue = new();
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly Task _writerTask;
         private bool _disposed;
-        private SharedFileStream? _currentStream;
+        private MikuSharedFileStream? _currentStream;
 
-        public FileLogWriter(MikuFileLoggerOptions options)
+        public MikuFileLogWriter(MikuFileLoggerOptions options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _writerTask = Task.Run(ProcessQueueAsync);
@@ -44,7 +44,6 @@ namespace Miku.Logger.Writers
 
         private async Task ProcessQueueAsync()
         {
-            // Batch size for better performance
             const int batchSize = 100;
             var batch = new List<string>(batchSize);
 
@@ -52,7 +51,6 @@ namespace Miku.Logger.Writers
             {
                 try
                 {
-                    // Collect messages in batch
                     int collected = 0;
                     while (collected < batchSize && _writeQueue.TryDequeue(out var message))
                     {
@@ -67,7 +65,6 @@ namespace Miku.Logger.Writers
                     }
                     else
                     {
-                        // No messages - short sleep
                         await Task.Delay(10, _cancellationTokenSource.Token);
                     }
                 }
@@ -78,7 +75,7 @@ namespace Miku.Logger.Writers
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error in log writer: {ex.Message}");
-                    await Task.Delay(100); // Back off on error
+                    await Task.Delay(100);
                 }
             }
         }
@@ -93,11 +90,9 @@ namespace Miku.Logger.Writers
                 RotateLogFile(filePath);
             }
 
-            // Get or create shared stream for this file
-            var stream = SharedFileStreamManager.Instance.GetOrCreateStream(filePath);
+            var stream = MikuSharedFileStreamManager.Instance.GetOrCreateStream(filePath);
             _currentStream = stream;
 
-            // Write all messages in batch
             foreach (var message in messages)
             {
                 await stream.WriteAsync(message);
@@ -132,8 +127,7 @@ namespace Miku.Logger.Writers
 
             try
             {
-                // Remove old stream before rotation
-                SharedFileStreamManager.Instance.RemoveStream(filePath);
+                MikuSharedFileStreamManager.Instance.RemoveStream(filePath);
 
                 var directory = Path.GetDirectoryName(filePath)!;
                 var fileName = Path.GetFileNameWithoutExtension(filePath);
@@ -148,7 +142,6 @@ namespace Miku.Logger.Writers
             }
             catch
             {
-                // If rotation fails, continue logging to current file
             }
         }
 
@@ -173,13 +166,11 @@ namespace Miku.Logger.Writers
                     }
                     catch
                     {
-                        // Ignore deletion errors
                     }
                 }
             }
             catch
             {
-                // Ignore cleanup errors
             }
         }
 
@@ -200,18 +191,14 @@ namespace Miku.Logger.Writers
 
             try
             {
-                // Give background task time to finish current batch
                 if (!_writerTask.Wait(TimeSpan.FromSeconds(5)))
                 {
-                    // Timeout - force flush remaining messages
                 }
             }
             catch
             {
-                // Ignore wait errors
             }
 
-            // Flush all remaining messages
             while (_writeQueue.TryDequeue(out var message))
             {
                 try
@@ -219,12 +206,11 @@ namespace Miku.Logger.Writers
                     var filePath = GetCurrentLogFilePath();
                     EnsureDirectoryExists(Path.GetDirectoryName(filePath)!);
 
-                    var stream = SharedFileStreamManager.Instance.GetOrCreateStream(filePath);
+                    var stream = MikuSharedFileStreamManager.Instance.GetOrCreateStream(filePath);
                     stream.Write(message);
                 }
                 catch
                 {
-                    // Log to console as last resort
                     Console.WriteLine($"[MikuLogger] Failed to write message: {message}");
                 }
             }

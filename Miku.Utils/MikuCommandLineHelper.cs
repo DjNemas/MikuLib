@@ -11,28 +11,28 @@ namespace Miku.Utils
     /// <example>
     /// <code>
     /// // Check for release configuration (uses Environment.GetCommandLineArgs())
-    /// if (CommandLineHelper.IsReleaseConfiguration())
+    /// if (MikuCommandLineHelper.IsReleaseConfiguration())
     /// {
     ///     // Use release settings
     /// }
     /// 
     /// // Or pass args explicitly
-    /// if (CommandLineHelper.IsReleaseConfiguration(args))
+    /// if (MikuCommandLineHelper.IsReleaseConfiguration(args))
     /// {
     ///     // Use release settings
     /// }
     /// 
     /// // Get a parameter value
-    /// var outputPath = CommandLineHelper.GetParameterValue("--output");
+    /// var outputPath = MikuCommandLineHelper.GetParameterValue("--output");
     /// 
     /// // Check if parameter exists
-    /// if (CommandLineHelper.HasParameter("--verbose"))
+    /// if (MikuCommandLineHelper.HasParameter("--verbose"))
     /// {
     ///     // Enable verbose logging
     /// }
     /// </code>
     /// </example>
-    public static class CommandLineHelper
+    public static class MikuCommandLineHelper
     {
         // 39 (Mi-Ku in Japanese) - Default timeout
         private const int DefaultTimeoutSeconds = 39;
@@ -64,15 +64,6 @@ namespace Miku.Utils
         /// <param name="args">Command line arguments. If null, uses Environment.GetCommandLineArgs().</param>
         /// <param name="comparison">String comparison type. Default: OrdinalIgnoreCase.</param>
         /// <returns>True if the parameter with the value was found, otherwise false.</returns>
-        /// <example>
-        /// <code>
-        /// // Uses Environment.GetCommandLineArgs()
-        /// var isRelease = CommandLineHelper.HasParameterWithValue("--configuration", "Release");
-        /// 
-        /// // Or pass args explicitly
-        /// var isRelease = CommandLineHelper.HasParameterWithValue("--configuration", "Release", args);
-        /// </code>
-        /// </example>
         public static bool HasParameterWithValue(
             string parameter,
             string value,
@@ -98,17 +89,6 @@ namespace Miku.Utils
         /// </summary>
         /// <param name="args">Command line arguments. If null, uses Environment.GetCommandLineArgs().</param>
         /// <returns>True if --configuration Release was found, otherwise false.</returns>
-        /// <example>
-        /// <code>
-        /// // Automatic detection
-        /// var connectionString = CommandLineHelper.IsReleaseConfiguration()
-        ///     ? releaseConnectionString
-        ///     : debugConnectionString;
-        /// 
-        /// // Or explicit args
-        /// var isRelease = CommandLineHelper.IsReleaseConfiguration(args);
-        /// </code>
-        /// </example>
         public static bool IsReleaseConfiguration(string[]? args = null)
         {
             return HasParameterWithValue("--configuration", "Release", args);
@@ -134,21 +114,6 @@ namespace Miku.Utils
         /// <param name="args">Command line arguments. If null, uses Environment.GetCommandLineArgs().</param>
         /// <param name="comparison">String comparison type. Default: OrdinalIgnoreCase.</param>
         /// <returns>True if the parameter was found, otherwise false.</returns>
-        /// <example>
-        /// <code>
-        /// // Automatic detection
-        /// if (CommandLineHelper.HasParameter("--verbose"))
-        /// {
-        ///     logger.MinimumLogLevel = LogLevel.Debug;
-        /// }
-        /// 
-        /// // Or explicit args
-        /// if (CommandLineHelper.HasParameter("--verbose", args))
-        /// {
-        ///     logger.MinimumLogLevel = LogLevel.Debug;
-        /// }
-        /// </code>
-        /// </example>
         public static bool HasParameter(
             string parameter,
             string[]? args = null,
@@ -171,16 +136,6 @@ namespace Miku.Utils
         /// <param name="args">Command line arguments. If null, uses Environment.GetCommandLineArgs().</param>
         /// <param name="comparison">String comparison type. Default: OrdinalIgnoreCase.</param>
         /// <returns>The value after the parameter or null if not found.</returns>
-        /// <example>
-        /// <code>
-        /// // Automatic detection
-        /// var outputPath = CommandLineHelper.GetParameterValue("--output") ?? "./default";
-        /// var port = int.TryParse(CommandLineHelper.GetParameterValue("--port"), out var p) ? p : 8080;
-        /// 
-        /// // Or explicit args
-        /// var outputPath = CommandLineHelper.GetParameterValue("--output", args) ?? "./default";
-        /// </code>
-        /// </example>
         public static string? GetParameterValue(
             string parameter,
             string[]? args = null,
@@ -221,13 +176,6 @@ namespace Miku.Utils
         /// <param name="args">Command line arguments. If null, uses Environment.GetCommandLineArgs().</param>
         /// <param name="comparison">String comparison type. Default: OrdinalIgnoreCase.</param>
         /// <returns>Array of all values found for the parameter.</returns>
-        /// <example>
-        /// <code>
-        /// // For: --include *.cs --include *.txt
-        /// var includes = CommandLineHelper.GetParameterValues("--include");
-        /// // Returns: ["*.cs", "*.txt"]
-        /// </code>
-        /// </example>
         public static string[] GetParameterValues(
             string parameter,
             string[]? args = null,
@@ -259,20 +207,6 @@ namespace Miku.Utils
         /// </summary>
         /// <param name="args">Command line arguments. If null, uses Environment.GetCommandLineArgs().</param>
         /// <returns>Dictionary with parameter names as keys and values as values.</returns>
-        /// <example>
-        /// <code>
-        /// // Automatic detection
-        /// var parsed = CommandLineHelper.ParseArguments();
-        /// if (parsed.TryGetValue("--output", out var output))
-        /// {
-        ///     Console.WriteLine($"Output: {output}");
-        /// }
-        /// 
-        /// // Note: For --include file1.txt --include file2.txt
-        /// // Only "file2.txt" will be in the dictionary
-        /// // Use ParseArgumentsWithMultipleValues() instead
-        /// </code>
-        /// </example>
         public static Dictionary<string, string> ParseArguments(string[]? args = null)
         {
             var actualArgs = GetArgs(args);
@@ -291,7 +225,7 @@ namespace Miku.Utils
                 {
                     var key = arg[..separatorIndex];
                     var value = arg[(separatorIndex + 1)..];
-                    result[key] = value; // Overwrites if key exists
+                    result[key] = value;
                     continue;
                 }
 
@@ -300,12 +234,12 @@ namespace Miku.Utils
                 {
                     if (i + 1 < actualArgs.Length && !actualArgs[i + 1].StartsWith('-') && !actualArgs[i + 1].StartsWith('/'))
                     {
-                        result[arg] = actualArgs[i + 1]; // Overwrites if key exists
-                        i++; // Skip next argument as it's the value
+                        result[arg] = actualArgs[i + 1];
+                        i++;
                     }
                     else
                     {
-                        result[arg] = string.Empty; // Flag without value
+                        result[arg] = string.Empty;
                     }
                 }
             }
@@ -320,28 +254,6 @@ namespace Miku.Utils
         /// </summary>
         /// <param name="args">Command line arguments. If null, uses Environment.GetCommandLineArgs().</param>
         /// <returns>Dictionary with parameter names as keys and lists of values.</returns>
-        /// <example>
-        /// <code>
-        /// // For: --include file1.txt --include file2.txt --output ./build
-        /// var parsed = CommandLineHelper.ParseArgumentsWithMultipleValues();
-        /// 
-        /// if (parsed.TryGetValue("--include", out var includes))
-        /// {
-        ///     foreach (var file in includes)
-        ///     {
-        ///         Console.WriteLine($"Include: {file}");
-        ///     }
-        ///     // Output:
-        ///     // Include: file1.txt
-        ///     // Include: file2.txt
-        /// }
-        /// 
-        /// if (parsed.TryGetValue("--output", out var outputs))
-        /// {
-        ///     Console.WriteLine($"Output: {outputs[0]}"); // ./build
-        /// }
-        /// </code>
-        /// </example>
         public static Dictionary<string, List<string>> ParseArgumentsWithMultipleValues(string[]? args = null)
         {
             var actualArgs = GetArgs(args);
@@ -377,11 +289,10 @@ namespace Miku.Utils
                     if (i + 1 < actualArgs.Length && !actualArgs[i + 1].StartsWith('-') && !actualArgs[i + 1].StartsWith('/'))
                     {
                         result[arg].Add(actualArgs[i + 1]);
-                        i++; // Skip next argument as it's the value
+                        i++;
                     }
                     else
                     {
-                        // Flag without value - add empty string
                         result[arg].Add(string.Empty);
                     }
                 }
@@ -396,28 +307,10 @@ namespace Miku.Utils
         /// If no args are provided, uses Environment.GetCommandLineArgs().
         /// </summary>
         /// <param name="args">Command line arguments. If null, uses Environment.GetCommandLineArgs().</param>
-        /// <returns>ParsedArguments object with helper methods.</returns>
-        /// <example>
-        /// <code>
-        /// // For: --include file1.txt --include file2.txt --output ./build --verbose
-        /// var parsed = CommandLineHelper.Parse();
-        /// 
-        /// // Get single value (last one if multiple)
-        /// var output = parsed.GetValue("--output"); // "./build"
-        /// 
-        /// // Get all values
-        /// var includes = parsed.GetValues("--include"); // ["file1.txt", "file2.txt"]
-        /// 
-        /// // Check if parameter exists
-        /// var isVerbose = parsed.HasParameter("--verbose"); // true
-        /// 
-        /// // Get first value or default
-        /// var timeout = parsed.GetValueOrDefault("--timeout", "30"); // "30"
-        /// </code>
-        /// </example>
-        public static ParsedArguments Parse(string[]? args = null)
+        /// <returns>MikuParsedArguments object with helper methods.</returns>
+        public static MikuParsedArguments Parse(string[]? args = null)
         {
-            return new ParsedArguments(GetArgs(args));
+            return new MikuParsedArguments(GetArgs(args));
         }
     }
 
@@ -425,11 +318,11 @@ namespace Miku.Utils
     /// Represents parsed command line arguments with convenient access methods.
     /// Supports both single and multiple values per parameter.
     /// </summary>
-    public class ParsedArguments
+    public class MikuParsedArguments
     {
         private readonly Dictionary<string, List<string>> _arguments;
 
-        internal ParsedArguments(string[] args)
+        internal MikuParsedArguments(string[] args)
         {
             _arguments = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
             ParseArgs(args);
@@ -467,11 +360,10 @@ namespace Miku.Utils
                     if (i + 1 < args.Length && !args[i + 1].StartsWith('-') && !args[i + 1].StartsWith('/'))
                     {
                         _arguments[arg].Add(args[i + 1]);
-                        i++; // Skip next argument as it's the value
+                        i++;
                     }
                     else
                     {
-                        // Flag without value
                         _arguments[arg].Add(string.Empty);
                     }
                 }
@@ -481,8 +373,6 @@ namespace Miku.Utils
         /// <summary>
         /// Gets the last value for a parameter. Useful when only one value is expected.
         /// </summary>
-        /// <param name="parameter">The parameter name.</param>
-        /// <returns>The last value or null if not found.</returns>
         public string? GetValue(string parameter)
         {
             return _arguments.TryGetValue(parameter, out var values) && values.Count > 0
@@ -493,8 +383,6 @@ namespace Miku.Utils
         /// <summary>
         /// Gets all values for a parameter. Useful for parameters that can appear multiple times.
         /// </summary>
-        /// <param name="parameter">The parameter name.</param>
-        /// <returns>Array of all values or empty array if not found.</returns>
         public string[] GetValues(string parameter)
         {
             return _arguments.TryGetValue(parameter, out var values)
@@ -505,9 +393,6 @@ namespace Miku.Utils
         /// <summary>
         /// Gets the last value for a parameter or a default value if not found.
         /// </summary>
-        /// <param name="parameter">The parameter name.</param>
-        /// <param name="defaultValue">The default value to return if parameter is not found.</param>
-        /// <returns>The last value or the default value.</returns>
         public string GetValueOrDefault(string parameter, string defaultValue)
         {
             return GetValue(parameter) ?? defaultValue;
@@ -516,8 +401,6 @@ namespace Miku.Utils
         /// <summary>
         /// Checks if a parameter exists in the arguments.
         /// </summary>
-        /// <param name="parameter">The parameter name.</param>
-        /// <returns>True if the parameter was found.</returns>
         public bool HasParameter(string parameter)
         {
             return _arguments.ContainsKey(parameter);
@@ -526,8 +409,6 @@ namespace Miku.Utils
         /// <summary>
         /// Gets the count of values for a parameter.
         /// </summary>
-        /// <param name="parameter">The parameter name.</param>
-        /// <returns>The number of values for this parameter.</returns>
         public int GetValueCount(string parameter)
         {
             return _arguments.TryGetValue(parameter, out var values) ? values.Count : 0;
@@ -536,7 +417,6 @@ namespace Miku.Utils
         /// <summary>
         /// Gets all parameter names.
         /// </summary>
-        /// <returns>Array of all parameter names.</returns>
         public string[] GetParameterNames()
         {
             return _arguments.Keys.ToArray();
@@ -545,9 +425,6 @@ namespace Miku.Utils
         /// <summary>
         /// Tries to get the value for a parameter.
         /// </summary>
-        /// <param name="parameter">The parameter name.</param>
-        /// <param name="value">The last value if found.</param>
-        /// <returns>True if the parameter was found.</returns>
         public bool TryGetValue(string parameter, out string? value)
         {
             value = GetValue(parameter);

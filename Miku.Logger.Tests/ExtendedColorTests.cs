@@ -17,7 +17,7 @@ public class ExtendedColorTests
     public void RgbColor_Constructor_ShouldSetValues()
     {
         // Arrange & Act
-        var color = new RgbColor(0x00, 0xCE, 0xD1);
+        var color = new MikuRgbColor(0x00, 0xCE, 0xD1);
 
         // Assert
         Assert.Equal(0x00, color.R);
@@ -29,7 +29,7 @@ public class ExtendedColorTests
     public void RgbColor_FromHex_WithHash_ShouldParse()
     {
         // Arrange & Act
-        var color = RgbColor.FromHex("#00CED1");
+        var color = MikuRgbColor.FromHex("#00CED1");
 
         // Assert
         Assert.Equal(0x00, color.R);
@@ -41,7 +41,7 @@ public class ExtendedColorTests
     public void RgbColor_FromHex_WithoutHash_ShouldParse()
     {
         // Arrange & Act
-        var color = RgbColor.FromHex("FF5733");
+        var color = MikuRgbColor.FromHex("FF5733");
 
         // Assert
         Assert.Equal(0xFF, color.R);
@@ -53,7 +53,7 @@ public class ExtendedColorTests
     public void RgbColor_ToHex_ShouldReturnCorrectFormat()
     {
         // Arrange
-        var color = new RgbColor(0, 206, 209);
+        var color = new MikuRgbColor(0, 206, 209);
 
         // Act
         var hex = color.ToHex();
@@ -66,7 +66,7 @@ public class ExtendedColorTests
     public void RgbColor_MikuCyan_ShouldBeCorrect()
     {
         // Arrange & Act
-        var mikuCyan = RgbColor.MikuCyan;
+        var mikuCyan = MikuRgbColor.MikuCyan;
 
         // Assert - Miku's signature color #00CED1
         Assert.Equal(0x00, mikuCyan.R);
@@ -79,9 +79,9 @@ public class ExtendedColorTests
     public void RgbColor_Equality_ShouldWork()
     {
         // Arrange
-        var color1 = new RgbColor(100, 150, 200);
-        var color2 = new RgbColor(100, 150, 200);
-        var color3 = new RgbColor(100, 150, 201);
+        var color1 = new MikuRgbColor(100, 150, 200);
+        var color2 = new MikuRgbColor(100, 150, 200);
+        var color3 = new MikuRgbColor(100, 150, 201);
 
         // Assert
         Assert.Equal(color1, color2);
@@ -94,29 +94,29 @@ public class ExtendedColorTests
     public void RgbColor_FromHex_InvalidLength_ShouldThrow()
     {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => RgbColor.FromHex("FFF"));
-        Assert.Throws<ArgumentException>(() => RgbColor.FromHex("FFFFFFF"));
+        Assert.Throws<ArgumentException>(() => MikuRgbColor.FromHex("FFF"));
+        Assert.Throws<ArgumentException>(() => MikuRgbColor.FromHex("FFFFFFF"));
     }
 
     [Fact]
     public void RgbColor_FromHex_Null_ShouldThrow()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => RgbColor.FromHex(null!));
+        Assert.Throws<ArgumentNullException>(() => MikuRgbColor.FromHex(null!));
     }
 
     [Fact]
     public void RgbColor_PredefinedColors_ShouldExist()
     {
         // Act & Assert - Verify all predefined colors are accessible
-        Assert.Equal(new RgbColor(0, 0, 0), RgbColor.Black);
-        Assert.Equal(new RgbColor(255, 255, 255), RgbColor.White);
-        Assert.Equal(new RgbColor(255, 0, 0), RgbColor.Red);
-        Assert.Equal(new RgbColor(0, 255, 0), RgbColor.Green);
-        Assert.Equal(new RgbColor(0, 0, 255), RgbColor.Blue);
-        Assert.Equal(new RgbColor(255, 255, 0), RgbColor.Yellow);
-        Assert.Equal(new RgbColor(0, 255, 255), RgbColor.Cyan);
-        Assert.Equal(new RgbColor(255, 0, 255), RgbColor.Magenta);
+        Assert.Equal(new MikuRgbColor(0, 0, 0), MikuRgbColor.Black);
+        Assert.Equal(new MikuRgbColor(255, 255, 255), MikuRgbColor.White);
+        Assert.Equal(new MikuRgbColor(255, 0, 0), MikuRgbColor.Red);
+        Assert.Equal(new MikuRgbColor(0, 255, 0), MikuRgbColor.Green);
+        Assert.Equal(new MikuRgbColor(0, 0, 255), MikuRgbColor.Blue);
+        Assert.Equal(new MikuRgbColor(255, 255, 0), MikuRgbColor.Yellow);
+        Assert.Equal(new MikuRgbColor(0, 255, 255), MikuRgbColor.Cyan);
+        Assert.Equal(new MikuRgbColor(255, 0, 255), MikuRgbColor.Magenta);
     }
 
     #endregion
@@ -172,19 +172,19 @@ public class ExtendedColorTests
         var options = new MikuTrueColorOptions();
 
         // Assert
-        Assert.Equal(RgbColor.Gray, options.TraceColor);
-        Assert.Equal(RgbColor.Yellow, options.DebugColor);
-        Assert.Equal(RgbColor.MikuCyan, options.InformationColor);
-        Assert.Equal(RgbColor.Orange, options.WarningColor);
-        Assert.Equal(RgbColor.Red, options.ErrorColor);
-        Assert.Equal(RgbColor.DarkRed, options.CriticalColor);
+        Assert.Equal(MikuRgbColor.Gray, options.TraceColor);
+        Assert.Equal(MikuRgbColor.Yellow, options.DebugColor);
+        Assert.Equal(MikuRgbColor.MikuCyan, options.InformationColor);
+        Assert.Equal(MikuRgbColor.Orange, options.WarningColor);
+        Assert.Equal(MikuRgbColor.Red, options.ErrorColor);
+        Assert.Equal(MikuRgbColor.DarkRed, options.CriticalColor);
     }
 
     [Fact]
     public void TrueColorOptions_CustomRgbValues_ShouldBeSettable()
     {
         // Arrange & Act
-        var customCyan = RgbColor.FromHex("#39C5BB"); // Miku's hair highlight
+        var customCyan = MikuRgbColor.FromHex("#39C5BB"); // Miku's hair highlight
         var options = new MikuTrueColorOptions
         {
             InformationColor = customCyan
@@ -226,11 +226,11 @@ public class ExtendedColorTests
         };
 
         // Act
-        options.TrueColors.InformationColor = RgbColor.MikuTeal;
+        options.TrueColors.InformationColor = MikuRgbColor.MikuTeal;
 
         // Assert
         Assert.Equal(MikuColorSpace.TrueColor, options.ColorSpace);
-        Assert.Equal(RgbColor.MikuTeal, options.TrueColors.InformationColor);
+        Assert.Equal(MikuRgbColor.MikuTeal, options.TrueColors.InformationColor);
     }
 
     [Fact]
@@ -244,7 +244,7 @@ public class ExtendedColorTests
         Assert.NotNull(options.TrueColors);
         Assert.Equal(ConsoleColor.Cyan, options.InformationColor);
         Assert.Equal(44, options.Extended256Colors.InformationColor);
-        Assert.Equal(RgbColor.MikuCyan, options.TrueColors.InformationColor);
+        Assert.Equal(MikuRgbColor.MikuCyan, options.TrueColors.InformationColor);
     }
 
     #endregion
@@ -284,7 +284,7 @@ public class ExtendedColorTests
                 ColorSpace = MikuColorSpace.TrueColor,
                 TrueColors = new MikuTrueColorOptions
                 {
-                    InformationColor = RgbColor.MikuCyan
+                    InformationColor = MikuRgbColor.MikuCyan
                 }
             }
         };
@@ -308,12 +308,12 @@ public class ExtendedColorTests
                 ColorSpace = MikuColorSpace.TrueColor,
                 TrueColors = new MikuTrueColorOptions
                 {
-                    TraceColor = RgbColor.FromHex("#808080"),
-                    DebugColor = RgbColor.FromHex("#FFD700"),
-                    InformationColor = RgbColor.FromHex("#00CED1"),
-                    WarningColor = RgbColor.FromHex("#FFA500"),
-                    ErrorColor = RgbColor.FromHex("#FF4444"),
-                    CriticalColor = RgbColor.FromHex("#8B0000")
+                    TraceColor = MikuRgbColor.FromHex("#808080"),
+                    DebugColor = MikuRgbColor.FromHex("#FFD700"),
+                    InformationColor = MikuRgbColor.FromHex("#00CED1"),
+                    WarningColor = MikuRgbColor.FromHex("#FFA500"),
+                    ErrorColor = MikuRgbColor.FromHex("#FF4444"),
+                    CriticalColor = MikuRgbColor.FromHex("#8B0000")
                 }
             }
         };

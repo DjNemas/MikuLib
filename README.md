@@ -31,6 +31,13 @@ This change was made for better consistency across the library. When updating fr
 | `SseLoggerOptions` | `MikuSseLoggerOptions` |
 | `Extended256ColorOptions` | `MikuExtended256ColorOptions` |
 | `TrueColorOptions` | `MikuTrueColorOptions` |
+| `RgbColor` | `MikuRgbColor` |
+| `AnsiCodes` | `MikuAnsiCodes` |
+| `ColorHelper` | `MikuColorHelper` |
+| `SseLogBroadcaster` | `MikuSseLogBroadcaster` |
+| `SseLogEntry` | `MikuSseLogEntry` |
+| `FileLogWriter` | `MikuFileLogWriter` |
+| `SharedFileStreamManager` | `MikuSharedFileStreamManager` |
 
 ### Migration Example
 
@@ -62,16 +69,16 @@ var options = new MikuLoggerOptions
 
 ### MikuLib.Core
 **Core types and utilities** shared across all MikuLib packages:
-- **RgbColor**: 24-bit RGB color structure with hex parsing and interpolation
-- **AnsiCodes**: ANSI escape code constants for console styling
-- **ColorHelper**: Color manipulation utilities (gradients, rainbow, darken/lighten)
+- **MikuRgbColor**: 24-bit RGB color structure with hex parsing and interpolation
+- **MikuAnsiCodes**: ANSI escape code constants for console styling
+- **MikuColorHelper**: Color manipulation utilities (gradients, rainbow, darken/lighten)
 
 [Documentation](./Miku.Core/README.md) | [Changelog](./Miku.Core/CHANGELOG.md)
 
 ### MikuLib.Console
 **Beautiful colored console output** with TrueColor and 256-color support:
 - **MikuConsole**: Colored text output with gradients and rainbow effects
-- **ConsoleAnimation**: Typewriter, fade, pulse, wave, and loading animations
+- **MikuConsoleAnimation**: Typewriter, fade, pulse, wave, and loading animations
 
 [Documentation](./MikuLib.Console/README.md) | [Examples](./MikuLib.Console/EXAMPLES.md) | [Changelog](./MikuLib.Console/CHANGELOG.md)
 
@@ -132,15 +139,15 @@ Add to your `.csproj`:
 using Miku.Core;
 
 // Create colors
-var cyan = RgbColor.MikuCyan;           // Predefined Miku cyan
-var pink = RgbColor.FromHex("#E12885"); // From hex string
+var cyan = MikuRgbColor.MikuCyan;           // Predefined Miku cyan
+var pink = MikuRgbColor.FromHex("#E12885"); // From hex string
 
 // Interpolate colors
-var blend = RgbColor.Lerp(cyan, pink, 0.5);
+var blend = MikuRgbColor.Lerp(cyan, pink, 0.5);
 
 // Rainbow effects
-var rainbow = ColorHelper.GetRainbow(phase);
-var mikuRainbow = ColorHelper.GetMikuRainbow(phase);
+var rainbow = MikuColorHelper.GetRainbow(phase);
+var mikuRainbow = MikuColorHelper.GetMikuRainbow(phase);
 ```
 
 ### Console Output with Colors
@@ -149,12 +156,12 @@ using Miku.Core;
 using MikuLib.Console;
 
 // Colored output
-MikuConsole.WriteLine("Hello Miku!", RgbColor.MikuCyan);
-MikuConsole.WriteGradientLine("Gradient text", RgbColor.MikuCyan, RgbColor.MikuPink);
+MikuConsole.WriteLine("Hello Miku!", MikuRgbColor.MikuCyan);
+MikuConsole.WriteGradientLine("Gradient text", MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink);
 
 // Animations
-await ConsoleAnimation.TypewriterAsync("Typing...", RgbColor.MikuCyan, 30);
-await ConsoleAnimation.PulseAsync("Pulsing!", RgbColor.MikuCyan, RgbColor.MikuPink, 0, 0);
+await MikuConsoleAnimation.TypewriterAsync("Typing...", MikuRgbColor.MikuCyan, 30);
+await MikuConsoleAnimation.PulseAsync("Pulsing!", MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink, 0, 0);
 ```
 
 ### Logging with Colors
@@ -173,8 +180,8 @@ var options = new MikuLoggerOptions
         ColorSpace = MikuColorSpace.TrueColor,
         TrueColors = new MikuTrueColorOptions
         {
-            InformationColor = RgbColor.MikuCyan,
-            ErrorColor = RgbColor.MikuPink
+            InformationColor = MikuRgbColor.MikuCyan,
+            ErrorColor = MikuRgbColor.MikuPink
         }
     }
 };
@@ -335,8 +342,8 @@ MIT License - See [LICENSE](LICENSE) file for details.
 ```
 MikuLib/
 ? Miku/                   # Meta package
-? Miku.Core/              # Core types (RgbColor, AnsiCodes, ColorHelper)
-? MikuLib.Console/        # Console utilities (MikuConsole, ConsoleAnimation)
+? Miku.Core/              # Core types (MikuRgbColor, MikuAnsiCodes, MikuColorHelper)
+? MikuLib.Console/        # Console utilities (MikuConsole, MikuConsoleAnimation)
 ? Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
 ? Miku.Logger/            # Logging library with SSE and TrueColor support
 ? Miku.*.Tests/           # Unit tests
