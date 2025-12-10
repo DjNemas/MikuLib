@@ -41,11 +41,9 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <!-- Ensure XML documentation is included in NuGet package -->
-  <Target Name="IncludeXmlDocInPackage" BeforeTargets="GenerateNuspec">
-    <ItemGroup>
-      <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="lib\$(TargetFramework)\" Condition="Exists('$(OutputPath)$(AssemblyName).xml')" />
-    </ItemGroup>
-  </Target>
+  <!-- Include XML documentation in the package -->
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\$(TargetFramework)" Condition="Exists('$(OutputPath)\$(AssemblyName).xml')" />
+  </ItemGroup>
 
 </Project>

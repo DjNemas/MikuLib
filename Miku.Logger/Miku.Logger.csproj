@@ -14,7 +14,7 @@
     <Authors>Hatsune Nemas</Authors>
     <Company>CV01 Development</Company>
     <Product>MikuLib.Logger</Product>
-    <Description>Miku logging library with console, file, and Server-Sent Events (SSE) output support, ILogger compatibility, async operations, and advanced features like log rotation and color support. Now with real-time log streaming! Logging with the voice of the future! 🎤💚</Description>
+    <Description>Miku logging library with console, file, and Server-Sent Events (SSE) output support, ILogger compatibility, async operations, and advanced features like log rotation and color support. Now with real-time log streaming! Logging with the voice of the future!</Description>
     <Copyright>Copyright (c) 2025 Hatsune Nemas</Copyright>
     <PackageTags>miku;logger;logging;console;file;sse;server-sent-events;streaming;ilogger;async;thread-safe;vocaloid;cv01;39</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -27,6 +27,10 @@
     <!-- Assembly Information -->
     <AssemblyName>Miku.Logger</AssemblyName>
     <RootNamespace>Miku.Logger</RootNamespace>
+    
+    <!-- Ensure XML documentation is included in NuGet package -->
+    <IncludeSymbols>false</IncludeSymbols>
+    <EmbedAllSources>false</EmbedAllSources>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,11 +50,9 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <!-- Ensure XML documentation is included in NuGet package -->
-  <Target Name="IncludeXmlDocInPackage" BeforeTargets="GenerateNuspec">
-    <ItemGroup>
-      <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="lib\$(TargetFramework)\" Condition="Exists('$(OutputPath)$(AssemblyName).xml')" />
-    </ItemGroup>
-  </Target>
+  <!-- Include XML documentation in the package -->
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\$(TargetFramework)" Condition="Exists('$(OutputPath)\$(AssemblyName).xml')" />
+  </ItemGroup>
 
 </Project>

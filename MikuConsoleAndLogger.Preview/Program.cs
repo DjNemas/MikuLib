@@ -5,10 +5,6 @@ using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Configuration.Models;
 using MikuLib.Console;
 
-// Type aliases for backward compatibility
-using RgbColor = Miku.Core.MikuRgbColor;
-using ColorHelper = Miku.Core.MikuColorHelper;
-
 namespace MikuConsoleAndLogger.Preview;
 
 /// <summary>
@@ -146,7 +142,7 @@ public class Program
         };
 
         // Fade-in animation: gradually increase brightness from 0 to 255
-        // Using RgbColor.Lerp to interpolate between black and Miku Cyan
+        // Using MikuMikuRgbColor.Lerp to interpolate between black and Miku Cyan
         for (int brightness = 0; brightness <= 255; brightness += 15)
         {
             MikuConsole.SetCursorPosition(0, 0);
@@ -155,7 +151,7 @@ public class Program
             {
                 // Calculate interpolated color based on current brightness level
                 // brightness / 255.0 gives a value between 0.0 and 1.0
-                var color = RgbColor.Lerp(RgbColor.Black, RgbColor.MikuCyan, brightness / 255.0);
+                var color = MikuRgbColor.Lerp(MikuRgbColor.Black, MikuRgbColor.MikuCyan, brightness / 255.0);
                 MikuConsole.WriteLine(line, color);
             }
 
@@ -166,8 +162,8 @@ public class Program
         // Uses MikuConsoleAnimation helper for consistent animation timing
         await MikuConsoleAnimation.PulseAsync(
             string.Join("\n", mikuArt),
-            RgbColor.MikuCyan,
-            RgbColor.MikuPink,
+            MikuRgbColor.MikuCyan,
+            MikuRgbColor.MikuPink,
             0, 0,                    // Start position (x=0, y=0)
             pulseCount: 2,           // Number of pulse cycles
             pulseDurationMs: 1000    // Duration of each pulse in milliseconds
@@ -177,15 +173,15 @@ public class Program
         MikuConsole.SetCursorPosition(0, 0);
         foreach (var line in mikuArt)
         {
-            MikuConsole.WriteLine(line, RgbColor.MikuCyan);
+            MikuConsole.WriteLine(line, MikuRgbColor.MikuCyan);
         }
 
         // Display version information with typewriter effect and gradient coloring
         MikuConsole.WriteLine();
         await MikuConsoleAnimation.TypewriterGradientAsync(
             "      MikuConsole v10.0.39 + MikuLogger v10.2.39 - CV01 Edition",
-            RgbColor.MikuCyan,
-            RgbColor.MikuPink,
+            MikuRgbColor.MikuCyan,
+            MikuRgbColor.MikuPink,
             30  // Delay between each character in milliseconds
         );
         MikuConsole.WriteLine();
@@ -216,7 +212,7 @@ public class Program
         MikuConsole.Clear();
         await ShowSectionHeader("STANDARD CONSOLE COLORS (16 COLORS)");
 
-        MikuConsole.WriteLine("\n  Standard 16 Console Colors:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  Standard 16 Console Colors:\n", MikuRgbColor.White);
 
         // Unicode full block character used to display color swatches
         const char fullBlock = '\u2588'; // █
@@ -245,7 +241,7 @@ public class Program
         MikuConsole.WriteLine();
 
         // Demonstrate MikuLogger with Console color mode
-        MikuConsole.WriteLine("  MikuLogger Standard Color Mode:", RgbColor.White);
+        MikuConsole.WriteLine("  MikuLogger Standard Color Mode:", MikuRgbColor.White);
         MikuConsole.WriteLine();
 
         // Configure logger to use standard 16-color output
@@ -299,13 +295,13 @@ public class Program
         MikuConsole.Clear();
         await ShowSectionHeader("EXTENDED 256 COLOR PALETTE");
 
-        MikuConsole.WriteLine("\n  256-Color Palette Overview:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  256-Color Palette Overview:\n", MikuRgbColor.White);
 
         const char fullBlock = '\u2588'; // █
 
         // Display standard colors (0-7)
         // These are the basic 8 colors available in all terminals
-        MikuConsole.WriteLine("  Standard Colors (0-7):", RgbColor.White);
+        MikuConsole.WriteLine("  Standard Colors (0-7):", MikuRgbColor.White);
         MikuConsole.Write("  ");
         for (int i = 0; i < 8; i++)
         {
@@ -317,7 +313,7 @@ public class Program
 
         // Display high-intensity colors (8-15)
         // These are brighter versions of the standard 8 colors
-        MikuConsole.WriteLine("  High-Intensity Colors (8-15):", RgbColor.White);
+        MikuConsole.WriteLine("  High-Intensity Colors (8-15):", MikuRgbColor.White);
         MikuConsole.Write("  ");
         for (int i = 8; i < 16; i++)
         {
@@ -326,7 +322,7 @@ public class Program
         }
         MikuConsole.WriteLine();
 
-        MikuConsole.WriteLine("\n  216 Color Cube (6x6x6):\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  216 Color Cube (6x6x6):\n", MikuRgbColor.White);
 
         // Display the 6×6×6 RGB color cube (colors 16-231)
         // The formula for color index is: 16 + (36 × r) + (6 × g) + b
@@ -349,7 +345,7 @@ public class Program
 
         // Display grayscale ramp (colors 232-255)
         // 24 shades of gray from dark to light
-        MikuConsole.WriteLine("\n  Grayscale (232-255):", RgbColor.White);
+        MikuConsole.WriteLine("\n  Grayscale (232-255):", MikuRgbColor.White);
         MikuConsole.Write("  ");
         for (int i = 232; i < 256; i++)
         {
@@ -359,7 +355,7 @@ public class Program
         MikuConsole.WriteLine();
 
         // Demonstrate MikuLogger with Extended256 color mode
-        MikuConsole.WriteLine("\n  MikuLogger Extended256 Mode:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  MikuLogger Extended256 Mode:\n", MikuRgbColor.White);
 
         var options = new MikuLoggerOptions
         {
@@ -407,7 +403,7 @@ public class Program
     /// This section showcases:
     /// <list type="bullet">
     ///   <item><description>Individual RGB channel gradients (red, green, blue)</description></item>
-    ///   <item><description>Miku-themed color gradients using RgbColor.Lerp</description></item>
+    ///   <item><description>Miku-themed color gradients using MikuRgbColor.Lerp</description></item>
     ///   <item><description>MikuLogger with custom TrueColor configuration</description></item>
     /// </list>
     /// </para>
@@ -421,58 +417,58 @@ public class Program
         MikuConsole.Clear();
         await ShowSectionHeader("TRUECOLOR (24-bit RGB) - 16 MILLION COLORS");
 
-        MikuConsole.WriteLine("\n  RGB Color Space Demo:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  RGB Color Space Demo:\n", MikuRgbColor.White);
 
         const char fullBlock = '\u2588'; // █
 
         // Red channel gradient: R varies 0-255, G=0, B=0
-        MikuConsole.Write("  R: ", RgbColor.White);
+        MikuConsole.Write("  R: ", MikuRgbColor.White);
         for (int r = 0; r <= 255; r += 5)
         {
-            MikuConsole.Write(fullBlock.ToString(), new RgbColor((byte)r, 0, 0));
+            MikuConsole.Write(fullBlock.ToString(), new MikuRgbColor((byte)r, 0, 0));
         }
         MikuConsole.WriteLine();
 
         // Green channel gradient: R=0, G varies 0-255, B=0
-        MikuConsole.Write("  G: ", RgbColor.White);
+        MikuConsole.Write("  G: ", MikuRgbColor.White);
         for (int g = 0; g <= 255; g += 5)
         {
-            MikuConsole.Write(fullBlock.ToString(), new RgbColor(0, (byte)g, 0));
+            MikuConsole.Write(fullBlock.ToString(), new MikuRgbColor(0, (byte)g, 0));
         }
         MikuConsole.WriteLine();
 
         // Blue channel gradient: R=0, G=0, B varies 0-255
-        MikuConsole.Write("  B: ", RgbColor.White);
+        MikuConsole.Write("  B: ", MikuRgbColor.White);
         for (int b = 0; b <= 255; b += 5)
         {
-            MikuConsole.Write(fullBlock.ToString(), new RgbColor(0, 0, (byte)b));
+            MikuConsole.Write(fullBlock.ToString(), new MikuRgbColor(0, 0, (byte)b));
         }
         MikuConsole.WriteLine();
 
         await Task.Delay(500);
 
         // Demonstrate Miku-themed color gradients
-        MikuConsole.WriteLine("\n  Miku Color Gradients:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  Miku Color Gradients:\n", MikuRgbColor.White);
 
         // Gradient from Miku Cyan (#00CED1) to Miku Pink (#E12885)
-        MikuConsole.Write("  Cyan -> Pink: ", RgbColor.White);
-        MikuConsole.DrawGradientBar(50, RgbColor.MikuCyan, RgbColor.MikuPink);
+        MikuConsole.Write("  Cyan -> Pink: ", MikuRgbColor.White);
+        MikuConsole.DrawGradientBar(50, MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink);
         MikuConsole.WriteLine();
 
         // Gradient from Miku Teal (#39C5BB) to Miku Cyan
-        MikuConsole.Write("  Teal -> Cyan: ", RgbColor.White);
-        MikuConsole.DrawGradientBar(50, RgbColor.MikuTeal, RgbColor.MikuCyan);
+        MikuConsole.Write("  Teal -> Cyan: ", MikuRgbColor.White);
+        MikuConsole.DrawGradientBar(50, MikuRgbColor.MikuTeal, MikuRgbColor.MikuCyan);
         MikuConsole.WriteLine();
 
         // Gradient from Miku Pink to Miku Dark Cyan (#008B8B)
-        MikuConsole.Write("  Pink -> Dark: ", RgbColor.White);
-        MikuConsole.DrawGradientBar(50, RgbColor.MikuPink, RgbColor.MikuDarkCyan);
+        MikuConsole.Write("  Pink -> Dark: ", MikuRgbColor.White);
+        MikuConsole.DrawGradientBar(50, MikuRgbColor.MikuPink, MikuRgbColor.MikuDarkCyan);
         MikuConsole.WriteLine();
 
         await Task.Delay(500);
 
         // Demonstrate MikuLogger with TrueColor mode
-        MikuConsole.WriteLine("\n  MikuLogger TrueColor Mode:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  MikuLogger TrueColor Mode:\n", MikuRgbColor.White);
 
         var options = new MikuLoggerOptions
         {
@@ -483,12 +479,12 @@ public class Program
                 ColorSpace = MikuColorSpace.TrueColor,
                 TrueColors = new MikuTrueColorOptions
                 {
-                    TraceColor = RgbColor.Gray,
-                    DebugColor = RgbColor.Yellow,
-                    InformationColor = RgbColor.MikuCyan,
-                    WarningColor = RgbColor.Orange,
-                    ErrorColor = RgbColor.FromHex("#E12885"),
-                    CriticalColor = RgbColor.DarkRed
+                    TraceColor = MikuRgbColor.Gray,
+                    DebugColor = MikuRgbColor.Yellow,
+                    InformationColor = MikuRgbColor.MikuCyan,
+                    WarningColor = MikuRgbColor.Orange,
+                    ErrorColor = MikuRgbColor.FromHex("#E12885"),
+                    CriticalColor = MikuRgbColor.DarkRed
                 }
             }
         };
@@ -533,60 +529,75 @@ public class Program
         // Simple ASCII art representation of a face
         var mikuFace = new[]
         {
-            @"            ████████            ",
-            @"         ███        ███         ",
-            @"       ██    ██  ██    ██       ",
-            @"      ██    ████████    ██      ",
-            @"     ██                  ██     ",
-            @"     ██   ██      ██   ██       ",
-            @"     ██                  ██     ",
-            @"      ██    ████████    ██      ",
-            @"       ██            ██         ",
-            @"         ███      ███           ",
-            @"            ██████              "
+        @"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⣤⣤⣤⣀⣀⡀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  ",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢄⢀⠀⡀⣠⣴⣾⣿⠿⠟⠛⠛⠛⠿⠿⠿⠽⠿⠿⠿⠿⠿⢶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡿⡵⣯⣾⣿⣿⠟⠉⢀⣤⠶⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⢫⣮⢿⣿⡿⠛⠁⠠⠔⢋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠈⠻⣷⣦⠠⣃⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⢟⣵⡿⢻⡿⠋⠀⠀⣠⢴⡾⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠈⢻⣷⣏⢫⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⢸⣿⣠⠋⠀⡠⣪⢞⡵⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣿⣧⡻⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡟⡙⢾⣿⣸⡟⠁⠀⢠⠞⠁⠋⠀⠀⡴⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣷⡹⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠁⡇⢸⣿⠋⠀⢀⡶⠃⠀⠀⢠⠃⠜⠁⠀⣀⠀⠀⠀⠀⢀⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠨⣿⠏⣿⣇⡀⠀⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡏⠀⡄⡼⠁⠀⢀⣾⠁⠀⠀⠀⡜⡸⠀⠀⣰⢻⠀⠀⠀⠀⢸⠉⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣆⠀⠀⠀⠀⠀⢿⢸⣿⢻⢱⡄⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠁⢀⡟⠀⢠⢃⣾⠇⠀⠀⠀⢰⠁⠀⠀⣰⢃⢸⡄⡄⠀⠀⢸⢀⠘⢧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡄⢸⠀⠀⠀⢸⣾⠃⠈⠈⡇⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡎⢠⠞⠀⡰⠃⣼⠏⠀⠀⠀⠀⡜⠀⠀⢰⠃⠉⠸⡇⣧⠀⠀⢸⠈⢦⠘⢷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⢱⡀⠁⠀⠀⢸⡿⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣵⠃⠀⢰⠁⣼⠏⠀⠀⠀⠀⢀⠇⠀⢠⠟⠒⠒⠴⣷⣿⡀⠀⢸⠂⠀⠱⣄⠻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⢧⠀⠀⠀⠈⠀⠀⠀⠀⠣⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⢋⠀⢀⠇⣸⠏⠀⠀⠀⠀⠀⡸⠄⢀⠎⠀⠀⠀⠀⠸⣇⢣⠀⢸⡄⠀⠀⠈⡴⠞⣆⠀⠀⠀⠀⠀⠀⠀⠀⠘⡆⠀⠀⠀⠀⠀⠀⠀⢰⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⢀⡾⢟⡇⡘⠃⡜⣼⣯⠀⠀⠀⠀⠀⠀⡇⢀⡞⠀⠀⠀⠀⠀⠀⢻⠈⢧⠸⡇⠀⠀⠀⠀⠀⠙⢆⠀⠀⠀⠀⠀⠀⠀⠀⢹⡀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠐⠉⠀⡸⠀⠃⢰⣻⣯⠇⠀⠀⠀⠀⠀⢸⢁⣾⣤⣀⠀⠀⠀⠀⠀⠀⠀⠈⢷⡇⠀⠀⠀⠀⠀⠀⠈⠧⡀⠀⢠⠀⠀⠀⠀⠀⢧⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⢀⣷⢣⠎⠀⠀⠀⠀⠀⠀⢹⡞⠀⠉⠛⠿⣶⣬⡒⠄⠀⠀⠀⠈⠋⠀⠀⠀⣀⡀⠀⣀⣀⣼⣦⡀⢇⠀⠀⠀⠀⠸⣧⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⣼⣯⠏⢀⣀⡀⠀⠀⠀⠀⢸⡇⢰⠿⠿⠿⠟⠛⠛⠃⠀⠀⠀⠀⠀⠀⠀⣯⣴⣾⡿⠛⠛⠉⠉⠳⡞⡆⠀⢀⣀⢰⠻⣆⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⣿⠋⠀⡜⠀⡇⠀⠀⠀⠀⢸⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠛⠿⢷⣶⠀⡼⠀⠹⣀⣺⠈⡏⠇⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⠀⡏⠀⠜⠁⠀⢀⠃⢰⠃⠀⣰⡆⠀⢸⠉⢣⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⢧⣄⣴⠋⢿⡀⢹⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⢠⠇⠀⠀⠀⠀⡞⠀⢸⢀⡞⠁⣸⠀⢸⣄⠀⢣⡀⠀⠀⠀⠀⠀⡤⠤⠤⢄⣀⠀⠀⠀⠀⠀⠀⠀⢀⠞⡟⡎⡧⠨⠀⠀⡇⠈⡇⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⢠⠇⢀⣿⠏⠀⡰⢹⠀⢸⠈⠳⣤⣥⣄⣀⣀⣀⡀⠣⡀⠀⢀⠔⠀⠀⠀⠀⠀⣀⡴⠃⣼⡇⢠⠛⡄⠀⠀⢡⠀⢺⠀⠀⠀⠀⠀⠀⢰⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⠀⡞⠀⠀⠀⠀⡼⠀⢸⠃⠀⢠⠃⠀⡆⢸⠀⠀⠈⠉⢻⣿⣿⣿⣿⡇⠈⠉⠁⠀⠀⠀⣠⠶⠾⠧⠄⠐⣻⢠⠃⠀⠱⡀⠀⠘⡄⠈⣆⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⠀⣰⣣⠤⠎⠉⠽⠁⠀⠘⠀⡲⠏⠀⠀⢱⢸⠀⠀⠀⠀⠀⠘⠀⣷⢄⠑⠦⠤⠒⢂⣩⡮⡞⠀⠀⠀⠀⢠⣧⠃⠀⠀⠀⢣⠠⠀⠃⠀⠘⠍⠙⢦⠤⣕⠾⡄⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⠀⢰⢹⡀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠀⣄⡀⠈⢿⠀⠀⠀⣰⢞⠇⠀⠘⠀⠙⣢⣠⠖⠉⠈⠀⠀⠈⢢⣀⠀⠰⠃⠀⠀⢀⡴⡞⠉⠀⠀⠀⠀⠀⠀⠈⠀⢸⠎⡇⠀⠀⠀⠀",
+        @"  ⠀⠀⠀⢀⣾⣄⢧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣝⠢⡌⠀⠀⢸⣿⡆⠀⠀⠀⠀⢀⡨⠶⢀⡀⠀⣠⢦⡀⣸⣿⠀⠀⠀⣠⢞⣩⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠞⡼⢱⠀⠀⠀⠀",
         };
 
         MikuConsole.WriteLine();
 
         // Animate the face with rainbow colors cycling through Miku's palette
-        for (int frame = 0; frame < 30; frame++)
+        for (int frame = 0; frame < 72; frame++)
         {
+            // Reposition cursor without clearing (prevents flicker and artifacts)
             MikuConsole.SetCursorPosition(0, 4);
 
             for (int i = 0; i < mikuFace.Length; i++)
             {
-                // Calculate phase for color cycling
-                // Each line has a slightly different phase for a wave effect
+                // Each line uses a slightly shifted phase to create a vertical wave effect
                 double phase = (frame + i) * 0.3;
-                
-                // GetMikuRainbow returns colors that cycle through Miku's signature palette
-                var color = ColorHelper.GetMikuRainbow(phase);
-                MikuConsole.WriteLine("  " + mikuFace[i], color);
+                var color = MikuColorHelper.GetMikuRainbow(phase);
+
+                // Output line in color directly
+                MikuConsole.WriteLine(mikuFace[i], color);
             }
 
-            await Task.Delay(100); // ~10 FPS animation
+            // Shorter delay for smoother animation
+            await Task.Delay(50);
         }
 
         MikuConsole.WriteLine();
         MikuConsole.WriteLine();
 
         // Display the complete Miku color palette
-        MikuConsole.WriteLine("  ═══════════════════════════════════════════════", RgbColor.MikuCyan);
-        MikuConsole.WriteLine("                 MIKU COLOR PALETTE", RgbColor.MikuPink);
-        MikuConsole.WriteLine("  ═══════════════════════════════════════════════", RgbColor.MikuCyan);
+        MikuConsole.WriteLine("  ═══════════════════════════════════════════════", MikuRgbColor.MikuCyan);
+        MikuConsole.WriteLine("                 MIKU COLOR PALETTE", MikuRgbColor.MikuPink);
+        MikuConsole.WriteLine("  ═══════════════════════════════════════════════", MikuRgbColor.MikuCyan);
         MikuConsole.WriteLine();
 
         // Define the official Miku color palette with hex codes
-        var mikuColors = new (string name, RgbColor color)[]
+        var mikuColors = new (string name, MikuRgbColor color)[]
         {
-            ("Miku Cyan      #00CED1", RgbColor.MikuCyan),       // Primary hair/eyes color
-            ("Miku Pink      #E12885", RgbColor.MikuPink),       // Accent color
-            ("Miku Teal      #39C5BB", RgbColor.MikuTeal),       // Alternative cyan
-            ("Miku Dark Cyan #008B8B", RgbColor.MikuDarkCyan),   // Shadow color
-            ("Twintail Blue  #00BFFF", RgbColor.FromHex("#00BFFF")),  // Twintail highlights
-            ("Headphone Gray #708090", RgbColor.FromHex("#708090")),  // Headphone color
-            ("Tie Red        #DC143C", RgbColor.FromHex("#DC143C")),  // Tie accent
-            ("Skirt Black    #1C1C1C", RgbColor.FromHex("#1C1C1C"))   // Skirt color
+            ("Miku Cyan      #00CED1", MikuRgbColor.MikuCyan),       // Primary hair/eyes color
+            ("Miku Pink      #E12885", MikuRgbColor.MikuPink),       // Accent color
+            ("Miku Teal      #39C5BB", MikuRgbColor.MikuTeal),       // Alternative cyan
+            ("Miku Dark Cyan #008B8B", MikuRgbColor.MikuDarkCyan),   // Shadow color
+            ("Twintail Blue  #00BFFF", MikuRgbColor.FromHex("#00BFFF")),  // Twintail highlights
+            ("Headphone Gray #708090", MikuRgbColor.FromHex("#708090")),  // Headphone color
+            ("Tie Red        #DC143C", MikuRgbColor.FromHex("#DC143C")),  // Tie accent
+            ("Skirt Black    #1C1C1C", MikuRgbColor.FromHex("#1C1C1C"))   // Skirt color
         };
 
         // Display each color with a color swatch and name
@@ -628,7 +639,7 @@ public class Program
 
         const char fullBlock = '\u2588'; // █
 
-        MikuConsole.WriteLine("\n  Horizontal Rainbow Wave:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  Horizontal Rainbow Wave:\n", MikuRgbColor.White);
 
         // Rainbow wave animation: colors cycle horizontally over time
         for (int frame = 0; frame < animationFrames; frame++)
@@ -640,14 +651,14 @@ public class Program
                 // Phase determines the color in the rainbow spectrum
                 // Adding frame * 2 creates the wave motion
                 double phase = (x + frame * 2) * 0.1;
-                var color = ColorHelper.GetRainbow(phase);
+                var color = MikuColorHelper.GetRainbow(phase);
                 MikuConsole.Write(fullBlock.ToString(), color);
             }
 
             await Task.Delay(30); // ~33 FPS
         }
 
-        MikuConsole.WriteLine("\n\n  Miku Pulse Effect:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n\n  Miku Pulse Effect:\n", MikuRgbColor.White);
 
         // Pulse effect: colors pulse outward from the center
         for (int frame = 0; frame < animationFrames; frame++)
@@ -667,21 +678,21 @@ public class Program
                 pulse = (pulse + 1) / 2;
 
                 // Interpolate between Miku Cyan and Pink based on pulse value
-                var color = RgbColor.Lerp(RgbColor.MikuCyan, RgbColor.MikuPink, pulse);
+                var color = MikuRgbColor.Lerp(MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink, pulse);
                 MikuConsole.Write(fullBlock.ToString(), color);
             }
 
             await Task.Delay(30);
         }
 
-        MikuConsole.WriteLine("\n\n  Breathing Effect:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n\n  Breathing Effect:\n", MikuRgbColor.White);
 
         // Breathing animation: smooth fade between dark and bright cyan
         // Uses MikuConsoleAnimation helper for consistent timing
         await MikuConsoleAnimation.BreathingAsync(
             new string(fullBlock, width),
-            RgbColor.MikuDarkCyan,  // Exhale color (dark)
-            RgbColor.MikuCyan,      // Inhale color (bright)
+            MikuRgbColor.MikuDarkCyan,  // Exhale color (dark)
+            MikuRgbColor.MikuCyan,      // Inhale color (bright)
             2, 13,                   // Position (x=2, y=13)
             breathCount: 2,          // Number of breath cycles
             breathDurationMs: 3000   // Duration of each breath
@@ -711,7 +722,7 @@ public class Program
         MikuConsole.Clear();
         await ShowSectionHeader("MIKULOGGER IN ACTION");
 
-        MikuConsole.WriteLine("\n  Simulating Application Lifecycle:\n", RgbColor.White);
+        MikuConsole.WriteLine("\n  Simulating Application Lifecycle:\n", MikuRgbColor.White);
 
         // Configure logger with custom TrueColor theme
         var options = new MikuLoggerOptions
@@ -723,12 +734,12 @@ public class Program
                 ColorSpace = MikuColorSpace.TrueColor,
                 TrueColors = new MikuTrueColorOptions
                 {
-                    TraceColor = RgbColor.FromHex("#6B7280"),
-                    DebugColor = RgbColor.FromHex("#FBBF24"),
-                    InformationColor = RgbColor.MikuCyan,
-                    WarningColor = RgbColor.FromHex("#F97316"),
-                    ErrorColor = RgbColor.FromHex("#E12885"),
-                    CriticalColor = RgbColor.FromHex("#7F1D1D")
+                    TraceColor = MikuRgbColor.FromHex("#6B7280"),
+                    DebugColor = MikuRgbColor.FromHex("#FBBF24"),
+                    InformationColor = MikuRgbColor.MikuCyan,
+                    WarningColor = MikuRgbColor.FromHex("#F97316"),
+                    ErrorColor = MikuRgbColor.FromHex("#E12885"),
+                    CriticalColor = MikuRgbColor.FromHex("#7F1D1D")
                 }
             }
         };
@@ -843,14 +854,14 @@ public class Program
                     if (wave > 0.3)
                     {
                         // Full intensity - wave peak
-                        var color = ColorHelper.GetRainbow(phase);
+                        var color = MikuColorHelper.GetRainbow(phase);
                         MikuConsole.Write(fullBlock.ToString(), color);
                     }
                     else if (wave > -0.3)
                     {
                         // Medium intensity - wave slope
-                        var color = ColorHelper.GetRainbow(phase);
-                        color = ColorHelper.Darken(color, 0.5);  // Darken by 50%
+                        var color = MikuColorHelper.GetRainbow(phase);
+                        color = MikuColorHelper.Darken(color, 0.5);  // Darken by 50%
                         MikuConsole.Write(darkShade.ToString(), color);
                     }
                     else
@@ -893,9 +904,9 @@ public class Program
         MikuConsole.Clear();
 
         // Display header
-        MikuConsole.WriteCenteredLine("═══════════════════════════════════════════════", RgbColor.MikuCyan);
-        MikuConsole.WriteCenteredLine("          MIKU MATRIX RAIN EFFECT              ", RgbColor.MikuPink);
-        MikuConsole.WriteCenteredLine("═══════════════════════════════════════════════", RgbColor.MikuCyan);
+        MikuConsole.WriteCenteredLine("═══════════════════════════════════════════════", MikuRgbColor.MikuCyan);
+        MikuConsole.WriteCenteredLine("          MIKU MATRIX RAIN EFFECT              ", MikuRgbColor.MikuPink);
+        MikuConsole.WriteCenteredLine("═══════════════════════════════════════════════", MikuRgbColor.MikuCyan);
 
         int width = Math.Min(MikuConsole.WindowWidth, 100);
         int height = MikuConsole.WindowHeight - 6;
@@ -932,7 +943,7 @@ public class Program
                     if (y >= startY && y < MikuConsole.WindowHeight - 1)
                     {
                         // Draw the leading character (brightest)
-                        MikuConsole.WriteAt(x, y, chars[random.Next(chars.Length)].ToString(), RgbColor.MikuCyan);
+                        MikuConsole.WriteAt(x, y, chars[random.Next(chars.Length)].ToString(), MikuRgbColor.MikuCyan);
 
                         // Draw the trailing characters with fading effect
                         for (int trail = 1; trail < 8 && drops[x] - trail >= 0; trail++)
@@ -943,11 +954,11 @@ public class Program
                             {
                                 // Calculate fade: 1.0 at trail=1, 0.0 at trail=8
                                 double fade = 1.0 - (trail / 8.0);
-                                var trailColor = RgbColor.Lerp(RgbColor.MikuDarkCyan, RgbColor.MikuCyan, fade);
+                                var trailColor = MikuRgbColor.Lerp(MikuRgbColor.MikuDarkCyan, MikuRgbColor.MikuCyan, fade);
 
                                 // Random pink highlights (30% chance when random > 7)
                                 if (random.Next(10) > 7)
-                                    trailColor = RgbColor.Lerp(trailColor, RgbColor.MikuPink, 0.3);
+                                    trailColor = MikuRgbColor.Lerp(trailColor, MikuRgbColor.MikuPink, 0.3);
 
                                 MikuConsole.WriteAt(x, trailY, chars[random.Next(chars.Length)].ToString(), trailColor);
                             }
@@ -1015,8 +1026,8 @@ public class Program
         // Reveal lines with alternating colors for visual interest
         await MikuConsoleAnimation.RevealLinesAlternatingAsync(
             outroArt,
-            RgbColor.MikuCyan,
-            RgbColor.MikuPink,
+            MikuRgbColor.MikuCyan,
+            MikuRgbColor.MikuPink,
             0, 0,    // Start position
             100      // Delay between lines in milliseconds
         );
@@ -1025,12 +1036,12 @@ public class Program
 
         // Draw decorative gradient bar
         MikuConsole.Write("     ");
-        MikuConsole.DrawGradientBar(30, RgbColor.MikuCyan, RgbColor.MikuPink);
-        MikuConsole.DrawGradientBar(30, RgbColor.MikuPink, RgbColor.MikuCyan);
+        MikuConsole.DrawGradientBar(30, MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink);
+        MikuConsole.DrawGradientBar(30, MikuRgbColor.MikuPink, MikuRgbColor.MikuCyan);
         MikuConsole.WriteLine();
 
         MikuConsole.WriteLine();
-        MikuConsole.WriteCenteredLine("Press any key to exit...", RgbColor.Gray);
+        MikuConsole.WriteCenteredLine("Press any key to exit...", MikuRgbColor.Gray);
 
         // Wait for user input before exiting
         System.Console.ReadKey(true);
@@ -1053,13 +1064,13 @@ public class Program
         MikuConsole.WriteLine();
         
         // Top border: ╔═══════╗
-        MikuConsole.WriteLine($"  ╔{'═'.ToString().PadRight(title.Length + 4, '═')}╗", RgbColor.MikuCyan);
+        MikuConsole.WriteLine($"  ╔{'═'.ToString().PadRight(title.Length + 4, '═')}╗", MikuRgbColor.MikuCyan);
         
         // Title line: ║  TITLE  ║
-        MikuConsole.WriteLine($"  ║  {title}  ║", RgbColor.MikuPink);
+        MikuConsole.WriteLine($"  ║  {title}  ║", MikuRgbColor.MikuPink);
         
         // Bottom border: ╚═══════╝
-        MikuConsole.WriteLine($"  ╚{'═'.ToString().PadRight(title.Length + 4, '═')}╝", RgbColor.MikuCyan);
+        MikuConsole.WriteLine($"  ╚{'═'.ToString().PadRight(title.Length + 4, '═')}╝", MikuRgbColor.MikuCyan);
         
         await Task.Delay(300);  // Brief pause after header
     }

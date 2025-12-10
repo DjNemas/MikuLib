@@ -6,7 +6,7 @@ A collection of powerful .NET 10 libraries inspired by Hatsune Miku.
 
 *Powered by CV01 energy since 2007*
 
-![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_Utmoe5RPDL.gif)
+![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_4XPonwjrkx.gif)
 
 ## What is MikuLib?
 

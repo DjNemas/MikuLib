@@ -6,7 +6,7 @@ Beautiful colored console output with TrueColor (24-bit RGB) and 256-color suppo
 
 *Like the light shows at Miku's concerts since August 31st, 2007*
 
-![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_Utmoe5RPDL.gif)
+![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_4XPonwjrkx.gif)
 
 ## Features
 

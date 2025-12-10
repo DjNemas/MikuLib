@@ -1,4 +1,4 @@
-# MikuLib
+﻿# MikuLib
 
 A collection of powerful .NET 10 libraries inspired by Hatsune Miku.
 
@@ -10,9 +10,9 @@ A collection of powerful .NET 10 libraries inspired by Hatsune Miku.
 
 MikuLib is a comprehensive .NET 10 library collection that brings together powerful utilities for modern application development. Named after and inspired by Hatsune Miku, the virtual singer who revolutionized music and technology.
 
-![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_Utmoe5RPDL.gif)
+![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_4XPonwjrkx.gif)
 
-## ?? Breaking Changes in Version 10.2.39
+## ⚠️ Breaking Changes in Version 10.2.39
 
 **All enums and configuration models have been renamed with the `Miku` prefix.**
 
@@ -341,14 +341,14 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ```
 MikuLib/
-? Miku/                   # Meta package
-? Miku.Core/              # Core types (MikuRgbColor, MikuAnsiCodes, MikuColorHelper)
-? MikuLib.Console/        # Console utilities (MikuConsole, MikuConsoleAnimation)
-? Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
-? Miku.Logger/            # Logging library with SSE and TrueColor support
-? Miku.*.Tests/           # Unit tests
-? MikuConsoleAndLogger.Preview/  # Color demo application
-? README.md               # This file
+├ Miku/                   # Meta package
+├ Miku.Core/              # Core types (MikuRgbColor, MikuAnsiCodes, MikuColorHelper)
+├ MikuLib.Console/        # Console utilities (MikuConsole, MikuConsoleAnimation)
+├ Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
+├ Miku.Logger/            # Logging library with SSE and TrueColor support
+├ Miku.*.Tests/           # Unit tests
+├ MikuConsoleAndLogger.Preview/  # Color demo application
+└ README.md               # This file
 ```
 
 ---

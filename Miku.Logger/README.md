@@ -6,7 +6,7 @@ A powerful, thread-safe logging library for .NET 10 with console, file, and **Se
 
 *Singing since August 31st, 2007 - Logging since 2025 - Now streaming live!*
 
-![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_Utmoe5RPDL.gif)
+![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_4XPonwjrkx.gif)
 
 ## ⚠️ Breaking Changes in Version 10.2.39
 
