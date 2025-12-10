@@ -3,6 +3,10 @@ namespace Miku.Logger.Writers
     /// <summary>
     /// Thread-safe wrapper around FileStream with reference counting.
     /// </summary>
+    /// <remarks>
+    /// Like the digital voice carrier for Miku's songs,
+    /// this stream safely transports your log messages to storage!
+    /// </remarks>
     internal sealed class MikuSharedFileStream : IDisposable
     {
         private readonly string _filePath;
@@ -11,11 +15,19 @@ namespace Miku.Logger.Writers
         private int _refCount;
         private bool _disposed;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MikuSharedFileStream"/> class.
+        /// </summary>
+        /// <param name="filePath">The path to the log file.</param>
         public MikuSharedFileStream(string filePath)
         {
             _filePath = filePath;
         }
 
+        /// <summary>
+        /// Asynchronously writes a message to the file.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
         public async Task WriteAsync(string message)
         {
             await _writeLock.WaitAsync();
@@ -41,6 +53,10 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Synchronously writes a message to the file.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
         public void Write(string message)
         {
             _writeLock.Wait();
@@ -66,11 +82,17 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Increments the reference count for this stream.
+        /// </summary>
         public void IncrementRef()
         {
             Interlocked.Increment(ref _refCount);
         }
 
+        /// <summary>
+        /// Decrements the reference count and disposes if no more references exist.
+        /// </summary>
         public void DecrementRef()
         {
             if (Interlocked.Decrement(ref _refCount) <= 0)
@@ -79,6 +101,9 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Disposes the file stream and releases all resources.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed) return;

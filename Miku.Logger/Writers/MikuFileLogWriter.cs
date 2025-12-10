@@ -7,6 +7,15 @@ namespace Miku.Logger.Writers
     /// Thread-safe file writer with log rotation support.
     /// High-performance implementation using singleton shared file streams.
     /// </summary>
+    /// <remarks>
+    /// Like writing Miku's song lyrics to digital storage,
+    /// this writer ensures every log message is safely preserved.
+    /// Features:
+    /// - Async queue-based writing for high performance
+    /// - Automatic log rotation based on file size
+    /// - Date-based folder organization
+    /// - Singleton file stream management for thread safety
+    /// </remarks>
     internal class MikuFileLogWriter : IDisposable
     {
         private readonly MikuFileLoggerOptions _options;
@@ -16,6 +25,11 @@ namespace Miku.Logger.Writers
         private bool _disposed;
         private MikuSharedFileStream? _currentStream;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MikuFileLogWriter"/> class.
+        /// </summary>
+        /// <param name="options">The file logger options.</param>
+        /// <exception cref="ArgumentNullException">Thrown when options is null.</exception>
         public MikuFileLogWriter(MikuFileLoggerOptions options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -23,8 +37,11 @@ namespace Miku.Logger.Writers
         }
 
         /// <summary>
-        /// Writes a log message asynchronously.
+        /// Writes a log message asynchronously by adding it to the write queue.
         /// </summary>
+        /// <param name="message">The formatted log message to write.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>A task that completes when the message has been queued.</returns>
         public async Task WriteAsync(string message, CancellationToken cancellationToken = default)
         {
             if (_disposed) return;
@@ -34,14 +51,18 @@ namespace Miku.Logger.Writers
         }
 
         /// <summary>
-        /// Writes a log message synchronously.
+        /// Writes a log message synchronously by adding it to the write queue.
         /// </summary>
+        /// <param name="message">The formatted log message to write.</param>
         public void Write(string message)
         {
             if (_disposed) return;
             _writeQueue.Enqueue(message);
         }
 
+        /// <summary>
+        /// Background task that processes the write queue and writes messages to file.
+        /// </summary>
         private async Task ProcessQueueAsync()
         {
             const int batchSize = 100;
@@ -80,6 +101,10 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Writes a batch of messages to the log file.
+        /// </summary>
+        /// <param name="messages">The messages to write.</param>
         private async Task WriteBatchToFileAsync(List<string> messages)
         {
             var filePath = GetCurrentLogFilePath();
@@ -99,6 +124,10 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Gets the current log file path based on options and date folders.
+        /// </summary>
+        /// <returns>The full path to the current log file.</returns>
         private string GetCurrentLogFilePath()
         {
             var baseDir = _options.LogDirectory;
@@ -112,6 +141,11 @@ namespace Miku.Logger.Writers
             return Path.Combine(baseDir, _options.FileNamePattern);
         }
 
+        /// <summary>
+        /// Determines if the log file should be rotated based on size.
+        /// </summary>
+        /// <param name="filePath">The path to the log file.</param>
+        /// <returns>True if the file should be rotated; otherwise, false.</returns>
         private bool ShouldRotate(string filePath)
         {
             if (_options.MaxFileSizeBytes <= 0) return false;
@@ -121,6 +155,10 @@ namespace Miku.Logger.Writers
             return fileInfo.Length >= _options.MaxFileSizeBytes;
         }
 
+        /// <summary>
+        /// Rotates the log file by renaming it with a timestamp.
+        /// </summary>
+        /// <param name="filePath">The path to the log file to rotate.</param>
         private void RotateLogFile(string filePath)
         {
             if (!File.Exists(filePath)) return;
@@ -142,9 +180,16 @@ namespace Miku.Logger.Writers
             }
             catch
             {
+                // Ignore rotation errors
             }
         }
 
+        /// <summary>
+        /// Cleans up old rotated log files based on MaxFileCount setting.
+        /// </summary>
+        /// <param name="directory">The directory containing log files.</param>
+        /// <param name="fileName">The base file name.</param>
+        /// <param name="extension">The file extension.</param>
         private void CleanupOldLogFiles(string directory, string fileName, string extension)
         {
             if (_options.MaxFileCount <= 0) return;
@@ -166,14 +211,20 @@ namespace Miku.Logger.Writers
                     }
                     catch
                     {
+                        // Ignore deletion errors
                     }
                 }
             }
             catch
             {
+                // Ignore cleanup errors
             }
         }
 
+        /// <summary>
+        /// Ensures the specified directory exists, creating it if necessary.
+        /// </summary>
+        /// <param name="directory">The directory path to ensure exists.</param>
         private static void EnsureDirectoryExists(string directory)
         {
             if (!Directory.Exists(directory))
@@ -182,6 +233,9 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Disposes the file writer and ensures all queued messages are written.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed) return;
@@ -193,12 +247,15 @@ namespace Miku.Logger.Writers
             {
                 if (!_writerTask.Wait(TimeSpan.FromSeconds(5)))
                 {
+                    // Writer task did not complete in time
                 }
             }
             catch
             {
+                // Ignore cancellation exceptions
             }
 
+            // Flush remaining messages
             while (_writeQueue.TryDequeue(out var message))
             {
                 try
