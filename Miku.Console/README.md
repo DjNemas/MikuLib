@@ -32,7 +32,7 @@ Or add to your `.csproj`:
 
 ```csharp
 using Miku.Core;
-using MikuLib.Console;
+using Miku.Console;
 
 // Initialize console
 MikuConsole.Initialize();
@@ -180,7 +180,7 @@ Plus standard colors: Black, White, Red, Green, Blue, Yellow, Magenta, Cyan, Gra
 
 ```csharp
 using Miku.Core;
-using MikuLib.Console;
+using Miku.Console;
 
 MikuConsole.Initialize();
 MikuConsole.HideCursor();

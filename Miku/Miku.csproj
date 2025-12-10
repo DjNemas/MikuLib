@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Miku.Core\Miku.Core.csproj" />
-    <ProjectReference Include="..\MikuLib.Console\MikuLib.Console.csproj" />
+    <ProjectReference Include="..\Miku.Console\Miku.Console.csproj" />
     <ProjectReference Include="..\Miku.Utils\Miku.Utils.csproj" />
     <ProjectReference Include="..\Miku.Logger\Miku.Logger.csproj" />
   </ItemGroup>

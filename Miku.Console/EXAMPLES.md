@@ -24,7 +24,7 @@ Practical examples for using MikuLib.Console.
 
 ```csharp
 using Miku.Core;
-using MikuLib.Console;
+using Miku.Console;
 
 // Always initialize first for UTF-8 support
 MikuConsole.Initialize();
@@ -460,7 +460,7 @@ for (int i = 0; i <= 100; i++)
 
 ```csharp
 using Miku.Core;
-using MikuLib.Console;
+using Miku.Console;
 
 class Program
 {

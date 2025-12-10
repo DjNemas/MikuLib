@@ -80,7 +80,7 @@ var options = new MikuLoggerOptions
 - **MikuConsole**: Colored text output with gradients and rainbow effects
 - **MikuConsoleAnimation**: Typewriter, fade, pulse, wave, and loading animations
 
-[Documentation](./MikuLib.Console/README.md) | [Examples](./MikuLib.Console/EXAMPLES.md) | [Changelog](./MikuLib.Console/CHANGELOG.md)
+[Documentation](./Miku.Console/README.md) | [Examples](./Miku.Console/EXAMPLES.md) | [Changelog](./Miku.Console/CHANGELOG.md)
 
 ### MikuLib.Utils
 **Comprehensive utility library** featuring:
@@ -153,7 +153,7 @@ var mikuRainbow = MikuColorHelper.GetMikuRainbow(phase);
 ### Console Output with Colors
 ```csharp
 using Miku.Core;
-using MikuLib.Console;
+using Miku.Console;
 
 // Colored output
 MikuConsole.WriteLine("Hello Miku!", MikuRgbColor.MikuCyan);
@@ -291,9 +291,9 @@ For those who know, you know.
 - [CHANGELOG](./Miku.Core/CHANGELOG.md) - Version history
 
 ### MikuLib.Console
-- [README](./MikuLib.Console/README.md) - Full documentation
-- [EXAMPLES](./MikuLib.Console/EXAMPLES.md) - Practical usage examples
-- [CHANGELOG](./MikuLib.Console/CHANGELOG.md) - Version history
+- [README](./Miku.Console/README.md) - Full documentation
+- [EXAMPLES](./Miku.Console/EXAMPLES.md) - Practical usage examples
+- [CHANGELOG](./Miku.Console/CHANGELOG.md) - Version history
 
 ### MikuLib.Utils
 - [README](./Miku.Utils/README.md) - Full documentation
@@ -341,14 +341,14 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ```
 MikuLib/
-├ Miku/                   # Meta package
-├ Miku.Core/              # Core types (MikuRgbColor, MikuAnsiCodes, MikuColorHelper)
-├ MikuLib.Console/        # Console utilities (MikuConsole, MikuConsoleAnimation)
-├ Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
-├ Miku.Logger/            # Logging library with SSE and TrueColor support
-├ Miku.*.Tests/           # Unit tests
-├ MikuConsoleAndLogger.Preview/  # Color demo application
-└ README.md               # This file
+├── Miku/                   # Meta package
+├── Miku.Core/              # Core types (MikuRgbColor, MikuAnsiCodes, MikuColorHelper)
+├── Miku.Console/           # Console utilities (MikuConsole, MikuConsoleAnimation)
+├── Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
+├── Miku.Logger/            # Logging library with SSE and TrueColor support
+├── Miku.*.Tests/           # Unit tests
+├── MikuConsoleAndLogger.Preview/  # Color demo application
+└── README.md               # This file
 ```
 
 ---

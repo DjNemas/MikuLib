@@ -3,7 +3,7 @@ using Miku.Logger;
 using Miku.Logger.Configuration;
 using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Configuration.Models;
-using MikuLib.Console;
+using Miku.Console;
 
 namespace MikuConsoleAndLogger.Preview;
 

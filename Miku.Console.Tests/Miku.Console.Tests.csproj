@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MikuLib.Console\MikuLib.Console.csproj" />
+    <ProjectReference Include="..\Miku.Console\Miku.Console.csproj" />
     <ProjectReference Include="..\Miku.Core\Miku.Core.csproj" />
   </ItemGroup>
 

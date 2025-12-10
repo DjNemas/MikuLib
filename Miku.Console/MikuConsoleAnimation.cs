@@ -1,6 +1,6 @@
 using Miku.Core;
 
-namespace MikuLib.Console
+namespace Miku.Console
 {
     /// <summary>
     /// Provides console animation utilities for MikuConsole.

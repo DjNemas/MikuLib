@@ -107,7 +107,7 @@ var mikuRainbow = MikuColorHelper.GetMikuRainbow(phase);
 ### Console Output with Colors
 ```csharp
 using Miku.Core;
-using MikuLib.Console;
+using Miku.Console;
 
 // Colored output
 MikuConsole.WriteLine("Hello Miku!", MikuRgbColor.MikuCyan);

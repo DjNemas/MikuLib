@@ -1,7 +1,7 @@
 using Miku.Core;
 using System.Text;
 
-namespace MikuLib.Console
+namespace Miku.Console
 {
     /// <summary>
     /// Provides colored console output utilities with TrueColor (24-bit RGB) and 256-color support.

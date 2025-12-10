@@ -19,9 +19,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuConsoleAndLogger.Previe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miku.Core", "Miku.Core\Miku.Core.csproj", "{B031E11D-68B1-41E7-8D03-67994CDA9F60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuLib.Console", "MikuLib.Console\MikuLib.Console.csproj", "{F3DA4AD4-888C-43FD-B505-8244B2D02836}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miku.Console", "Miku.Console\Miku.Console.csproj", "{F3DA4AD4-888C-43FD-B505-8244B2D02836}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuLib.Console.Tests", "MikuLib.Console.Tests\MikuLib.Console.Tests.csproj", "{32D21504-AA43-9D44-2313-78A15133DB24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miku.Console.Tests", "Miku.Console.Tests\Miku.Console.Tests.csproj", "{32D21504-AA43-9D44-2313-78A15133DB24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
