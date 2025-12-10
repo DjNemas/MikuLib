@@ -1,5 +1,5 @@
 using Miku.Core;
-using MikuLib.Console;
+using Miku.Console;
 
 namespace MikuLib.Console.Tests;
 

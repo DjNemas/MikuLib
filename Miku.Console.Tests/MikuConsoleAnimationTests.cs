@@ -1,7 +1,6 @@
-using Miku.Core;
-
 // Type alias for backward compatibility
-using RgbColor = Miku.Core.MikuRgbColor;
+using Miku.Console;
+using Miku.Core;
 
 namespace MikuLib.Console.Tests;
 
@@ -57,7 +56,7 @@ public class MikuConsoleAnimationTests
     {
         var output = await CaptureOutputAsync(async () =>
         {
-            await MikuConsoleAnimation.TypewriterAsync("Hello", RgbColor.MikuCyan, delayMs: 1);
+            await MikuConsoleAnimation.TypewriterAsync("Hello", MikuRgbColor.MikuCyan, delayMs: 1);
         });
 
         Assert.Contains("H", output);
@@ -78,7 +77,7 @@ public class MikuConsoleAnimationTests
             {
                 await MikuConsoleAnimation.TypewriterAsync(
                     "This is a very long text that should be cancelled",
-                    RgbColor.MikuCyan,
+                    MikuRgbColor.MikuCyan,
                     delayMs: 100,
                     cts.Token
                 );
@@ -97,7 +96,7 @@ public class MikuConsoleAnimationTests
     {
         var output = await CaptureOutputAsync(async () =>
         {
-            await MikuConsoleAnimation.TypewriterLineAsync("Test", RgbColor.MikuCyan, delayMs: 1);
+            await MikuConsoleAnimation.TypewriterLineAsync("Test", MikuRgbColor.MikuCyan, delayMs: 1);
         });
 
         // Check that the text was written
@@ -116,8 +115,8 @@ public class MikuConsoleAnimationTests
         {
             await MikuConsoleAnimation.TypewriterGradientAsync(
                 "ABC",
-                RgbColor.Red,
-                RgbColor.Blue,
+                MikuRgbColor.Red,
+                MikuRgbColor.Blue,
                 delayMs: 1
             );
         });
@@ -133,7 +132,7 @@ public class MikuConsoleAnimationTests
     {
         await CaptureOutputAsync(async () =>
         {
-            await MikuConsoleAnimation.TypewriterAsync("", RgbColor.MikuCyan, delayMs: 1);
+            await MikuConsoleAnimation.TypewriterAsync("", MikuRgbColor.MikuCyan, delayMs: 1);
         });
         Assert.True(true);
     }
@@ -149,7 +148,7 @@ public class MikuConsoleAnimationTests
         {
             await MikuConsoleAnimation.RevealLinesAsync(
                 Array.Empty<string>(),
-                RgbColor.MikuCyan,
+                MikuRgbColor.MikuCyan,
                 startX: 0,
                 startY: 0,
                 delayPerLineMs: 1
