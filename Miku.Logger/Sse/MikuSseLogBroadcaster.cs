@@ -58,6 +58,7 @@ namespace Miku.Logger.Sse
         {
             private readonly SemaphoreSlim _semaphore;
 
+            // Private constructor - the actual wait is performed in CreateAsync
             private AsyncSemaphoreLock(SemaphoreSlim semaphore)
             {
                 _semaphore = semaphore;
