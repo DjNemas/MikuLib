@@ -112,13 +112,10 @@ namespace Miku.Logger.Sse
 
                 foreach (var channel in _clientChannels)
                 {
-                    if (!channel.Writer.TryWrite(entry))
+                    // Channel is full or completed - mark for removal
+                    if (!channel.Writer.TryWrite(entry) && channel.Reader.Completion.IsCompleted)
                     {
-                        // Channel is full or completed - mark for removal
-                        if (channel.Reader.Completion.IsCompleted)
-                        {
-                            channelsToRemove.Add(channel);
-                        }
+                        channelsToRemove.Add(channel);
                     }
                 }
 
