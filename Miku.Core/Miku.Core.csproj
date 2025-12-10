@@ -14,7 +14,7 @@
     <Authors>Hatsune Nemas</Authors>
     <Company>CV01 Development</Company>
     <Product>MikuLib.Core</Product>
-    <Description>Core types and utilities shared across MikuLib packages. Contains common structures like RgbColor, ANSI codes, and ColorHelper.</Description>
+    <Description>Core types and utilities shared across MikuLib packages. Contains common structures like MikuRgbColor, MikuAnsiCodes, and MikuColorHelper.</Description>
     <Copyright>Copyright (c) 2025 Hatsune Nemas</Copyright>
     <PackageTags>miku;core;rgb;color;console;ansi;utilities;hatsune-miku;cv01</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -33,5 +33,12 @@
     <None Include="..\icon.png" Pack="true" PackagePath="\" />
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <!-- Ensure XML documentation is included in NuGet package -->
+  <Target Name="IncludeXmlDocInPackage" BeforeTargets="GenerateNuspec">
+    <ItemGroup>
+      <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="lib\$(TargetFramework)\" Condition="Exists('$(OutputPath)$(AssemblyName).xml')" />
+    </ItemGroup>
+  </Target>
 
 </Project>

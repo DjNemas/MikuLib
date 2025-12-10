@@ -14,7 +14,7 @@
     <Authors>Hatsune Nemas</Authors>
     <Company>CV01 Development</Company>
     <Product>MikuLib</Product>
-    <Description>Main Miku library aggregating all Miku sub-libraries: Core (RgbColor, AnsiCodes), Console (MikuConsole, ConsoleAnimation), Utils (MikuMapper, CommandLineHelper), and Logger (with SSE and TrueColor support). The future of voice, the future of code!</Description>
+    <Description>Main Miku library aggregating all Miku sub-libraries: Core (MikuRgbColor, MikuAnsiCodes, MikuColorHelper), Console (MikuConsole, MikuConsoleAnimation), Utils (MikuMapper, MikuCommandLineHelper), and Logger (with SSE and TrueColor support). The future of voice, the future of code!</Description>
     <Copyright>Copyright (c) 2025 Hatsune Nemas</Copyright>
     <PackageTags>miku;library;utilities;logger;console;color;vocaloid;cv01;39</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -40,5 +40,12 @@
     <None Include="..\icon.png" Pack="true" PackagePath="\" />
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <!-- Ensure XML documentation is included in NuGet package -->
+  <Target Name="IncludeXmlDocInPackage" BeforeTargets="GenerateNuspec">
+    <ItemGroup>
+      <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="lib\$(TargetFramework)\" Condition="Exists('$(OutputPath)$(AssemblyName).xml')" />
+    </ItemGroup>
+  </Target>
 
 </Project>

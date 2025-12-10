@@ -14,7 +14,7 @@
     <Authors>Hatsune Nemas</Authors>
     <Company>CV01 Development</Company>
     <Product>MikuLib.Console</Product>
-    <Description>Beautiful colored console output with TrueColor (24-bit RGB) and 256-color support. Features MikuConsole for styled output and ConsoleAnimation for typewriter, fade, pulse, and wave effects. Paint your terminal with Miku's colors!</Description>
+    <Description>Beautiful colored console output with TrueColor (24-bit RGB) and 256-color support. Features MikuConsole for styled output and MikuConsoleAnimation for typewriter, fade, pulse, and wave effects. Paint your terminal with Miku's colors!</Description>
     <Copyright>Copyright (c) 2025 Hatsune Nemas</Copyright>
     <PackageTags>miku;console;color;ansi;truecolor;256-color;animation;terminal;cli;hatsune-miku;cv01;39</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -37,5 +37,12 @@
     <None Include="..\icon.png" Pack="true" PackagePath="\" />
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <!-- Ensure XML documentation is included in NuGet package -->
+  <Target Name="IncludeXmlDocInPackage" BeforeTargets="GenerateNuspec">
+    <ItemGroup>
+      <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="lib\$(TargetFramework)\" Condition="Exists('$(OutputPath)$(AssemblyName).xml')" />
+    </ItemGroup>
+  </Target>
 
 </Project>
