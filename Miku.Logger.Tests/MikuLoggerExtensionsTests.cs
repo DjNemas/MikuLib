@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Extensions;
 
 namespace Miku.Logger.Tests
@@ -31,8 +32,8 @@ namespace Miku.Logger.Tests
             var services = new ServiceCollection();
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Debug
+                Output = MikuLogOutput.Console,
+                MinimumLogLevel = MikuLogLevel.Debug
             };
 
             var builder = services.AddLogging(loggingBuilder =>
@@ -57,8 +58,8 @@ namespace Miku.Logger.Tests
                 // Act
                 loggingBuilder.AddMikuLogger(options =>
                 {
-                    options.Output = LogOutput.Console;
-                    options.MinimumLogLevel = Configuration.LogLevel.Trace;
+                    options.Output = MikuLogOutput.Console;
+                    options.MinimumLogLevel = MikuLogLevel.Trace;
                 });
             });
 
@@ -77,7 +78,7 @@ namespace Miku.Logger.Tests
             {
                 loggingBuilder.AddMikuLogger(options =>
                 {
-                    options.Output = LogOutput.Console;
+                    options.Output = MikuLogOutput.Console;
                 });
             });
 
@@ -115,7 +116,7 @@ namespace Miku.Logger.Tests
         {
             // Arrange
             var services = new ServiceCollection();
-            var options = new MikuLoggerOptions { Output = LogOutput.Console };
+            var options = new MikuLoggerOptions { Output = MikuLogOutput.Console };
             ILoggingBuilder? result = null;
 
             services.AddLogging(loggingBuilder =>
@@ -140,7 +141,7 @@ namespace Miku.Logger.Tests
                 // Act
                 result = loggingBuilder.AddMikuLogger(options =>
                 {
-                    options.Output = LogOutput.Console;
+                    options.Output = MikuLogOutput.Console;
                 });
             });
 
@@ -157,7 +158,7 @@ namespace Miku.Logger.Tests
             {
                 loggingBuilder.AddMikuLogger(options =>
                 {
-                    options.Output = LogOutput.Console;
+                    options.Output = MikuLogOutput.Console;
                 });
             });
 

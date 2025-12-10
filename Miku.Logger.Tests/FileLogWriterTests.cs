@@ -1,5 +1,9 @@
-using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Models;
 using Miku.Logger.Writers;
+
+// Type aliases for backward compatibility
+using FileLogWriter = Miku.Logger.Writers.MikuFileLogWriter;
+using SharedFileStreamManager = Miku.Logger.Writers.MikuSharedFileStreamManager;
 
 namespace Miku.Logger.Tests;
 
@@ -40,7 +44,7 @@ public class FileLogWriterTests : IDisposable
 
     private FileLogWriter CreateWriter(string? fileName = null)
     {
-        var options = new FileLoggerOptions
+        var options = new MikuFileLoggerOptions
         {
             LogDirectory = _testDirectory,
             FileNamePattern = fileName ?? "test.log",
@@ -141,7 +145,7 @@ public class FileLogWriterTests : IDisposable
         Assert.True(File.Exists(logFile));
 
         var lines = await File.ReadAllLinesAsync(logFile);
-        
+
         // With high-performance async writing, we expect all messages
         Assert.Equal(writerCount * messagesPerWriter, lines.Length);
 
@@ -154,7 +158,7 @@ public class FileLogWriterTests : IDisposable
                 expectedMessages.Add($"Writer{w}_Message{m}");
             }
         }
-        
+
         var actualMessages = new HashSet<string>(lines);
         Assert.Equal(expectedMessages.Count, actualMessages.Count);
     }
@@ -212,7 +216,7 @@ public class FileLogWriterTests : IDisposable
 
         var logFile = Path.Combine(_testDirectory, "concurrent.log");
         var lines = await File.ReadAllLinesAsync(logFile);
-        
+
         // All messages should be written
         Assert.Equal(writerCount * messagesPerWriter, lines.Length);
     }
@@ -250,7 +254,7 @@ public class FileLogWriterTests : IDisposable
         // In production, each application instance would log to its own file
         for (int i = 0; i < writerCount; i++)
         {
-            var options = new FileLoggerOptions
+            var options = new MikuFileLoggerOptions
             {
                 LogDirectory = _testDirectory,
                 FileNamePattern = $"dispose-concurrent-{i}.log", // Unique file per writer
@@ -292,7 +296,7 @@ public class FileLogWriterTests : IDisposable
             var lines = await File.ReadAllLinesAsync(logFile);
             totalLines += lines.Length;
         }
-        
+
         Assert.Equal(writerCount * messagesPerWriter, totalLines);
     }
 
@@ -349,7 +353,7 @@ public class FileLogWriterTests : IDisposable
     public async Task MultipleWriters_WithDateFolders_NoConflict()
     {
         // Arrange
-        var options = new FileLoggerOptions
+        var options = new MikuFileLoggerOptions
         {
             LogDirectory = _testDirectory,
             FileNamePattern = "dated.log",

@@ -44,9 +44,9 @@ namespace Miku.Utils.Tests
         }
 
         [Fact]
-        public void MapPropertys_ShouldMapAllProperties()
+        public void MapProperties_ShouldMapAllProperties()
         {
-            // Arrange
+            // Arrange - Using Miku's birthday and character number!
             var source = new SourceClass
             {
                 Id = 39,
@@ -57,7 +57,7 @@ namespace Miku.Utils.Tests
             };
 
             // Act
-            var target = MikuMapper.MapPropertys<TargetClass>(source);
+            var target = MikuMapper.MapProperties<TargetClass>(source);
 
             // Assert
             Assert.Equal(source.Id, target.Id);
@@ -68,7 +68,7 @@ namespace Miku.Utils.Tests
         }
 
         [Fact]
-        public void MapPropertys_ShouldExcludeSpecifiedProperties()
+        public void MapProperties_ShouldExcludeSpecifiedProperties()
         {
             // Arrange
             var source = new SourceClass
@@ -79,7 +79,7 @@ namespace Miku.Utils.Tests
             };
 
             // Act
-            var target = MikuMapper.MapPropertys<TargetClass>(source, true, "Age", "IsActive");
+            var target = MikuMapper.MapProperties<TargetClass>(source, true, "Age", "IsActive");
 
             // Assert
             Assert.Equal(source.Id, target.Id);
@@ -89,7 +89,7 @@ namespace Miku.Utils.Tests
         }
 
         [Fact]
-        public void MapPropertys_ShouldIgnoreNullByDefault()
+        public void MapProperties_ShouldIgnoreNullByDefault()
         {
             // Arrange
             var source = new SourceClass
@@ -106,7 +106,7 @@ namespace Miku.Utils.Tests
             };
 
             // Act
-            MikuMapper.MapPropertys(source, target);
+            MikuMapper.MapProperties(source, target);
 
             // Assert
             Assert.Equal(39, target.Id);
@@ -115,7 +115,7 @@ namespace Miku.Utils.Tests
         }
 
         [Fact]
-        public void MapPropertys_ShouldMapNullWhenIgnoreNullIsFalse()
+        public void MapProperties_ShouldMapNullWhenIgnoreNullIsFalse()
         {
             // Arrange
             var source = new SourceClass
@@ -132,7 +132,7 @@ namespace Miku.Utils.Tests
             };
 
             // Act
-            MikuMapper.MapPropertys(source, target, false);
+            MikuMapper.MapProperties(source, target, false);
 
             // Assert
             Assert.Equal(39, target.Id);
@@ -141,9 +141,9 @@ namespace Miku.Utils.Tests
         }
 
         [Fact]
-        public void MapPropertys_ShouldMapCollection()
+        public void MapProperties_ShouldMapCollection()
         {
-            // Arrange
+            // Arrange - The Crypton Vocaloid family!
             var sources = new List<object>
             {
                 new SourceClass { Id = 1, Name = "Miku", Age = 16 },
@@ -152,7 +152,7 @@ namespace Miku.Utils.Tests
             };
 
             // Act
-            var targets = MikuMapper.MapPropertys<TargetClass>(sources).ToList();
+            var targets = MikuMapper.MapProperties<TargetClass>(sources).ToList();
 
             // Assert
             Assert.Equal(3, targets.Count);
@@ -164,7 +164,7 @@ namespace Miku.Utils.Tests
         }
 
         [Fact]
-        public void MapPropertys_ShouldMapToExistingTarget()
+        public void MapProperties_ShouldMapToExistingTarget()
         {
             // Arrange
             var source = new SourceClass
@@ -181,7 +181,7 @@ namespace Miku.Utils.Tests
             };
 
             // Act
-            MikuMapper.MapPropertys(source, target);
+            MikuMapper.MapProperties(source, target);
 
             // Assert
             Assert.Equal(39, target.Id);
@@ -190,57 +190,57 @@ namespace Miku.Utils.Tests
         }
 
         [Fact]
-        public void MapPropertys_ShouldThrowExceptionWhenTargetIsNull()
+        public void MapProperties_ShouldThrowExceptionWhenTargetIsNull()
         {
             // Arrange
             var source = new SourceClass { Id = 39 };
             TargetClass? target = null;
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => MikuMapper.MapPropertys(source, target!));
+            Assert.Throws<ArgumentNullException>(() => MikuMapper.MapProperties(source, target!));
         }
 
         [Fact]
-        public void MapPropertys_ShouldHandleNullableToNonNullable()
+        public void MapProperties_ShouldHandleNullableToNonNullable()
         {
             // Arrange
             var source = new SourceWithNullableInt { Value = 39 };
 
             // Act
-            var target = MikuMapper.MapPropertys<TargetWithInt>(source);
+            var target = MikuMapper.MapProperties<TargetWithInt>(source);
 
             // Assert
             Assert.Equal(39, target.Value);
         }
 
         [Fact]
-        public void MapPropertys_ShouldHandleNonNullableToNullable()
+        public void MapProperties_ShouldHandleNonNullableToNullable()
         {
             // Arrange
             var source = new TargetWithInt { Value = 39 };
 
             // Act
-            var target = MikuMapper.MapPropertys<TargetWithNullableInt>(source);
+            var target = MikuMapper.MapProperties<TargetWithNullableInt>(source);
 
             // Assert
             Assert.Equal(39, target.Value);
         }
 
         [Fact]
-        public void MapPropertys_ShouldHandleNullableToNullableWithNull()
+        public void MapProperties_ShouldHandleNullableToNullableWithNull()
         {
             // Arrange
             var source = new SourceWithNullableInt { Value = null };
 
             // Act
-            var target = MikuMapper.MapPropertys<TargetWithNullableInt>(source, false);
+            var target = MikuMapper.MapProperties<TargetWithNullableInt>(source, false);
 
             // Assert
             Assert.Null(target.Value);
         }
 
         [Fact]
-        public void MapPropertys_ShouldOnlyMapMatchingProperties()
+        public void MapProperties_ShouldOnlyMapMatchingProperties()
         {
             // Arrange
             var source = new SourceClass
@@ -251,7 +251,7 @@ namespace Miku.Utils.Tests
             };
 
             // Act
-            var target = MikuMapper.MapPropertys<TargetWithExtraProperties>(source);
+            var target = MikuMapper.MapProperties<TargetWithExtraProperties>(source);
 
             // Assert
             Assert.Equal(39, target.Id);
@@ -261,7 +261,7 @@ namespace Miku.Utils.Tests
         }
 
         [Fact]
-        public void MapPropertys_ShouldHandleEmptyExcludeList()
+        public void MapProperties_ShouldHandleEmptyExcludeList()
         {
             // Arrange
             var source = new SourceClass
@@ -271,7 +271,7 @@ namespace Miku.Utils.Tests
             };
 
             // Act
-            var target = MikuMapper.MapPropertys<TargetClass>(source, true, Array.Empty<string>());
+            var target = MikuMapper.MapProperties<TargetClass>(source, true, Array.Empty<string>());
 
             // Assert
             Assert.Equal(39, target.Id);

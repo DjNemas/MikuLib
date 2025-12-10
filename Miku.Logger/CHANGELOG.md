@@ -4,26 +4,108 @@ All notable changes to Miku.Logger will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [10.2.39] - 2025-12-10
+
+### Breaking Changes ??
+- **All enums and configuration models renamed with `Miku` prefix**
+  - `LogLevel` ? `MikuLogLevel`
+  - `LogOutput` ? `MikuLogOutput`
+  - `ColorSpace` ? `MikuColorSpace`
+  - `ConsoleColorOptions` ? `MikuConsoleColorOptions`
+  - `FileLoggerOptions` ? `MikuFileLoggerOptions`
+  - `LogFormatOptions` ? `MikuLogFormatOptions`
+  - `SseLoggerOptions` ? `MikuSseLoggerOptions`
+  - `Extended256ColorOptions` ? `MikuExtended256ColorOptions`
+  - `TrueColorOptions` ? `MikuTrueColorOptions`
+  - `RgbColor` ? `MikuRgbColor`
+  - `AnsiCodes` ? `MikuAnsiCodes`
+  - `ColorHelper` ? `MikuColorHelper`
+  - `SseLogBroadcaster` ? `MikuSseLogBroadcaster`
+  - `SseLogEntry` ? `MikuSseLogEntry`
+  - `FileLogWriter` ? `MikuFileLogWriter`
+  - `SharedFileStreamManager` ? `MikuSharedFileStreamManager`
+
+### Migration Guide
+```csharp
+// Before
+var options = new MikuLoggerOptions
+{
+    Output = LogOutput.Console,
+    MinimumLogLevel = LogLevel.Information,
+    ConsoleColors = new ConsoleColorOptions { ColorSpace = ColorSpace.TrueColor }
+};
+
+// After
+var options = new MikuLoggerOptions
+{
+    Output = MikuLogOutput.Console,
+    MinimumLogLevel = MikuLogLevel.Information,
+    ConsoleColors = new MikuConsoleColorOptions { ColorSpace = MikuColorSpace.TrueColor }
+};
+```
+
+### Added
+- **Server-Sent Events (SSE) Support** - Real-time log streaming to web clients!
+  - New `MikuSseLogBroadcaster` singleton for managing SSE client connections
+  - New `MikuSseLogEntry` class for structured log data in JSON format
+  - New `MikuSseLoggerOptions` for configuring SSE behavior
+  - New `MikuLogOutput.ServerSentEvents` flag for enabling SSE output
+  - New `MikuLogOutput.All` combining Console, File, and SSE
+  - ASP.NET Core extensions:
+    - `AddMikuLoggerWithSse()` - Adds MikuLogger with SSE to logging builder
+    - `AddMikuLoggerSse()` - Adds SSE services to DI container
+    - `MapMikuLoggerSse()` - Maps SSE endpoint for log streaming
+  - Uses .NET 10's native `TypedResults.ServerSentEvents()` API
+  - Channel-based broadcasting with bounded capacity (39 messages - the Miku number!)
+  - Configurable max clients, reconnection interval, and authorization
+  - Independent minimum log level filter for SSE output
+
+- **Extended Color Support** - Full 256-color and TrueColor (24-bit RGB) support!
+  - `MikuExtended256ColorOptions` for 256-color palette configuration
+  - `MikuTrueColorOptions` for TrueColor RGB configuration
+  - ANSI escape sequence support for modern terminals
+  - Automatic fallback to standard colors when ANSI not supported
+
+- Namespace reorganization: Enums and Models now in separate files and namespaces
+  - `Miku.Logger.Configuration.Enums` - MikuLogOutput, MikuLogLevel, MikuColorSpace
+  - `Miku.Logger.Configuration.Models` - MikuLogFormatOptions, MikuConsoleColorOptions, MikuFileLoggerOptions, etc.
+
+### Changed
+- **Now depends on Miku.Core** for shared types (MikuRgbColor, MikuAnsiCodes, MikuColorHelper)
+- `MikuLoggerOptions` now includes `SseOptions` property
+- `MikuLogger` now broadcasts to SSE clients when enabled
+- `MikuConsoleColorOptions` now includes `Extended256Colors` and `TrueColors` properties
+- `ConsoleLogWriter` now supports all three color spaces with automatic ANSI detection
+- Updated package description and tags to include SSE and extended colors
+
+### Documentation
+- Added comprehensive SSE documentation to README
+- Added Extended256 and TrueColor color configuration examples
+- Added JavaScript client example for SSE consumption
+- Added predefined Miku color reference
+
+---
+
 ## [10.1.39] - 2025-12-02
 
 ### Fixed
-- FileLogWriter now handles multi-instance scenarios correctly without IOException
+- MikuFileLogWriter now handles multi-instance scenarios correctly without IOException
 - Eliminated data loss in high-concurrency logging scenarios
-- Fixed file access conflicts when multiple FileLogWriter instances write to the same file
+- Fixed file access conflicts when multiple MikuFileLogWriter instances write to the same file
 
 ### Added
-- Singleton SharedFileStreamManager for centralized file stream management
-- SharedFileStream wrapper with SemaphoreSlim for thread-safe write operations
-- Only one FileStream per file across all FileLogWriter instances (true singleton pattern)
+- Singleton MikuSharedFileStreamManager for centralized file stream management
+- MikuSharedFileStream wrapper with SemaphoreSlim for thread-safe write operations
+- Only one FileStream per file across all MikuFileLogWriter instances (true singleton pattern)
 - Comprehensive multi-instance tests (11 test scenarios including 2 multi-process tests)
 - Performance optimization documentation
 - Production best practices guide for multi-process logging
 
 ### Changed
 - Implemented singleton pattern for shared file stream management
-- Changed from individual FileStream per writer to centralized SharedFileStreamManager
+- Changed from individual FileStream per writer to centralized MikuSharedFileStreamManager
 - Improved Dispose() method to guarantee flush of all remaining messages
-- FileLogWriter now uses SharedFileStreamManager.GetOrCreateStream() for file access
+- MikuFileLogWriter now uses MikuSharedFileStreamManager.GetOrCreateStream() for file access
 
 ### Performance
 - Zero data loss guarantee even under high load
@@ -114,4 +196,4 @@ MAJOR.MINOR.39
 - **MINOR**: Increments for new features and updates
 - **39**: Always 39 in honor of Hatsune Miku (Mi-Ku)
 
-**Examples**: 10.0.39 -> 10.1.39 -> 10.2.39 -> 11.0.39
+**Examples**: 10.0.39 ? 10.1.39 ? 10.2.39 ? 10.3.39 ? 11.0.39

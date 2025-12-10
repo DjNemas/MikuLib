@@ -1,49 +1,13 @@
-using System.Collections.Concurrent;
-
 namespace Miku.Logger.Writers
 {
     /// <summary>
-    /// Thread-safe singleton manager for shared file streams.
-    /// Ensures only one FileStream per file path across all FileLogWriter instances.
-    /// </summary>
-    internal sealed class SharedFileStreamManager
-    {
-        private static readonly Lazy<SharedFileStreamManager> _instance = 
-            new(() => new SharedFileStreamManager());
-
-        public static SharedFileStreamManager Instance => _instance.Value;
-
-        private readonly ConcurrentDictionary<string, SharedFileStream> _streams = new();
-
-        private SharedFileStreamManager() { }
-
-        public SharedFileStream GetOrCreateStream(string filePath)
-        {
-            return _streams.GetOrAdd(filePath, path => new SharedFileStream(path));
-        }
-
-        public void RemoveStream(string filePath)
-        {
-            if (_streams.TryRemove(filePath, out var stream))
-            {
-                stream.Dispose();
-            }
-        }
-
-        public void DisposeAll()
-        {
-            foreach (var stream in _streams.Values)
-            {
-                stream.Dispose();
-            }
-            _streams.Clear();
-        }
-    }
-
-    /// <summary>
     /// Thread-safe wrapper around FileStream with reference counting.
     /// </summary>
-    internal sealed class SharedFileStream : IDisposable
+    /// <remarks>
+    /// Like the digital voice carrier for Miku's songs,
+    /// this stream safely transports your log messages to storage!
+    /// </remarks>
+    internal sealed class MikuSharedFileStream : IDisposable
     {
         private readonly string _filePath;
         private readonly SemaphoreSlim _writeLock = new(1, 1);
@@ -51,11 +15,19 @@ namespace Miku.Logger.Writers
         private int _refCount;
         private bool _disposed;
 
-        public SharedFileStream(string filePath)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MikuSharedFileStream"/> class.
+        /// </summary>
+        /// <param name="filePath">The path to the log file.</param>
+        public MikuSharedFileStream(string filePath)
         {
             _filePath = filePath;
         }
 
+        /// <summary>
+        /// Asynchronously writes a message to the file.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
         public async Task WriteAsync(string message)
         {
             await _writeLock.WaitAsync();
@@ -63,7 +35,6 @@ namespace Miku.Logger.Writers
             {
                 if (_disposed) return;
 
-                // Lazy initialization of FileStream
                 _fileStream ??= new FileStream(
                     _filePath,
                     FileMode.Append,
@@ -82,6 +53,10 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Synchronously writes a message to the file.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
         public void Write(string message)
         {
             _writeLock.Wait();
@@ -89,7 +64,6 @@ namespace Miku.Logger.Writers
             {
                 if (_disposed) return;
 
-                // Lazy initialization of FileStream
                 _fileStream ??= new FileStream(
                     _filePath,
                     FileMode.Append,
@@ -108,11 +82,17 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Increments the reference count for this stream.
+        /// </summary>
         public void IncrementRef()
         {
             Interlocked.Increment(ref _refCount);
         }
 
+        /// <summary>
+        /// Decrements the reference count and disposes if no more references exist.
+        /// </summary>
         public void DecrementRef()
         {
             if (Interlocked.Decrement(ref _refCount) <= 0)
@@ -121,6 +101,9 @@ namespace Miku.Logger.Writers
             }
         }
 
+        /// <summary>
+        /// Disposes the file stream and releases all resources.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed) return;

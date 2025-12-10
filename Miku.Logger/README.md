@@ -1,10 +1,28 @@
 ﻿# MikuLib.Logger
 
-A powerful, thread-safe logging library for .NET 10 with console and file output support, featuring async operations, log rotation, and Microsoft.Extensions.Logging compatibility.
+A powerful, thread-safe logging library for .NET 10 with console, file, and **Server-Sent Events (SSE)** output support, featuring async operations, log rotation, and Microsoft.Extensions.Logging compatibility.
 
 > "Tell your logs to the world!" - Hatsune Nemas
 
-*Singing since August 31st, 2007 - Logging since 2025*
+*Singing since August 31st, 2007 - Logging since 2025 - Now streaming live!*
+
+![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_4XPonwjrkx.gif)
+
+## ⚠️ Breaking Changes in Version 10.2.39
+
+**All enums and configuration models have been renamed with the `Miku` prefix.**
+
+| Old Name | New Name |
+|----------|----------|
+| `LogLevel` | `MikuLogLevel` |
+| `LogOutput` | `MikuLogOutput` |
+| `ColorSpace` | `MikuColorSpace` |
+| `ConsoleColorOptions` | `MikuConsoleColorOptions` |
+| `FileLoggerOptions` | `MikuFileLoggerOptions` |
+| `LogFormatOptions` | `MikuLogFormatOptions` |
+| `SseLoggerOptions` | `MikuSseLoggerOptions` |
+| `Extended256ColorOptions` | `MikuExtended256ColorOptions` |
+| `TrueColorOptions` | `MikuTrueColorOptions` |
 
 ## Features
 
@@ -12,7 +30,8 @@ A powerful, thread-safe logging library for .NET 10 with console and file output
 - **Thread-Safe** - Lock-free architecture with ConcurrentQueue
 - **Async Support** - Asynchronous logging methods for better performance
 - **High Performance** - Batch writing up to 100 messages per operation
-- **Multiple Output Targets** - Console, File, or both
+- **Multiple Output Targets** - Console, File, SSE, or any combination
+- **Server-Sent Events** - Real-time log streaming to web clients
 - **Log Levels** - Trace, Debug, Information, Warning, Error, Critical
 - **Colored Console Output** - Customizable colors for each log level
 - **Log Rotation** - Automatic file rotation based on file size
@@ -30,7 +49,7 @@ dotnet add package MikuLib.Logger
 
 Or add to your `.csproj`:
 ```xml
-<PackageReference Include="MikuLib.Logger" Version="10.1.39" />
+<PackageReference Include="MikuLib.Logger" Version="10.2.39" />
 ```
 
 ## Quick Start
@@ -64,15 +83,19 @@ await logger.LogInformationAsync("Async log message");
 ### Custom Configuration
 
 ```csharp
+using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
+
 var options = new MikuLoggerOptions
 {
-    Output = LogOutput.ConsoleAndFile,
-    MinimumLogLevel = LogLevel.Debug,
+    Output = MikuLogOutput.All, // Console, File, and SSE
+    MinimumLogLevel = MikuLogLevel.Debug,
     DateFormat = "yyyy-MM-dd HH:mm:ss.fff",
     UseUtcTime = false,
     
     // Console options
-    ConsoleColors = new ConsoleColorOptions
+    ConsoleColors = new MikuConsoleColorOptions
     {
         Enabled = true,
         DebugColor = ConsoleColor.Yellow,
@@ -81,7 +104,7 @@ var options = new MikuLoggerOptions
     },
     
     // File options
-    FileOptions = new FileLoggerOptions
+    FileOptions = new MikuFileLoggerOptions
     {
         LogDirectory = "./logs",
         FileNamePattern = "app.log",
@@ -89,10 +112,108 @@ var options = new MikuLoggerOptions
         MaxFileCount = 5,
         UseDateFolders = true,
         DateFolderFormat = "yyyy-MM-dd"
+    },
+    
+    // SSE options
+    SseOptions = new MikuSseLoggerOptions
+    {
+        EndpointPath = "/miku/logs/stream",
+        EventType = "miku-log",
+        MaxClients = 100
     }
 };
 
 var logger = new MikuLogger("MyApp", options);
+```
+
+## Server-Sent Events (SSE) 🎤
+
+Stream your logs in real-time to web clients using Server-Sent Events!
+
+### ASP.NET Core Integration
+
+```csharp
+using Miku.Logger.Extensions;
+using Miku.Logger.Configuration.Enums;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add MikuLogger with SSE support
+builder.Logging.AddMikuLoggerWithSse(options =>
+{
+    options.Output = MikuLogOutput.All;
+    options.MinimumLogLevel = MikuLogLevel.Debug;
+    options.SseOptions.EndpointPath = "/api/logs/stream";
+    options.SseOptions.MaxClients = 50;
+});
+
+var app = builder.Build();
+
+// Map the SSE endpoint
+app.MapMikuLoggerSse();
+
+// Or with custom path
+app.MapMikuLoggerSse("/custom/logs/stream");
+
+app.Run();
+```
+
+### JavaScript Client Example
+
+```javascript
+const eventSource = new EventSource('/miku/logs/stream');
+
+eventSource.addEventListener('miku-log', (event) => {
+    const logEntry = JSON.parse(event.data);
+    console.log(`[${logEntry.level}] ${logEntry.category}: ${logEntry.message}`);
+});
+
+eventSource.onerror = (error) => {
+    console.error('SSE connection error:', error);
+};
+```
+
+### SSE Log Entry Format
+
+```json
+{
+    "id": "a1b2c3d4e5f6",
+    "timestamp": "2025-12-02T14:30:00.123Z",
+    "level": "Information",
+    "levelValue": 2,
+    "category": "MyController",
+    "message": "Request processed successfully",
+    "exception": null
+}
+```
+
+### SSE Configuration Options
+
+```csharp
+SseOptions = new MikuSseLoggerOptions
+{
+    // Endpoint path for SSE streaming
+    EndpointPath = "/miku/logs/stream",
+    
+    // SSE event type name
+    EventType = "miku-log",
+    
+    // Maximum concurrent clients (0 = unlimited)
+    MaxClients = 100,
+    
+    // Reconnection interval hint for clients (ms)
+    ReconnectionIntervalMs = 3000,
+    
+    // Include log level in event type (e.g., "miku-log-error")
+    IncludeLogLevelInEventType = false,
+    
+    // Authorization settings
+    RequireAuthorization = false,
+    AuthorizationPolicy = null,
+    
+    // Minimum log level for SSE (independent of other outputs)
+    MinimumLogLevel = MikuLogLevel.Information
+}
 ```
 
 ## ASP.NET Core Integration
@@ -101,14 +222,15 @@ var logger = new MikuLogger("MyApp", options);
 
 ```csharp
 using Miku.Logger.Extensions;
+using Miku.Logger.Configuration.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add MikuLogger to ASP.NET Core logging
 builder.Logging.AddMikuLogger(options =>
 {
-    options.Output = LogOutput.ConsoleAndFile;
-    options.MinimumLogLevel = LogLevel.Information;
+    options.Output = MikuLogOutput.ConsoleAndFile;
+    options.MinimumLogLevel = MikuLogLevel.Information;
     options.FileOptions.MaxFileSizeBytes = 5 * 1024 * 1024; // 5 MB
     options.FileOptions.UseDateFolders = true;
 });
@@ -141,22 +263,24 @@ public class HomeController : Controller
 ### Output Targets
 
 ```csharp
-LogOutput.None           // No output
-LogOutput.Console        // Console only
-LogOutput.File           // File only
-LogOutput.ConsoleAndFile // Both console and file
+MikuLogOutput.None              // No output
+MikuLogOutput.Console           // Console only
+MikuLogOutput.File              // File only
+MikuLogOutput.ServerSentEvents  // SSE only
+MikuLogOutput.ConsoleAndFile    // Both console and file
+MikuLogOutput.All               // Console, File, and SSE
 ```
 
 ### Log Levels
 
 ```csharp
-LogLevel.Trace       // Most detailed messages
-LogLevel.Debug       // Development debugging
-LogLevel.Information // General information
-LogLevel.Warning     // Abnormal events
-LogLevel.Error       // Error events
-LogLevel.Critical    // Critical failures
-LogLevel.None        // No logging
+MikuLogLevel.Trace       // Most detailed messages
+MikuLogLevel.Debug       // Development debugging
+MikuLogLevel.Information // General information
+MikuLogLevel.Warning     // Abnormal events
+MikuLogLevel.Error       // Error events
+MikuLogLevel.Critical    // Critical failures
+MikuLogLevel.None        // No logging
 ```
 
 ### Format Options
@@ -166,7 +290,7 @@ Control which elements are shown in log messages:
 ```csharp
 var options = new MikuLoggerOptions
 {
-    FormatOptions = new LogFormatOptions
+    FormatOptions = new MikuLogFormatOptions
     {
         ShowDate = true,        // Show date (default: true)
         ShowTime = true,        // Show time (default: true)
@@ -176,31 +300,12 @@ var options = new MikuLoggerOptions
 };
 ```
 
-**Examples of different format combinations:**
-
-```csharp
-// All enabled (default)
-// Output: 2025-11-29 21:45:23.123 [INFO] [MyApp] Application started
-
-// Only message
-FormatOptions = new LogFormatOptions { ShowDate = false, ShowTime = false, ShowLogLevel = false, ShowLoggerName = false }
-// Output: Application started
-
-// Date and message only
-FormatOptions = new LogFormatOptions { ShowDate = true, ShowTime = false, ShowLogLevel = false, ShowLoggerName = false }
-// Output: 2025-11-29 Application started
-
-// Time, level and message
-FormatOptions = new LogFormatOptions { ShowDate = false, ShowTime = true, ShowLogLevel = true, ShowLoggerName = false }
-// Output: 21:45:23.123 [INFO] Application started
-```
-
 ### File Rotation
 
 The logger automatically rotates log files when they exceed the specified size:
 
 ```csharp
-FileOptions = new FileLoggerOptions
+FileOptions = new MikuFileLoggerOptions
 {
     MaxFileSizeBytes = 10 * 1024 * 1024, // 10 MB
     MaxFileCount = 10,                    // Keep last 10 files
@@ -208,25 +313,17 @@ FileOptions = new FileLoggerOptions
 }
 ```
 
-Example folder structure with date folders:
-```
-logs/
-â”œâ”€â”€ 2025-11-29/
-â”‚   â”œâ”€â”€ app.log
-â”‚   â”œâ”€â”€ app_20251129_143022.log
-â”‚   â””â”€â”€ app_20251129_150133.log
-â””â”€â”€ 2025-11-30/
-    â””â”€â”€ app.log
-```
-
 ### Console Colors
 
-Customize colors for each log level:
+MikuLogger supports three color modes for console output:
+
+#### Standard Console Colors (16 colors)
 
 ```csharp
-ConsoleColors = new ConsoleColorOptions
+ConsoleColors = new MikuConsoleColorOptions
 {
     Enabled = true,
+    ColorSpace = MikuColorSpace.Console, // Default
     TraceColor = ConsoleColor.Gray,
     DebugColor = ConsoleColor.Yellow,
     InformationColor = ConsoleColor.Cyan,
@@ -236,44 +333,64 @@ ConsoleColors = new ConsoleColorOptions
 }
 ```
 
-## Advanced Usage
+#### Extended 256 Colors
 
-### Exception Logging
+For terminals supporting 256-color palette:
 
 ```csharp
-try
+ConsoleColors = new MikuConsoleColorOptions
 {
-    // Some operation
-}
-catch (Exception ex)
-{
-    logger.LogError(ex, "Operation failed: {Operation}", "DataProcessing");
-    await logger.LogErrorAsync(ex, "Async error logging");
+    Enabled = true,
+    ColorSpace = MikuColorSpace.Extended256,
+    Extended256Colors = new MikuExtended256ColorOptions
+    {
+        TraceColor = 245,      // Light gray
+        DebugColor = 226,      // Yellow
+        InformationColor = 44, // Cyan (Miku!)
+        WarningColor = 208,    // Orange
+        ErrorColor = 196,      // Red
+        CriticalColor = 160    // Dark red
+    }
 }
 ```
 
-### Using with Dependency Injection
+#### TrueColor (24-bit RGB)
+
+For modern terminals supporting 16 million colors:
 
 ```csharp
-// Register in DI container
-services.AddSingleton(new MikuLogger("ServiceName", options));
+using Miku.Core;
 
-// Inject and use
-public class MyService
+ConsoleColors = new MikuConsoleColorOptions
 {
-    private readonly MikuLogger _logger;
-    
-    public MyService(MikuLogger logger)
+    Enabled = true,
+    ColorSpace = MikuColorSpace.TrueColor,
+    TrueColors = new MikuTrueColorOptions
     {
-        _logger = logger;
-    }
-    
-    public async Task ProcessAsync()
-    {
-        await _logger.LogInformationAsync("Processing started");
-        // ...
+        TraceColor = MikuRgbColor.Gray,
+        DebugColor = MikuRgbColor.Yellow,
+        InformationColor = MikuRgbColor.MikuCyan, // #00CED1 - Miku's signature color!
+        WarningColor = MikuRgbColor.Orange,
+        ErrorColor = MikuRgbColor.Red,
+        CriticalColor = MikuRgbColor.DarkRed
     }
 }
+
+// Custom hex colors
+TrueColors = new MikuTrueColorOptions
+{
+    InformationColor = MikuRgbColor.FromHex("#39C5BB"), // Miku's hair highlight
+    WarningColor = new MikuRgbColor(255, 165, 0),       // RGB values
+    ErrorColor = MikuRgbColor.FromHex("FF4444")         // Without # prefix
+}
+```
+
+#### Predefined Miku Colors
+
+```csharp
+MikuRgbColor.MikuCyan     // #00CED1 - Signature cyan
+MikuRgbColor.MikuTeal     // #39C5BB - Hair highlight
+MikuRgbColor.MikuDarkCyan // #008B8B - Dark accent
 ```
 
 ## Performance
@@ -284,29 +401,8 @@ public class MyService
 - **Thread-Safe**: SemaphoreSlim-based synchronization per file
 - **Async File Writing**: Background queue processing with 8KB buffer
 - **Zero Data Loss**: Guaranteed message delivery even when disposing
+- **Channel-Based SSE**: Efficient bounded channels for SSE broadcasting
 - **Multi-Instance Safe**: Multiple FileLogWriter instances can safely write to same file
-
-## Thread Safety
-
-All logging operations are thread-safe:
-- Console writes are synchronized
-- File writes use singleton SharedFileStreamManager with SemaphoreSlim per file
-- Only one FileStream per file across all FileLogWriter instances
-- Safe for concurrent access from multiple threads
-- Multi-instance safe - multiple FileLogWriter instances can write to same file
-
-### Multi-Instance Best Practices
-
-```csharp
-// Recommended: All applications log to same file
-options.FileNamePattern = "log.txt";
-options.UseDateFolders = true; // logs/2025-12-02/log.txt
-
-// The SharedFileStreamManager ensures safe multi-instance access automatically
-
-// Optional: Separate files per application for better isolation
-options.FileNamePattern = $"{applicationName}.log";
-```
 
 ## License
 
@@ -329,7 +425,7 @@ https://github.com/DjNemas/MikuLib
 
 ---
 
-*"The future of voice, the future of logging!"*
+*"The future of voice, the future of logging - now streaming live!"*
 
-**Version**: 10.1.39 (CV01 Edition)  
+**Version**: 10.2.39 (CV01 Edition)  
 **Default Color**: Cyan (#00CED1)

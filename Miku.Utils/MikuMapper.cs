@@ -13,17 +13,17 @@ namespace Miku.Utils
     /// <example>
     /// <code>
     /// // Simple mapping
-    /// var userDto = MikuMapper.MapPropertys&lt;UserDto&gt;(user);
+    /// var userDto = MikuMapper.MapProperties&lt;UserDto&gt;(user);
     /// 
     /// // Mapping with excluded properties
-    /// var userDto = MikuMapper.MapPropertys&lt;UserDto&gt;(user, true, "Password", "Salt");
+    /// var userDto = MikuMapper.MapProperties&lt;UserDto&gt;(user, true, "Password", "Salt");
     /// 
     /// // Mapping to existing object
     /// var existingUser = new User();
-    /// MikuMapper.MapPropertys(userDto, existingUser, true, "Id");
+    /// MikuMapper.MapProperties(userDto, existingUser, true, "Id");
     /// 
     /// // Collection mapping
-    /// var userDtos = MikuMapper.MapPropertys&lt;UserDto&gt;(users, true, "Password");
+    /// var userDtos = MikuMapper.MapProperties&lt;UserDto&gt;(users, true, "Password");
     /// </code>
     /// </example>
     public class MikuMapper
@@ -31,9 +31,11 @@ namespace Miku.Utils
         // Character age and vocal series number
         private const int CharacterAge = 16;
         private const string CharacterVocalSeries = "CV01";
-        
+
         // Mi-Ku in Japanese goroawase
         private const int MikuNumber = 39;
+
+        #region MapProperties (Current API)
 
         /// <summary>
         /// Maps properties from a source object to a newly created target object.
@@ -44,12 +46,15 @@ namespace Miku.Utils
         /// <param name="ignoreNull">If true, null values will not be mapped. Default: true.</param>
         /// <param name="excludeProperties">Names of properties to exclude from mapping.</param>
         /// <returns>A new instance of T with mapped properties.</returns>
-        public static T MapPropertys<T>(object source, bool ignoreNull = true, params string[] excludeProperties)
+        /// <remarks>
+        /// Like Miku learning a new song, this method learns the source and creates a perfect performance in the target type.
+        /// </remarks>
+        public static T MapProperties<T>(object source, bool ignoreNull = true, params string[] excludeProperties)
         {
             var sourceProperties = source.GetType().GetProperties();
             var destinationProperties = typeof(T).GetProperties();
             var target = Activator.CreateInstance<T>();
-            MapPropertys(source, target, sourceProperties, destinationProperties, ignoreNull, excludeProperties);
+            MapPropertiesInternal(source, target, sourceProperties, destinationProperties, ignoreNull, excludeProperties);
             return target;
         }
 
@@ -62,12 +67,15 @@ namespace Miku.Utils
         /// <param name="ignoreNull">If true, null values will not be mapped. Default: true.</param>
         /// <param name="excludeProperties">Names of properties to exclude from mapping.</param>
         /// <returns>A new list with mapped objects.</returns>
-        public static IEnumerable<T> MapPropertys<T>(IEnumerable<object> source, bool ignoreNull = true, params string[] excludeProperties)
+        /// <remarks>
+        /// Like a concert setlist, this method orchestrates the mapping of many objects in harmony.
+        /// </remarks>
+        public static IEnumerable<T> MapProperties<T>(IEnumerable<object> source, bool ignoreNull = true, params string[] excludeProperties)
         {
             var destinationList = new List<T>();
             foreach (var item in source)
             {
-                destinationList.Add(MapPropertys<T>(item, ignoreNull, excludeProperties));
+                destinationList.Add(MapProperties<T>(item, ignoreNull, excludeProperties));
             }
             return destinationList;
         }
@@ -82,21 +90,78 @@ namespace Miku.Utils
         /// <param name="ignoreNull">If true, null values will not be mapped. Default: true.</param>
         /// <param name="excludeProperties">Names of properties to exclude from mapping.</param>
         /// <exception cref="ArgumentNullException">Thrown when target is null.</exception>
-        public static void MapPropertys<T>(object source, in T target, bool ignoreNull = true, params string[] excludeProperties)
+        /// <remarks>
+        /// Like tuning Miku's voice parameters, this method fine-tunes an existing object with new values.
+        /// </remarks>
+        public static void MapProperties<T>(object source, in T target, bool ignoreNull = true, params string[] excludeProperties)
         {
-            if(target == null)
+            if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
             var sourceProperties = source.GetType().GetProperties();
             var destinationProperties = target.GetType().GetProperties();
-            MapPropertys(source, target, sourceProperties, destinationProperties, ignoreNull, excludeProperties);
+            MapPropertiesInternal(source, target, sourceProperties, destinationProperties, ignoreNull, excludeProperties);
         }
+
+        #endregion
+
+        #region MapPropertys (Deprecated - Typo in name)
+
+        /// <summary>
+        /// Maps properties from a source object to a newly created target object.
+        /// Supports nullable primitives (e.g., int ? int?, bool ? bool?).
+        /// </summary>
+        /// <typeparam name="T">The target type to map to.</typeparam>
+        /// <param name="source">The source object to map properties from.</param>
+        /// <param name="ignoreNull">If true, null values will not be mapped. Default: true.</param>
+        /// <param name="excludeProperties">Names of properties to exclude from mapping.</param>
+        /// <returns>A new instance of T with mapped properties.</returns>
+        [Obsolete("Use MapProperties instead. This method will be removed in version 10.2.39. Even Miku makes typos sometimes! ?")]
+        public static T MapPropertys<T>(object source, bool ignoreNull = true, params string[] excludeProperties)
+        {
+            return MapProperties<T>(source, ignoreNull, excludeProperties);
+        }
+
+        /// <summary>
+        /// Maps a collection of objects to a new list of the target type.
+        /// Each element is mapped individually.
+        /// </summary>
+        /// <typeparam name="T">The target type to map to.</typeparam>
+        /// <param name="source">The source collection.</param>
+        /// <param name="ignoreNull">If true, null values will not be mapped. Default: true.</param>
+        /// <param name="excludeProperties">Names of properties to exclude from mapping.</param>
+        /// <returns>A new list with mapped objects.</returns>
+        [Obsolete("Use MapProperties instead. This method will be removed in version 10.2.39. Even Miku makes typos sometimes! ?")]
+        public static IEnumerable<T> MapPropertys<T>(IEnumerable<object> source, bool ignoreNull = true, params string[] excludeProperties)
+        {
+            return MapProperties<T>(source, ignoreNull, excludeProperties);
+        }
+
+        /// <summary>
+        /// Maps properties from a source object to an existing target object.
+        /// Useful for updating existing objects.
+        /// </summary>
+        /// <typeparam name="T">The type of the target object.</typeparam>
+        /// <param name="source">The source object to map properties from.</param>
+        /// <param name="target">The existing target object to map to.</param>
+        /// <param name="ignoreNull">If true, null values will not be mapped. Default: true.</param>
+        /// <param name="excludeProperties">Names of properties to exclude from mapping.</param>
+        /// <exception cref="ArgumentNullException">Thrown when target is null.</exception>
+        [Obsolete("Use MapProperties instead. This method will be removed in version 10.2.39. Even Miku makes typos sometimes! ?")]
+        public static void MapPropertys<T>(object source, in T target, bool ignoreNull = true, params string[] excludeProperties)
+        {
+            MapProperties(source, target, ignoreNull, excludeProperties);
+        }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Internal method that performs the actual mapping.
         /// Harmonizes properties between different object types.
         /// </summary>
-        private static void MapPropertys<T>(object source, T target, PropertyInfo[] sourceProperties, PropertyInfo[] destinationProperties, bool ignoreNull = true, params string[] excludeProperties)
+        private static void MapPropertiesInternal<T>(object source, T target, PropertyInfo[] sourceProperties, PropertyInfo[] destinationProperties, bool ignoreNull = true, params string[] excludeProperties)
         {
             var excludeSet = new HashSet<string>(excludeProperties ?? Array.Empty<string>());
 
@@ -152,5 +217,7 @@ namespace Miku.Utils
 
             return false;
         }
+
+        #endregion
     }
 }

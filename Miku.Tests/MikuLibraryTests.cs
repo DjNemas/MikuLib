@@ -1,3 +1,8 @@
+using Miku.Logger.Configuration.Enums;
+
+// Type alias for backward compatibility
+using CommandLineHelper = Miku.Utils.MikuCommandLineHelper;
+
 namespace Miku.Tests
 {
     /// <summary>
@@ -13,8 +18,8 @@ namespace Miku.Tests
             // Arrange & Act
             var exception = Record.Exception(() =>
             {
-                var mapper = typeof(Utils.MikuMapper);
-                var commandLineHelper = typeof(Utils.CommandLineHelper);
+                _ = typeof(Utils.MikuMapper);
+                _ = typeof(Utils.MikuCommandLineHelper);
             });
 
             // Assert
@@ -28,8 +33,8 @@ namespace Miku.Tests
             // Arrange & Act
             var exception = Record.Exception(() =>
             {
-                var logger = typeof(Logger.MikuLogger);
-                var options = typeof(Logger.Configuration.MikuLoggerOptions);
+                _ = typeof(Logger.MikuLogger);
+                _ = typeof(Logger.Configuration.MikuLoggerOptions);
             });
 
             // Assert
@@ -45,7 +50,7 @@ namespace Miku.Tests
             // Act
             var exception = Record.Exception(() =>
             {
-                var target = Utils.MikuMapper.MapPropertys<TestDto>(source);
+                Utils.MikuMapper.MapProperties<TestDto>(source);
             });
 
             // Assert
@@ -59,7 +64,7 @@ namespace Miku.Tests
             var args = new[] { "--configuration", "Release" };
 
             // Act
-            var result = Utils.CommandLineHelper.IsReleaseConfiguration(args);
+            var result = Utils.MikuCommandLineHelper.IsReleaseConfiguration(args);
 
             // Assert
             Assert.True(result);
@@ -73,7 +78,7 @@ namespace Miku.Tests
             {
                 using var logger = new Logger.MikuLogger("TestLogger", new Logger.Configuration.MikuLoggerOptions
                 {
-                    Output = Logger.Configuration.LogOutput.Console
+                    Output = MikuLogOutput.Console
                 });
                 logger.LogInformation("Test from Miku main package");
             });

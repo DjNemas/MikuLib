@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
 namespace Miku.Logger.Tests
 {
@@ -48,8 +50,8 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Debug
+                Output = MikuLogOutput.Console,
+                MinimumLogLevel = MikuLogLevel.Debug
             };
 
             // Act
@@ -65,8 +67,8 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Trace
+                Output = MikuLogOutput.Console,
+                MinimumLogLevel = MikuLogLevel.Trace
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -81,7 +83,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -96,7 +98,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var logger = new MikuLogger("TestLogger", options);
             var testException = new InvalidOperationException("Test exception");
@@ -112,7 +114,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -127,8 +129,8 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Debug
+                Output = MikuLogOutput.Console,
+                MinimumLogLevel = MikuLogLevel.Debug
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -143,8 +145,8 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
-                MinimumLogLevel = Configuration.LogLevel.Trace
+                Output = MikuLogOutput.Console,
+                MinimumLogLevel = MikuLogLevel.Trace
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -159,7 +161,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -174,7 +176,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -190,7 +192,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -206,7 +208,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -222,8 +224,8 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.File,
-                FileOptions = new FileLoggerOptions
+                Output = MikuLogOutput.File,
+                FileOptions = new MikuFileLoggerOptions
                 {
                     LogDirectory = _testLogDirectory,
                     FileNamePattern = "test.log"
@@ -246,7 +248,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                MinimumLogLevel = Configuration.LogLevel.Information
+                MinimumLogLevel = MikuLogLevel.Information
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -263,7 +265,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                MinimumLogLevel = Configuration.LogLevel.Warning
+                MinimumLogLevel = MikuLogLevel.Warning
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -280,7 +282,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var logger = new MikuLogger("TestLogger", options);
 
@@ -313,7 +315,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
+                Output = MikuLogOutput.Console,
                 DateFormat = "yyyy-MM-dd"
             };
             using var logger = new MikuLogger("TestLogger", options);
@@ -329,7 +331,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
+                Output = MikuLogOutput.Console,
                 UseUtcTime = true
             };
             using var logger = new MikuLogger("TestLogger", options);
@@ -345,8 +347,8 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console,
-                FormatOptions = new LogFormatOptions
+                Output = MikuLogOutput.Console,
+                FormatOptions = new MikuLogFormatOptions
                 {
                     ShowDate = true,
                     ShowTime = true,
@@ -388,8 +390,8 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.ConsoleAndFile,
-                FileOptions = new FileLoggerOptions
+                Output = MikuLogOutput.ConsoleAndFile,
+                FileOptions = new MikuFileLoggerOptions
                 {
                     LogDirectory = _testLogDirectory,
                     FileNamePattern = "combined.log"

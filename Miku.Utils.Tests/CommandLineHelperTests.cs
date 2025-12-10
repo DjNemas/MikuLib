@@ -1,3 +1,6 @@
+// Type alias for backward compatibility
+using CommandLineHelper = Miku.Utils.MikuCommandLineHelper;
+
 namespace Miku.Utils.Tests
 {
     public class CommandLineHelperTests

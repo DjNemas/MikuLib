@@ -1,31 +1,72 @@
-# MikuLib
+# MikuLib - Meta Package
 
 A collection of powerful .NET 10 libraries inspired by Hatsune Miku.
 
-> "The world is mine... and so are these utilities!" - Hatsune Nemas
+> "The world is mine... to code!" - Hatsune Nemas
 
-*Aggregating the power of CV01 since 2007*
+*Powered by CV01 energy since 2007*
+
+![MikuLib Console & Logger Demo](https://djnemas.de/SX/WindowsTerminal_4XPonwjrkx.gif)
 
 ## What is MikuLib?
 
 MikuLib is a comprehensive .NET 10 library collection that brings together powerful utilities for modern application development. Named after and inspired by Hatsune Miku, the virtual singer who revolutionized music and technology.
 
+## ⚠️ Breaking Changes in Version 10.2.39
+
+All enums and configuration models have been renamed with the `Miku` prefix for better consistency:
+
+| Old Name | New Name |
+|----------|----------|
+| `LogLevel` | `MikuLogLevel` |
+| `LogOutput` | `MikuLogOutput` |
+| `ColorSpace` | `MikuColorSpace` |
+| `ConsoleColorOptions` | `MikuConsoleColorOptions` |
+| `FileLoggerOptions` | `MikuFileLoggerOptions` |
+| `LogFormatOptions` | `MikuLogFormatOptions` |
+| `SseLoggerOptions` | `MikuSseLoggerOptions` |
+| `Extended256ColorOptions` | `MikuExtended256ColorOptions` |
+| `TrueColorOptions` | `MikuTrueColorOptions` |
+| `RgbColor` | `MikuRgbColor` |
+| `AnsiCodes` | `MikuAnsiCodes` |
+| `ColorHelper` | `MikuColorHelper` |
+| `SseLogBroadcaster` | `MikuSseLogBroadcaster` |
+| `SseLogEntry` | `MikuSseLogEntry` |
+| `FileLogWriter` | `MikuFileLogWriter` |
+| `SharedFileStreamManager` | `MikuSharedFileStreamManager` |
+
 ## Included Libraries
 
+This meta package includes all MikuLib sub-libraries:
+
+### MikuLib.Core
+**Core types and utilities** shared across all MikuLib packages:
+- **MikuRgbColor**: 24-bit RGB color structure with hex parsing and interpolation
+- **MikuAnsiCodes**: ANSI escape code constants for console styling
+- **MikuColorHelper**: Color manipulation utilities (gradients, rainbow, darken/lighten)
+
+### MikuLib.Console
+**Beautiful colored console output** with TrueColor and 256-color support:
+- **MikuConsole**: Colored text output with gradients and rainbow effects
+- **MikuConsoleAnimation**: Typewriter, fade, pulse, wave, and loading animations
+
 ### MikuLib.Utils
+**Comprehensive utility library** featuring:
 - **MikuMapper**: Object-to-object mapping with nullable primitive support
-- **CommandLineHelper**: Modern command line argument parsing
-- Full documentation: [MikuLib.Utils README](../Miku.Utils/README.md)
+- **CommandLineHelper**: Modern command line argument parsing with auto-detection
 
 ### MikuLib.Logger
-- Thread-safe logging with console and file output
+**Thread-safe logging library** featuring:
+- Console and file output with customizable colors
+- **Server-Sent Events (SSE)** for real-time log streaming
+- **TrueColor (24-bit RGB)** and **256-color** support
 - ILogger compatibility for ASP.NET Core
-- Colored console output and log rotation
-- Full documentation: [MikuLib.Logger README](../Miku.Logger/README.md)
+- Async operations and automatic log rotation
+- Zero data loss guarantee
 
 ## Installation
 
-Install the main package to get all sub-libraries:
+Install the meta package to get all sub-libraries:
 
 ```bash
 dotnet add package MikuLib
@@ -33,73 +74,124 @@ dotnet add package MikuLib
 
 Or add to your `.csproj`:
 ```xml
-<PackageReference Include="MikuLib" Version="10.1.39" />
+<PackageReference Include="MikuLib" Version="10.2.39" />
 ```
 
 You can also install individual packages:
 
 ```bash
+dotnet add package MikuLib.Core
+dotnet add package MikuLib.Console
 dotnet add package MikuLib.Utils
 dotnet add package MikuLib.Logger
 ```
 
-Or in your `.csproj`:
-```xml
-<PackageReference Include="MikuLib.Utils" Version="10.0.39" />
-<PackageReference Include="MikuLib.Logger" Version="10.1.39" />
-```
-
 ## Quick Start
 
+### Core Color Types
 ```csharp
-using Miku.Utils;
+using Miku.Core;
+
+// Create colors
+var cyan = MikuRgbColor.MikuCyan;           // Predefined Miku cyan
+var pink = MikuRgbColor.FromHex("#E12885"); // From hex string
+
+// Interpolate colors
+var blend = MikuRgbColor.Lerp(cyan, pink, 0.5);
+
+// Rainbow effects
+var rainbow = MikuColorHelper.GetRainbow(phase);
+var mikuRainbow = MikuColorHelper.GetMikuRainbow(phase);
+```
+
+### Console Output with Colors
+```csharp
+using Miku.Core;
+using Miku.Console;
+
+// Colored output
+MikuConsole.WriteLine("Hello Miku!", MikuRgbColor.MikuCyan);
+MikuConsole.WriteGradientLine("Gradient text", MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink);
+
+// Animations
+await MikuConsoleAnimation.TypewriterAsync("Typing...", MikuRgbColor.MikuCyan, 30);
+await MikuConsoleAnimation.PulseAsync("Pulsing!", MikuRgbColor.MikuCyan, MikuRgbColor.MikuPink, 0, 0);
+```
+
+### Logging with Colors
+```csharp
+using Miku.Core;
 using Miku.Logger;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
+using Miku.Logger.Configuration.Models;
 
-// Object Mapping
-var userDto = MikuMapper.MapPropertys<UserDto>(user);
-
-// Command Line Parsing
-if (CommandLineHelper.IsReleaseConfiguration())
+var options = new MikuLoggerOptions
 {
-    // Use release settings
-}
+    Output = MikuLogOutput.Console,
+    ConsoleColors = new MikuConsoleColorOptions
+    {
+        ColorSpace = MikuColorSpace.TrueColor,
+        TrueColors = new MikuTrueColorOptions
+        {
+            InformationColor = MikuRgbColor.MikuCyan,
+            ErrorColor = MikuRgbColor.MikuPink
+        }
+    }
+};
 
-// Logging
-var logger = new MikuLogger("MyApp");
-logger.LogInformation("Application started");
+using var logger = new MikuLogger("MyApp", options);
+logger.LogInformation("Hello with Miku Cyan!");
+```
+
+### Object Mapping
+```csharp
+using Miku.Utils;
+
+var userDto = MikuMapper.MapProperties<UserDto>(user);
 ```
 
 ## Features at a Glance
 
-### Core Utilities (MikuLib.Utils)
-- Property mapping with automatic type conversion
-- Nullable primitive support (int ↔ int?, bool ↔ bool?, etc.)
-- Command line argument parsing (--param, --param:value, --param=value)
-- Multi-value parameter support
+### Core Types (MikuLib.Core)
+- 24-bit RGB color structure with hex parsing
+- Color interpolation and manipulation
+- ANSI escape codes for console styling
+- Rainbow and gradient generators
+- Predefined Miku colors (Cyan, Pink, Teal, DarkCyan)
+
+### Console Utilities (MikuLib.Console)
+- TrueColor (16 million colors) console output
+- 256-color palette support
+- Gradient text and progress bars
+- Typewriter, fade, pulse, and wave animations
+- Centered and positioned text output
+- Block drawing characters and boxes
+
+### Utility Functions (MikuLib.Utils)
+- Object-to-object property mapping
+- Nullable primitive support
+- Command line argument parsing
 - Environment detection
-- Auto-detection via Environment.GetCommandLineArgs()
 
 ### Logging (MikuLib.Logger)
-- Multiple output targets (Console, File, Both)
-- Lock-free architecture for maximum performance
-- Colored console output (Cyan by default - #00CED1)
-- Automatic log rotation based on file size
-- Date-based folder organization
-- Configurable log levels and formats
-- ILogger compatibility for ASP.NET Core
-- Batch writing (100 messages per operation)
-- 5000+ msg/s throughput under high load
+- Three color modes: Console (16), Extended256 (256), TrueColor (16M)
+- Server-Sent Events for real-time streaming
+- Multiple output targets (Console, File, SSE)
+- Thread-safe async operations
+- Automatic log rotation
+- ILogger compatibility
+- High-performance logging (5000+ msg/s)
 - Zero data loss guarantee
 
-### Performance
-- High-performance reflection-based mapping
-- LINQ-optimized command line parsing
-- Lock-free async queue-based file I/O
-- Batch writing for maximum throughput
-- Thread-safe operations throughout
-- Minimal allocation overhead
-- 25x faster logging in multi-writer scenarios
+## Predefined Miku Colors
+
+| Color | Hex | Description |
+|-------|-----|-------------|
+| MikuCyan | #00CED1 | Signature cyan |
+| MikuPink | #E12885 | Secondary pink |
+| MikuTeal | #39C5BB | Hair highlight |
+| MikuDarkCyan | #008B8B | Dark accent |
 
 ## Version Numbering
 
@@ -112,13 +204,12 @@ MAJOR.MINOR.39
   └────────────── Matches .NET version (10, 11, 12, etc.)
 ```
 
-**Current Version**: 10.1.39
-
-**Examples:**
-- `10.0.39` - Initial .NET 10 release
-- `10.1.39` - Feature update for .NET 10
-- `10.2.39` - Future feature update
-- `11.0.39` - .NET 11 release
+**Current Versions:**
+- MikuLib.Core: 10.0.39
+- MikuLib.Console: 10.0.39
+- MikuLib.Utils: 10.1.39
+- MikuLib.Logger: 10.2.39
+- **MikuLib (Meta): 10.2.39**
 
 ## Requirements
 
@@ -142,11 +233,11 @@ Just as Miku revolutionized music through technology, these libraries aim to mak
 
 This library contains subtle Hatsune Miku references throughout:
 
-- Version 10.0.39 (10 for .NET 10, 39 for Mi-Ku)
+- Version numbers ending in 39 (Mi-Ku)
 - Default colors inspired by Miku's aesthetic
 - CV01 references in code and documentation
-- Comments with song references
 - Constants using the number 39
+- Predefined Miku color palette
 
 For those who know, you know.
 
@@ -162,28 +253,13 @@ MikuLib aims to:
 
 ## Documentation
 
-### MikuLib.Utils
-- [README](../Miku.Utils/README.md) - Full documentation
-- [EXAMPLES](../Miku.Utils/EXAMPLES.md) - Practical usage examples
-- [CHANGELOG](../Miku.Utils/CHANGELOG.md) - Version history
-
-### MikuLib.Logger
-- [README](../Miku.Logger/README.md) - Full documentation
-- [EXAMPLES](../Miku.Logger/EXAMPLES.md) - Practical usage examples
-- [CHANGELOG](../Miku.Logger/CHANGELOG.md) - Version history
-
-### MikuLib (Meta Package)
-- [README](./README.md) - This file
+Full documentation is available in the GitHub repository:
+- [MikuLib GitHub](https://github.com/DjNemas/MikuLib)
+- [Issue Tracker](https://github.com/DjNemas/MikuLib/issues)
 
 ## Contributing
 
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contributions are welcome! Please visit the [GitHub repository](https://github.com/DjNemas/MikuLib).
 
 ## Credits
 
@@ -194,37 +270,14 @@ Contributions are welcome! Please:
 - Crypton Future Media - For creating VOCALOID technology
 - The global Vocaloid community - For endless creativity and passion
 
-**Songs that inspired development**:
-- "World is Mine" - For confidence to build
-- "Tell Your World" - For sharing our code
-- "Senbonzakura" - For epic scale
-
 ## License
 
-MIT License - See [LICENSE](LICENSE) file for details.
-
-## Links
-
-- [GitHub Repository](https://github.com/DjNemas/MikuLib)
-- [Issue Tracker](https://github.com/DjNemas/MikuLib/issues)
-- [Discussions](https://github.com/DjNemas/MikuLib/discussions)
-- [NuGet Gallery](https://www.nuget.org/profiles/HatsuneNemas)
-
-## Repository Structure
-
-```
-MikuLib/
-├── Miku/                   # Meta package
-├── Miku.Utils/             # Utility library (MikuMapper, CommandLineHelper)
-├── Miku.Logger/            # Logging library
-├── MikuLib.sln             # Solution file
-└── README.md               # This file
-```
+MIT License - See LICENSE file for details.
 
 ---
 
 *"Singing the code since 2007!"*
 
-**Version**: 10.1.39 (The Mi-Ku Edition)  
+**Version**: 10.2.39 (The Mi-Ku Edition)  
 **Series**: CV01 Developer Tools  
 **Default Color**: Cyan (#00CED1)

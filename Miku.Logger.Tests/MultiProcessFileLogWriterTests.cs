@@ -1,4 +1,4 @@
-using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Models;
 using Miku.Logger.Writers;
 
 namespace Miku.Logger.Tests;
@@ -46,7 +46,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
             try
             {
                 // Each "process" creates its own FileLogWriter instance
-                var options = new FileLoggerOptions
+                var options = new MikuFileLoggerOptions
                 {
                     LogDirectory = _testDirectory,
                     FileNamePattern = "multi-process.log",
@@ -54,7 +54,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
                     UseDateFolders = false
                 };
 
-                using var writer = new FileLogWriter(options);
+                using var writer = new MikuFileLogWriter(options);
 
                 // Simulate rapid concurrent writes
                 for (int m = 0; m < messagesPerProcess; m++)
@@ -86,7 +86,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         await Task.Delay(500);
 
         // Cleanup shared streams
-        SharedFileStreamManager.Instance.DisposeAll();
+        MikuSharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         Assert.Empty(exceptions); // No IOException should occur
@@ -114,7 +114,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         {
             try
             {
-                var options = new FileLoggerOptions
+                var options = new MikuFileLoggerOptions
                 {
                     LogDirectory = _testDirectory,
                     FileNamePattern = "gateway-scenario.log",
@@ -122,7 +122,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
                     UseDateFolders = false
                 };
 
-                using var writer = new FileLogWriter(options);
+                using var writer = new MikuFileLogWriter(options);
 
                 for (int i = 0; i < messagesPerService; i++)
                 {
@@ -152,7 +152,7 @@ public class MultiProcessFileLogWriterTests : IDisposable
         await Task.Delay(500);
 
         // Cleanup shared streams
-        SharedFileStreamManager.Instance.DisposeAll();
+        MikuSharedFileStreamManager.Instance.DisposeAll();
 
         // Assert
         Assert.Empty(exceptions); // No IOException

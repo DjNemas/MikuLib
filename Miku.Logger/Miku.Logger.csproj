@@ -4,21 +4,33 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>14.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     
+    <!-- Package Information -->
     <PackageId>MikuLib.Logger</PackageId>
-	<Title>Miku Logger</Title>
-    <Version>10.1.39</Version>
+    <Title>Miku Logger</Title>
+    <Version>10.2.39</Version>
     <Authors>Hatsune Nemas</Authors>
-    <Company>Crypton Future Media (Inspired)</Company>
-    <Description>Miku logging library with console and file output support, ILogger compatibility, async operations, and advanced features like log rotation and color support. Logging with the voice of the future! 🎤💚</Description>
-    <PackageTags>miku;logger;logging;console;file;ilogger;async;thread-safe;vocaloid;cv01;39</PackageTags>
-    <RepositoryUrl>https://github.com/DjNemas/MikuLib</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/DjNemas/MikuLib</PackageProjectUrl>
+    <Company>CV01 Development</Company>
+    <Product>MikuLib.Logger</Product>
+    <Description>Miku logging library with console, file, and Server-Sent Events (SSE) output support, ILogger compatibility, async operations, and advanced features like log rotation and color support. Now with real-time log streaming! Logging with the voice of the future!</Description>
+    <Copyright>Copyright (c) 2025 Hatsune Nemas</Copyright>
+    <PackageTags>miku;logger;logging;console;file;sse;server-sent-events;streaming;ilogger;async;thread-safe;vocaloid;cv01;39</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/DjNemas/MikuLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DjNemas/MikuLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Copyright>© 2025 Hatsune Nemas. Tell your logs to the world! 🌍</Copyright>
+    
+    <!-- Assembly Information -->
+    <AssemblyName>Miku.Logger</AssemblyName>
+    <RootNamespace>Miku.Logger</RootNamespace>
+    
+    <!-- Ensure XML documentation is included in NuGet package -->
+    <IncludeSymbols>false</IncludeSymbols>
+    <EmbedAllSources>false</EmbedAllSources>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,13 +38,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Miku.Core\Miku.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\icon.png" Pack="true" PackagePath="\" />
     <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Include XML documentation in the package -->
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\$(TargetFramework)" Condition="Exists('$(OutputPath)\$(AssemblyName).xml')" />
   </ItemGroup>
 
 </Project>

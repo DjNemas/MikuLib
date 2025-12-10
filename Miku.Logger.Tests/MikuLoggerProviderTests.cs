@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using Miku.Logger.Configuration;
+using Miku.Logger.Configuration.Enums;
 using Miku.Logger.Providers;
 
 namespace Miku.Logger.Tests
@@ -12,7 +13,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
 
             // Act
@@ -28,7 +29,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = Options.Create(new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             });
 
             // Act
@@ -44,7 +45,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var provider = new MikuLoggerProvider(options);
 
@@ -61,7 +62,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var provider = new MikuLoggerProvider(options);
 
@@ -79,7 +80,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             using var provider = new MikuLoggerProvider(options);
 
@@ -97,7 +98,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             var provider = new MikuLoggerProvider(options);
             provider.CreateLogger("TestCategory");
@@ -133,7 +134,7 @@ namespace Miku.Logger.Tests
             // Arrange
             var options = new MikuLoggerOptions
             {
-                Output = LogOutput.Console
+                Output = MikuLogOutput.Console
             };
             var provider = new MikuLoggerProvider(options);
             provider.Dispose();
