@@ -131,7 +131,7 @@ namespace Miku.Utils
         /// <param name="ignoreNull">If true, null values will not be mapped. Default: true.</param>
         /// <param name="excludeProperties">Names of properties to exclude from mapping.</param>
         /// <returns>A new list with mapped objects.</returns>
-        [Obsolete("Use MapProperties instead. This method will be removed in version 10.2.39. Even Miku makes typos manchmal! ?")]
+        [Obsolete("Use MapProperties instead. This method will be removed in version 10.2.39. Even Miku makes typos sometimes! ?")]
         public static IEnumerable<T> MapPropertys<T>(IEnumerable<object> source, bool ignoreNull = true, params string[] excludeProperties)
         {
             return MapProperties<T>(source, ignoreNull, excludeProperties);
@@ -147,7 +147,7 @@ namespace Miku.Utils
         /// <param name="ignoreNull">If true, null values will not be mapped. Default: true.</param>
         /// <param name="excludeProperties">Names of properties to exclude from mapping.</param>
         /// <exception cref="ArgumentNullException">Thrown when target is null.</exception>
-        [Obsolete("Use MapProperties instead. This method will be removed in version 10.2.39. Even Miku makes typos manchmal! ?")]
+        [Obsolete("Use MapProperties instead. This method will be removed in version 10.2.39. Even Miku makes typos sometimes! ?")]
         public static void MapPropertys<T>(object source, in T target, bool ignoreNull = true, params string[] excludeProperties)
         {
             MapProperties(source, target, ignoreNull, excludeProperties);
